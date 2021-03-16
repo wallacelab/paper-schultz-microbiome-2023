@@ -508,7 +508,11 @@ binary_object <- as.data.frame(binary_object)
 upset_order <- colnames(binary_object)
 
 noblanks = subset(binary_object[c(9:13,15:17)])
+undergroundmatrix = subset(binary_object[c(9:13)])
+above_matrix = subset(binary_object[c(15:17)])
 
+# This works but it doesnt do the intersections that I want?
+# We can plot all combos, or empty combos. Doing both with more than 3 intersections is too many and not helpful
 shared_ASV_plot <- upset(noblanks,
                         nsets = 9,
                         nintersects = NA,
@@ -517,5 +521,34 @@ shared_ASV_plot <- upset(noblanks,
                          )
 shared_ASV_plot
 
+all_upset <- upset(noblanks, nsets = 8, nintersects = NA, order.by = c("degree", "freq"))
+all_upset
 
+under_upset <- upset(undergroundmatrix, nsets = 5, nintersects = NA, order.by = c("degree", "freq"))
+under_upset
 
+above_upset <- upset(above_matrix, nsets = 3, nintersects = NA, order.by = c("degree", "freq"), empty.intersections = TRUE)
+above_upset
+# These three lines work I was misunderstanding the plots
+
+# Try with ComplexHeatmap package
+
+# Distinct Mode:
+#1. distinct mode: 1 means in that set and 0 means not in that set, then "1 1 0" means a set of elements also in set A and B, while not in C (i.e. setdiff(intersect(A, B), C)). 
+#Under this mode, the seven combination sets are the seven partitions in the Venn diagram and they are mutually exclusive.
+
+library(devtools)
+install_github("jokergoo/ComplexHeatmap")
+library(ComplexHeatmap)
+
+m = make_comb_mat(noblanks)
+chm_plot <- UpSet(m)
+chm_plot
+
+mU = make_comb_mat(undergroundmatrix, mode = "distinct")
+under_plot <- UpSet(mU)
+under_plot
+
+mA = make_comb_mat(above_matrix,mode = "distinct")
+above_plot <- UpSet(mA)
+above_plot
