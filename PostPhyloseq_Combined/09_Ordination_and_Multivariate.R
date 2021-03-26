@@ -163,15 +163,34 @@ plot_ordination(phyCmbFilt, wuni_ordination, color = "Experiment", shape = "Inbr
 bc_ordination = ordinate(phyCmbFilt, method = "PCoA", distance = "bray")
 plot_ordination(phyCmbFilt, bc_ordination, color = "Experiment", shape = "Inbred_or_Hybrid")
 
-#nMDS - not sure if I have enough data for this stress is all zero?
+#nMDS - Why is one stalk sample all the way over there lol?
 set.seed(18)
 
+# MMH-2GH-42K has an nmds1 score of 44000
 combo_nmds <- ordinate(physeq = phyCmbFilt, method = "NMDS", distance = "bray")
 
 plot_ordination(physeq = phyCmbFilt, ordination = combo_nmds,
                 color = "Experiment", shape = "Sample_Type")
 
+# Remove MMH-2GH-42K because it is super weird and needs more investigation
+combined_new = subset_samples(phyCmbFilt, sample_names(phyCmbFilt) != "MMH-2GH-42K")
+combo_nmds2 <- ordinate(physeq = combined_new, method = "NMDS", distance = "bray")
+data.scores = as.data.frame(scores(combo_nmds2))
+plot_ordination(physeq = combined_new, ordination = combo_nmds2,
+                color = "Experiment", shape = "Sample_Type")
+# Need to look back at fastqC and see if there is something wrong with this sample???????? - The OTU table is all zeros
+rhizos_nmds <- ordinate(physeq = rhizosF, method = "NMDS", distance = "bray")
 
+plot_ordination(physeq = rhizosF, ordination = rhizos_nmds,
+                color = "Experiment", shape = "Inbred_or_Hybrid")
+
+weird = subset_samples(phyCmbFilt, sample_names(phyCmbFilt) == "MMH-2GH-42K")
+###### Notes about this sample - low %Duplication (most are above 80%) Has like no reads, its OTU table is empty
+
+stalk_nmds <- ordinate(physeq = stalksF, method = "NMDS", distance = "bray")
+
+plot_ordination(physeq = stalksF, ordination = stalk_nmds,
+                color = "Experiment", shape = "Inbred_or_Hybrid")
 
 # PERMANOVA
 adonist_results <- adonis(wunifrac_dist ~ sample_data(phyCmbFilt)$Experiment 
@@ -187,10 +206,9 @@ adonist_results
 BC.dist = phyloseq::distance(phyCmbFilt, method = "bray")
 sampledf = data.frame(sample_data(phyCmbFilt))
 
-bc_adonis <- adonis(BC.dist ~ Experiment + Sample_Type + 
+bc_adonis <- adonis(BC.dist ~ Sample_Type + 
                       Inbred_or_Hybrid + Inbred_or_Hybrid*Sample_Type + 
-                      Inbred_or_Hybrid*Experiment +Genotype + Location + 
-                      Block, data = sampledf, strata = sampledf$Experiment)
+                      Inbred_or_Hybrid*Genotype +Genotype, data = sampledf, strata = sampledf$Experiment)
 
 # you can do nesting like A:B:C so I could have A + B + A:B + A:B:C
 # A question for doctor wallace
