@@ -219,6 +219,7 @@ cap_ord <- ordinate(
   method = "CAP",
   distance = BC.dist,
   formula = BC.dist ~ Experiment + Sample_Type + Inbred_or_Hybrid + Genotype + Location + Block
+  #BC.dist ~ Experiment + Sample_Type + Inbred_or_Hybrid + Genotype + Location + Block
 )
 
 cap_plot <- plot_ordination(
