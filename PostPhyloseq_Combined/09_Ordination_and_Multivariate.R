@@ -163,6 +163,8 @@ plot_ordination(phyCmbFilt, wuni_ordination, color = "Experiment", shape = "Inbr
 bc_ordination = ordinate(phyCmbFilt, method = "PCoA", distance = "bray")
 plot_ordination(phyCmbFilt, bc_ordination, color = "Experiment", shape = "Inbred_or_Hybrid")
 
+plot_ordination(phyCmbFilt, bc_ordination, color = "Experiment", shape = "Sample_Type")
+
 #nMDS - Why is one stalk sample all the way over there lol?
 set.seed(18)
 

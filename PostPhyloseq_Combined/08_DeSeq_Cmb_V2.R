@@ -569,7 +569,7 @@ write.csv(as.data.frame(sigtab3), file="ENDvsGH_Rootss.csv")
 
 
 
-######## Learn how to make an upset plot to show this data. 
+######## Learn how to make an upset plot to show this data. - In the class taxa
 
 # my combined and filtered data 
 
@@ -586,8 +586,10 @@ list("Combined_Data"=phyCmbFilt) %>% table_two
 
 
 
-
-
+################################## Find shared microbes between experiments at the genus species
+stalksF
+rhizosF
+rootsF
 
 
 
