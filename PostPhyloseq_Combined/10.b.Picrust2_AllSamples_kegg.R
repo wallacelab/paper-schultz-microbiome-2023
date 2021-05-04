@@ -1,6 +1,6 @@
 library(tidyverse)
 library(devtools)
-devtools::install_github("jbisanz/qiime2R")
+#devtools::install_github("jbisanz/qiime2R")
 library(qiime2R)
 library(ggplot2)
 library(phyloseq)
@@ -198,24 +198,19 @@ phyloseq2qiime2(phyCmbFiltClean)
 ### picrust2_pipeline.py -s dna-sequences.fasta -i phyCmbFiltClean_features-table.biom -o picrust2_out_pipeline -p 4
 setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Picrust2")
 
-EC_table <- read.csv("pred_metagenome_unstrat_descript.tsv", sep = "\t")
+KO_table <- read.csv("KO_pred_metagenome_unstrat_descript.tsv", sep = "\t")
+head(KO_table)[1:10]
+
 # Create a phyloseq object out of the otu table and the metadata. 
 head(EC_table)[1:10]
 # E_C table column names have . instead of - 
-colnames(EC_table) <- gsub(x = colnames(EC_table), pattern = "\\.", replacement = "-")
+colnames(KO_table) <- gsub(x = colnames(KO_table), pattern = "\\.", replacement = "-")
 Meta_EC <- metadata
 row.names(Meta_EC) <- Meta_EC$SampleID
-
-ec_burr <- EC_table[, -c(2)]
-write.csv(ec_burr,"EC_burr_table.csv", row.names = FALSE)
-
-row.names(EC_table) <- EC_table$`function-`
+row.names(KO_table) <- KO_table$`function-`
 # Drop the descriptors
-descriptions = EC_table[,0:2]
-
-
-EC_table <- EC_table[, -c(1:2)]
-
+descriptions = KO_table[,0:2]
+EC_table <- KO_table[, -c(1:2)]
 EC_phy <- phyloseq(otu_table(EC_table, taxa_are_rows = TRUE), sample_data(Meta_EC))
 EC_phy # this is our functional phyloseq object
 
@@ -242,7 +237,7 @@ head(sigtab)
 dim(sigtab)
 
 #ggplot(sigtab, aes(x = Functional_Group, y = log2FoldChange, fill = log2FoldChange < 0)) + 
-  geom_bar(stat = 'identity') + ggtitle("Stalks: Inbred vs Hybrid/Open Pollinated") +
+geom_bar(stat = 'identity') + ggtitle("Stalks: Inbred vs Hybrid/Open Pollinated") +
   theme(axis.text.x = element_text(angle = 90, size = 12)) + 
   scale_fill_manual("Down Regulated", values = c("turquoise", "indianred1"))
 
@@ -513,23 +508,4 @@ sigtab = cbind(as(sigtab, "data.frame"), Functional_Group)
 head(sigtab)
 
 dim(sigtab)
-
-
-# # Network graph https://kelseyandersen.github.io/NetworksPlantPathology/Microbiome_network_ICPP2018_v2.html
-# 
-# library(igraph)
-# library(Hmisc)
-# library(Matrix)
-# 
-# EC_table <- read.csv("pred_metagenome_unstrat_descript.tsv", sep = "\t")
-# 
-# descriptions = EC_table[,0:2]
-# 
-# EC_table <- EC_table[, -c(1:2)]
-# 
-# 
-# EC.cor <- rcorr(as.matrix(EC_table), type = "spearman")
-# 
-# ec.pval <- forceSymmetric(EC.cor$P)
-
 
