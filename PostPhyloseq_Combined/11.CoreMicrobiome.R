@@ -126,6 +126,10 @@ rootsF
 
 stalksR <- microbiome::transform(stalksF, "compositional")
 rhizosR <- microbiome::transform(rhizosF, "compositional")
+
+phyCmbFilt <- tax_glom(phyCmbFilt, taxrank = "Genus")
+phy2 <- tax_glom(phy2, taxrank = "Genus")
+
 phyCmbComp <- microbiome::transform(phyCmbFilt, "compositional")
 phy2com <- microbiome::transform(phy2, "compositional")
 ##############################################
@@ -168,7 +172,7 @@ head(prevalence(rootsF, detection = 1/100, sort = TRUE)) # Most Abundant OTUs an
 head(prevalence(rootsF, detection = 1/100, sort = TRUE, count = TRUE)) # How many samples are they actually in 
 
 
-#### Venn Diagram
+#### Venn Diagram     I dont know why saving the taxa keeps working and then not working?
 library("ggVennDiagram")
 #https://microbiome.github.io/tutorials/core_venn.html
 # how many samples for metadata groups
@@ -190,15 +194,15 @@ for (n in ExperimentGroups){
   list_core[[n]] <- core_m
 }
 
-GH_core_tax = as.data.frame(tax_table(phyCmbComp)[list_core$GH, ], row.names = NULL)
-END_core_taxa = as.data.frame(tax_table(phyCmbComp)[list_core$END, ], row.names = NULL)
-MMH_core_taxa = as.data.frame(tax_table(phyCmbComp)[list_core$MMH, ], row.names = NULL)
+# GH_core_tax = as.data.frame(tax_table(phyCmbComp)[list_core$GH, ], row.names = NULL)
+# END_core_taxa = as.data.frame(tax_table(phyCmbComp)[list_core$END, ], row.names = NULL)
+# MMH_core_taxa = as.data.frame(tax_table(phyCmbComp)[list_core$MMH, ], row.names = NULL)
 
 ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "firebrick") + ggtitle("Ultra Filtered Core Microbiome")
 
 # How to identify the actual taxa!!!!!
-itercept1 = merge(GH_core_tax, MMH_core_taxa, by="row.names")
-merge(GH_core_tax, END_core_taxa, by="row.names")
+# itercept1 = merge(GH_core_tax, MMH_core_taxa, by="row.names")
+# merge(GH_core_tax, END_core_taxa, by="row.names")
 
 
 # For less filtered phy2com - all taxa
@@ -217,15 +221,15 @@ for (n in ExperimentGroups){
   list_core[[n]] <- core_m
 }
 # Get taxa info
-GH_core_tax = as.data.frame(tax_table(phy2com)[list_core$GH, ], row.names = NULL)
-
-END_core_taxa = as.data.frame(tax_table(phy2com)[list_core$END, ], row.names = NULL)
-
-MMH_core_taxa = as.data.frame(tax_table(phy2com)[list_core$MMH, ], row.names = NULL)
+# GH_core_tax = as.data.frame(tax_table(phy2com)[list_core$GH, ], row.names = NULL)
+# 
+# END_core_taxa = as.data.frame(tax_table(phy2com)[list_core$END, ], row.names = NULL)
+# 
+# MMH_core_taxa = as.data.frame(tax_table(phy2com)[list_core$MMH, ], row.names = NULL)
 
 ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "forestgreen") + ggtitle("All Taxa Core Microbiome")
 
-itercept1 = merge(GH_core_tax, MMH_core_taxa, by="row.names")
+# itercept1 = merge(GH_core_tax, MMH_core_taxa, by="row.names")
 
 
 ### By Inbred/Hybrid
@@ -248,15 +252,15 @@ for (n in BackgroundGroups){
 #Inbred_core_tax = data.frame()
 
 # Not sure what this issue is but had to change to this format and it takes a while
-Inbred_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Inbred, ]
-Open_Pollinated_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Open_Pollinated, ]
-Hybrid_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Hybrid, ]
+# Inbred_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Inbred, ]
+# Open_Pollinated_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Open_Pollinated, ]
+# Hybrid_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Hybrid, ]
 
 ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "firebrick") + ggtitle("Ultra Filtered Core Microbiome")
 
 # How to identify the actual taxa!!!!!
-itercept1 = merge(GH_core_tax, MMH_core_taxa, by="row.names")
-merge(GH_core_tax, END_core_taxa, by="row.names")
+# itercept1 = merge(GH_core_tax, MMH_core_taxa, by="row.names")
+# merge(GH_core_tax, END_core_taxa, by="row.names")
 
 
 # # For less filtered phy2com - all taxa
@@ -278,15 +282,15 @@ for (n in BackgroundGroups){
 #Inbred_core_tax = data.frame()
 
 # Not sure what this issue is
-Inbred_core_tax = as.data.frame(phy2com@tax_table)[list_core$Inbred, ]
-Open_Pollinated_core_tax = as.data.frame(phy2com@tax_table)[list_core$Open_Pollinated, ]
-Hybrid_core_tax = as.data.frame(phy2com@tax_table)[list_core$Hybrid, ]
+# Inbred_core_tax = as.data.frame(phy2com@tax_table)[list_core$Inbred, ]
+# Open_Pollinated_core_tax = as.data.frame(phy2com@tax_table)[list_core$Open_Pollinated, ]
+# Hybrid_core_tax = as.data.frame(phy2com@tax_table)[list_core$Hybrid, ]
 
 ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "forestgreen") + ggtitle("All Taxa Core Microbiome")
 
 # How to identify the actual taxa!!!!!
-itercept1 = merge(GH_core_tax, MMH_core_taxa, by="row.names")
-merge(GH_core_tax, END_core_taxa, by="row.names")
+# itercept1 = merge(GH_core_tax, MMH_core_taxa, by="row.names")
+# merge(GH_core_tax, END_core_taxa, by="row.names")
 
 
 ### By Sample Type
@@ -309,15 +313,15 @@ for (n in SampleGroups){
 #Inbred_core_tax = data.frame()
 
 # Not sure what this issue is
-Rhizo_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Rhizosphere, ]
-Roots_Pollinated_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Root, ]
-Stalks_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Stalk, ]
+# Rhizo_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Rhizosphere, ]
+# Roots_Pollinated_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Root, ]
+# Stalks_core_tax = as.data.frame(phyCmbComp@tax_table)[list_core$Stalk, ]
 
 ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "firebrick") + ggtitle("Ultra Filtered Core Microbiome")
 
 # How to identify the actual taxa!!!!!
-itercept1 = merge(GH_core_tax, MMH_core_taxa, by="row.names")
-merge(Stalks_core_tax, Rhizo_core_tax, by="row.names")
+# itercept1 = merge(GH_core_tax, MMH_core_taxa, by="row.names")
+# merge(Stalks_core_tax, Rhizo_core_tax, by="row.names")
 
 
 # # For less filtered phy2com - all taxa
@@ -339,9 +343,9 @@ for (n in SampleGroups){
 #Inbred_core_tax = data.frame()
 
 # Not sure what this issue is
-Rhizo_core_tax = as.data.frame(phy2com@tax_table)[list_core$Rhizosphere, ]
-Roots_Pollinated_core_tax = as.data.frame(phy2com@tax_table)[list_core$Root, ]
-Stalks_core_tax = as.data.frame(phy2com@tax_table)[list_core$Stalk, ]
+# Rhizo_core_tax = as.data.frame(phy2com@tax_table)[list_core$Rhizosphere, ]
+# Roots_Pollinated_core_tax = as.data.frame(phy2com@tax_table)[list_core$Root, ]
+# Stalks_core_tax = as.data.frame(phy2com@tax_table)[list_core$Stalk, ]
 
 ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "forestgreen") + ggtitle("All Taxa Core Microbiome")
 

@@ -531,5 +531,32 @@ dim(sigtab)
 # EC.cor <- rcorr(as.matrix(EC_table), type = "spearman")
 # 
 # ec.pval <- forceSymmetric(EC.cor$P)
+phyCmbFiltClean
+EC_phy
+
+# ASVs
+#BrayNet-ASVs-ExperimentandSampleType
+plot_net(phyCmbFiltClean, color = "Experiment", shape = "Sample_Type")
+
+#BrayNet-ASVs-InbredandSampleType
+plot_net(phyCmbFiltClean, color = "Inbred_or_Hybrid", shape = "Sample_Type")
+
+#JaccardNet-ASVs-ExperimentandSampleType
+plot_net(phyCmbFiltClean, color = "Experiment", shape = "Sample_Type", distance = "jaccard")
+
+#JaccardNet-ASVs-InbredandSampleType
+plot_net(phyCmbFiltClean, color = "Inbred_or_Hybrid", shape = "Sample_Type", distance = "jaccard")
 
 
+# EC Functional Pathways
+#BrayNet-EC-ExperimentandSampleType
+plot_net(EC_phy, color = "Experiment", shape = "Sample_Type")
+
+#BrayNet-EC-InbredandSampleType
+plot_net(EC_phy, color = "Inbred_or_Hybrid", shape = "Sample_Type")
+
+#JaccardNet-EC-ExperimentandSampleType
+plot_net(EC_phy, color = "Experiment", shape = "Sample_Type", distance = "jaccard")
+
+#JaccardNet-EC-InbredandSampleType
+plot_net(EC_phy, color = "Inbred_or_Hybrid", shape = "Sample_Type", distance = "jaccard")
