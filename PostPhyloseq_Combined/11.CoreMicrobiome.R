@@ -349,8 +349,27 @@ for (n in SampleGroups){
 
 ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "forestgreen") + ggtitle("All Taxa Core Microbiome")
 
+############# Break into tissue specific subsets and try that - just do ultra filtered
 
+phyCmbComp # Filtered
+phy2com    # All taxa
 
+# Change the last " " and change experiment and Inbred in the loop
+stalksFilt <- subset_samples(phyCmbComp, Sample_Type_Blanks_differentiated=="Root")
 
-
-
+# For ultra filtered PhyCmbFilt - only taxa that they all share
+table(meta(stalksFilt)$Experiment)
+ExperimentGroups <- unique(as.character(meta(stalksFilt)$Experiment))
+print(ExperimentGroups)
+list_core <- c() # empty object
+for (n in ExperimentGroups){
+  print(as.name(n))
+  core.sub <- subset_samples(stalksFilt, Experiment == n)
+  
+  core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
+                         detection = .001,            # .001 in atleast 90% of samples
+                         prevalence = 0.5)          # 
+  print(paste0("No. of core taxa in ", n, " : ", length(core_m)))
+  list_core[[n]] <- core_m
+}
+ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "firebrick") + ggtitle("Ultra Filtered Core Microbiome")
