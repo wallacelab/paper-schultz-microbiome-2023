@@ -247,7 +247,7 @@ library(tidyr)
 
 sigtab <- base::transform(sigtab, Functional_Group = reorder(Functional_Group, log2FoldChange))
 
-
+# The only fig I generate because everything is basically 0 or 500
 ggplot(sigtab, aes(x = Functional_Group, y = log2FoldChange, fill = log2FoldChange < 0)) + 
   geom_bar(stat = 'identity') + ggtitle("Stalks: Inbred vs Hybrid/Open Pollinated") +
   theme(axis.text.x = element_text(angle = 90, size = 12)) + 
