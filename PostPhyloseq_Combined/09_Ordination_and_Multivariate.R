@@ -141,7 +141,7 @@ combined_phylum <- phyCmbFilt %>%
 #  geom_bar(stat = "identity")
 
 barplot_taxa <- plot_bar(phyCmbFilt, x= "Sample_Type", fill = "Phylum") + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack")
-
+barplot_taxa
 # This needs more work but moving on - Can always plot by tissue with Experiment on x Axis - That would look nice
 
 ########################################### https://micca.readthedocs.io/en/latest/phyloseq.html
@@ -149,21 +149,27 @@ barplot_taxa <- plot_bar(phyCmbFilt, x= "Sample_Type", fill = "Phylum") + geom_b
 
 alpha_plot <- plot_richness(phyCmbFilt, x="Experiment", measures=c("Observed", "Shannon", "ACE"), 
                             color = "Inbred_or_Hybrid", 
-                            shape = "Sample_Type")
+                            shape = "Sample_Type", title = "Alpha Diversity: Combined Experiments")
 
 
 # Unconstrained Ordinations - use tissue specific phyloseq objects for actual pictures and labeling
-
+# Weighted Unifrac
+weuni_ordination = ordinate(phyCmbFilt, method = "PCoA", distance = "unifrac", weighted=T )
+# doesnt work: I will have to export repseq from phyloseq object -> qiime, calculate a root a new tree, and then use that in phyloseq object. 
 #Unweighted UniFrac
 wunifrac_dist = phyloseq::distance(phyCmbFilt, method = "unifrac", weighted=F)
 wuni_ordination = ordinate(phyCmbFilt, method = "PCoA", distance = wunifrac_dist )
-plot_ordination(phyCmbFilt, wuni_ordination, color = "Experiment", shape = "Inbred_or_Hybrid")
-
+wuni_ordination = ordinate(phyCmbFilt, method = "PCoA", distance = "unifrac", weighted=F )
+plot_ordination(phyCmbFilt, wuni_ordination, color = "Experiment", shape = "Inbred_or_Hybrid", title = "Unweighted Unifrac: Experiment + Inbred")
+plot_ordination(phyCmbFilt, wuni_ordination, color = "Experiment", shape = "Sample_Type", title = "Unweighted Unifrac: Experiment + Tissue")
 #Bray Curtis
 bc_ordination = ordinate(phyCmbFilt, method = "PCoA", distance = "bray")
-plot_ordination(phyCmbFilt, bc_ordination, color = "Experiment", shape = "Inbred_or_Hybrid")
-
-plot_ordination(phyCmbFilt, bc_ordination, color = "Experiment", shape = "Sample_Type")
+plot_ordination(phyCmbFilt, bc_ordination, color = "Experiment", shape = "Inbred_or_Hybrid", title = "Bray Curtis: Experiment + Inbred")
+plot_ordination(phyCmbFilt, bc_ordination, color = "Experiment", shape = "Sample_Type", title = "Bray Curtis: Experiment + Tissue")
+#Jaccard
+jac_ordination = ordinate(phyCmbFilt, method = "PCoA", distance = "jaccard")
+plot_ordination(phyCmbFilt, jac_ordination, color = "Experiment", shape = "Inbred_or_Hybrid", title = "Jaccard: Experiment + Inbred")
+plot_ordination(phyCmbFilt, jac_ordination, color = "Experiment", shape = "Sample_Type", title = "Jaccard: Experiment + Tissue")
 
 #nMDS - Why is one stalk sample all the way over there lol?
 set.seed(18)
@@ -179,7 +185,9 @@ combined_new = subset_samples(phyCmbFilt, sample_names(phyCmbFilt) != "MMH-2GH-4
 combo_nmds2 <- ordinate(physeq = combined_new, method = "NMDS", distance = "bray")
 data.scores = as.data.frame(scores(combo_nmds2))
 plot_ordination(physeq = combined_new, ordination = combo_nmds2,
-                color = "Experiment", shape = "Sample_Type")
+                color = "Experiment", shape = "Sample_Type", title = "NMDS: Experiment and Tissue")
+plot_ordination(physeq = combined_new, ordination = combo_nmds2,
+                color = "Experiment", shape = "Inbred_or_Hybrid", title = "NMDS: Experiment and Inbred")
 # Need to look back at fastqC and see if there is something wrong with this sample???????? - The OTU table is all zeros
 rhizos_nmds <- ordinate(physeq = rhizosF, method = "NMDS", distance = "bray")
 
@@ -195,7 +203,10 @@ plot_ordination(physeq = stalksF, ordination = stalk_nmds,
                 color = "Experiment", shape = "Inbred_or_Hybrid")
 
 # PERMANOVA
-adonist_results <- adonis(wunifrac_dist ~ sample_data(phyCmbFilt)$Experiment 
+jacc_dist = phyloseq::distance(phyCmbFilt, method = "jaccard")
+BC.dist = phyloseq::distance(phyCmbFilt, method = "bray")
+
+adonist_results <- adonis(BC.dist ~ sample_data(phyCmbFilt)$Experiment 
                           + sample_data(phyCmbFilt)$Sample_Type
                           + sample_data(phyCmbFilt)$Inbred_or_Hybrid
                           + sample_data(phyCmbFilt)$Genotype
@@ -205,13 +216,13 @@ adonist_results
 # Why do we use sample_data call from phyloseq?   https://micca.readthedocs.io/en/latest/phyloseq.html same as http://deneflab.github.io/MicrobeMiseq/demos/mothur_2_phyloseq.html#unconstrained_ordinations
 # That acesses our data in the phyloseq class
 
-BC.dist = phyloseq::distance(phyCmbFilt, method = "bray")
+
 sampledf = data.frame(sample_data(phyCmbFilt))
 
 bc_adonis <- adonis(BC.dist ~ Sample_Type + 
                       Inbred_or_Hybrid + Inbred_or_Hybrid*Sample_Type + 
                       Inbred_or_Hybrid*Genotype +Genotype, data = sampledf, strata = sampledf$Experiment)
-
+bc_adonis
 # you can do nesting like A:B:C so I could have A + B + A:B + A:B:C
 # A question for doctor wallace
 
@@ -228,7 +239,7 @@ cap_plot <- plot_ordination(
   physeq = phyCmbFilt,
   ordination = cap_ord,
   color = "Experiment",
-  shape = "Sample_Type"
+  shape = "Sample_Type", title = "CAP: Experiment and Tissue"
 )
 
 arrowmat <- vegan::scores(cap_ord, display = "bp")

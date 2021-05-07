@@ -1,6 +1,6 @@
 library(tidyverse)
 library(devtools)
-devtools::install_github("jbisanz/qiime2R")
+#devtools::install_github("jbisanz/qiime2R")
 library(qiime2R)
 library(ggplot2)
 library(phyloseq)
@@ -241,10 +241,18 @@ head(sigtab)
 
 dim(sigtab)
 
-#ggplot(sigtab, aes(x = Functional_Group, y = log2FoldChange, fill = log2FoldChange < 0)) + 
+# reorder data
+library(forcats)
+library(tidyr)
+
+sigtab <- base::transform(sigtab, Functional_Group = reorder(Functional_Group, log2FoldChange))
+
+
+ggplot(sigtab, aes(x = Functional_Group, y = log2FoldChange, fill = log2FoldChange < 0)) + 
   geom_bar(stat = 'identity') + ggtitle("Stalks: Inbred vs Hybrid/Open Pollinated") +
   theme(axis.text.x = element_text(angle = 90, size = 12)) + 
-  scale_fill_manual("Down Regulated", values = c("turquoise", "indianred1"))
+  scale_fill_manual("Down Regulated", values = c("turquoise", "indianred1")) +
+  coord_flip()
 
 # Rhizos - inbred vs hybrid
 stalks_ECt = transform_sample_counts(rhizos_EC, function(OTU) OTU + 1)
