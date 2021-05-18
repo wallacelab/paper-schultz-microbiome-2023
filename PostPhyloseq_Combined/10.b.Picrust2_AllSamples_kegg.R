@@ -195,6 +195,9 @@ phyloseq2qiime2(phyCmbFiltClean)
 
 # metadata is metadata
 
+
+
+
 ### picrust2_pipeline.py -s dna-sequences.fasta -i phyCmbFiltClean_features-table.biom -o picrust2_out_pipeline -p 4
 setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Picrust2")
 
@@ -213,6 +216,85 @@ descriptions = KO_table[,0:2]
 EC_table <- KO_table[, -c(1:2)]
 EC_phy <- phyloseq(otu_table(EC_table, taxa_are_rows = TRUE), sample_data(Meta_EC))
 EC_phy # this is our functional phyloseq object
+
+
+### try to categorize by function similar to picrust1
+setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Picrust2")
+
+KO_table <- read.csv("KO_pred_metagenome_unstrat_descript.tsv", header=TRUE, sep="\t", row.names=1)
+head(KO_table)[1:10]
+
+kegg_brite_map <- read.table("picrust1_KO_BRITE_map.tsv",
+                              header=TRUE, sep="\t", quote = "", stringsAsFactors = FALSE, comment.char="", row.names=1)
+head(kegg_brite_map)
+
+categorize_by_function_l3 <- function(in_ko, kegg_brite_mapping) {
+  # Function to create identical output as categorize_by_function.py script,
+  # but with R objects instead of BIOM objects in Python.
+  # Input KO table is assumed to have rownames as KOs and sample names as columns.
+  
+  out_pathway <- data.frame(matrix(NA, nrow=0, ncol=(ncol(in_ko) + 1)))
+  
+  colnames(out_pathway) <- c("pathway", colnames(in_ko))
+  
+  for(ko in rownames(in_ko)) {
+    
+    # Skip KO if not in KEGG BRITE mapping df
+    # (this occurs with newer KOs that weren't present in PICRUSt1).
+    if(! ko %in% rownames(kegg_brite_mapping)) {
+      next
+    }
+    
+    pathway_list <- strsplit(kegg_brite_mapping[ko, "metadata_KEGG_Pathways"], "\\|")[[1]]
+    
+    for(pathway in pathway_list) {
+      
+      pathway <- strsplit(pathway, ";")[[1]][3]
+      
+      new_row <- data.frame(matrix(c(NA, as.numeric(in_ko[ko,])), nrow=1, ncol=ncol(out_pathway)))
+      colnames(new_row) <- colnames(out_pathway)
+      new_row$pathway <- pathway
+      out_pathway <- rbind(out_pathway, new_row)
+    }
+    
+  }
+  
+  out_pathway = data.frame(aggregate(. ~ pathway, data = out_pathway, FUN=sum))
+  
+  rownames(out_pathway) <- out_pathway$pathway
+  
+  out_pathway <- out_pathway[, -which(colnames(out_pathway) == "pathway")]
+  
+  if(length(which(rowSums(out_pathway) == 0)) > 0) {
+    out_pathway <- out_pathway[-which(rowSums(out_pathway) == 0), ]
+  }
+  
+  return(out_pathway)
+  
+}
+
+### categorize by function similar to picrust1
+
+### Run function to categorize all KOs by level 3 in BRITE hierarchy.
+table_ko_L3 <- categorize_by_function_l3(KO_table, kegg_brite_map)
+# test_ko_L3_sorted <- test_ko_L3[rownames(orig_ko_L3), ]
+head(table_ko_L3)[1:10]
+ko_l3 <- table_ko_L3
+# Now do the phyloseq object and diff abundance. 
+colnames(ko_l3) <- gsub(x = colnames(ko_l3), pattern = "\\.", replacement = "-")
+#ko_l3 <- cbind(rownames(ko_l3), data.frame(ko_l3, row.names = NULL))
+#ko_l3 <- subset(ko_l3, select = -c(description))
+descriptions = row.names(ko_l3)
+ko_l3 = ko_l3[, -c(1)]
+
+head(ko_l3)
+colnames(ko_l3)
+Meta_EC <- metadata
+row.names(Meta_EC) <- Meta_EC$SampleID
+EC_phy <- phyloseq(otu_table(ko_l3, taxa_are_rows = TRUE), sample_data(Meta_EC))
+EC_phy # this is our functional phyloseq object - call it ec even though its kegg for simplicity
+
+gplots::venn(list(metadata=rownames(Meta_EC), featuretable=colnames(ko_l3)))
 
 # Deseq
 library("DESeq2")
@@ -236,7 +318,7 @@ head(sigtab)
 
 dim(sigtab)
 
-#ggplot(sigtab, aes(x = Functional_Group, y = log2FoldChange, fill = log2FoldChange < 0)) + 
+ggplot(sigtab, aes(x = Functional_Group, y = log2FoldChange, fill = log2FoldChange < 0)) + 
 geom_bar(stat = 'identity') + ggtitle("Stalks: Inbred vs Hybrid/Open Pollinated") +
   theme(axis.text.x = element_text(angle = 90, size = 12)) + 
   scale_fill_manual("Down Regulated", values = c("turquoise", "indianred1"))
@@ -322,10 +404,14 @@ head(sigtab)
 
 dim(sigtab)
 
-ggplot(sigtab, aes(x = Functional_Group, y = log2FoldChange, fill = log2FoldChange < 0)) + 
+# idk why we cant just plot sigtab now so here it goes
+st <- as.data.frame(sigtab)
+st['Functional_Group'] = row.names(st)
+st <- base::transform(st, Functional_Group = reorder(Functional_Group, log2FoldChange))
+ggplot(st, aes(x = Functional_Group, y = log2FoldChange, fill = log2FoldChange < 0)) + 
   geom_bar(stat = 'identity') + ggtitle("Rhizos: Inbred vs Hybrid/Open Pollinated") +
   theme(axis.text.x = element_text(angle = 90, size = 12)) + 
-  scale_fill_manual("Down Regulated", values = c("turquoise", "indianred1"))
+  scale_fill_manual("Down Regulated", values = c("turquoise", "indianred1")) + coord_flip()
 
 
 # Roots - Location
@@ -508,4 +594,9 @@ sigtab = cbind(as(sigtab, "data.frame"), Functional_Group)
 head(sigtab)
 
 dim(sigtab)
+
+# So having these KOs get changed into functional groups is helpful, but I have a massive amount of false positives
+# Unfortunately, these are old KOs and one KO is in several groups, so I dont know how to create a custom 
+# mapping file in any real useful way. Obviously plants cant get parkinsons, but the same KO also counts for oxidative phosphorylation
+
 
