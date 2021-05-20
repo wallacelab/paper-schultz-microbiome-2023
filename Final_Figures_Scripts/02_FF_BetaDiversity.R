@@ -209,7 +209,7 @@ phyloseq2qiime2(phyCmbFilt)
 # phyloseq2qiime2(rhizosF)
 # phyloseq2qiime2(rootsF)
 
-library(rbiom)
+#library(rbiom)
 library(ape)
 
 combo_biom <- read.biom("phyCmbFilt_features-table.biom")
@@ -224,6 +224,45 @@ plot(combo_biom, Unifrac ~ 'Inbred_or_Hybrid', unifrac, weighted = TRUE)
 library(RAM)
 
 plot(combo_biom)
+
+# rarify at:      need to include this for qiime alpha diversity that we wont use
+sample_sums(phyCmbFilt)
+
+#import
+if (!requireNamespace("devtools", quietly = TRUE)){install.packages("devtools")}
+devtools::install_github("jbisanz/qiime2R") # current version is 0.99.20
+library(qiime2R)
+
+setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_qza_files/FinalFigs_qza/combined-core-metrics-results")
+
+metadata = read.csv("Combined_Metadata.csv", header = TRUE, sep = "\t")
+
+wunifrac_cmb <- read_qza("weighted_unifrac_pcoa_results.qza")
+
+unwunifrac_cmb <- read_qza("unweighted_unifrac_pcoa_results.qza")
+
+
+wunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Inbred_or_Hybrid`)) +
+  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Genetic Background") #alpha controls transparency and helps when points are overlapping
+
+wunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Sample_Type`)) +
+  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Sample Type") #alpha controls transparency and helps when points are overlapping
+
+unwunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Inbred_or_Hybrid`)) +
+  geom_point(alpha=0.5) + ggtitle("Unweighted Unifrac and Genetic Background") #alpha controls transparency and helps when points are overlapping
+
+unwunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Sample_Type`)) +
+  geom_point(alpha=0.5) + ggtitle("Unweighted Unifrac and Sample Type") 
+
+
 
 
 
