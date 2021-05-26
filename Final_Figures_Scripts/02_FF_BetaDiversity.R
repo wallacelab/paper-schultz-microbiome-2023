@@ -1,6 +1,6 @@
 library(tidyverse)
 library(devtools)
-devtools::install_github("jbisanz/qiime2R")
+#devtools::install_github("jbisanz/qiime2R")
 library(qiime2R)
 library(ggplot2)
 library(phyloseq)
@@ -242,31 +242,39 @@ wunifrac_cmb <- read_qza("weighted_unifrac_pcoa_results.qza")
 unwunifrac_cmb <- read_qza("unweighted_unifrac_pcoa_results.qza")
 
 
-wunifrac_cmb$data$Vectors %>%
+w1 <- wunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
   left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Inbred_or_Hybrid`)) +
   geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Genetic Background") #alpha controls transparency and helps when points are overlapping
 
-wunifrac_cmb$data$Vectors %>%
+w2 <- wunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
   left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Sample_Type`)) +
   geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Sample Type") #alpha controls transparency and helps when points are overlapping
 
-unwunifrac_cmb$data$Vectors %>%
+w3 <- wunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Experiment`)) +
+  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Experiment") #alpha controls transparency and helps when points are overlapping
+
+u1 <- unwunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
   left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Inbred_or_Hybrid`)) +
   geom_point(alpha=0.5) + ggtitle("Unweighted Unifrac and Genetic Background") #alpha controls transparency and helps when points are overlapping
 
-unwunifrac_cmb$data$Vectors %>%
+u2 <- unwunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
   left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Sample_Type`)) +
   geom_point(alpha=0.5) + ggtitle("Unweighted Unifrac and Sample Type") 
 
+u3 <- unwunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Experiment`)) +
+  geom_point(alpha=0.5) + ggtitle("Unweighted Unifrac and Experiment") 
 
 
+ggarrange(w1,w2,w3, nrow = 1, ncol = 3, labels = c("A","B","C"))
 
-
-
-
+ggarrange(u1,u2,u3, nrow = 1, ncol = 3, labels = c("A","B","C"))
 
 

@@ -1,6 +1,6 @@
 library(tidyverse)
 library(devtools)
-devtools::install_github("jbisanz/qiime2R")
+#devtools::install_github("jbisanz/qiime2R")
 library(qiime2R)
 library(ggplot2)
 library(phyloseq)
@@ -136,13 +136,13 @@ rootsF
 # Not rarefied - can just rarefy and plug that phyloseq object in for CmbFlt
 
 alpha_plot <- plot_richness(phyCmbFilt, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
-                            color = "Inbred_or_Hybrid", 
-                            shape = "Sample_Type", title = "Alpha Diversity: Combined Experiments")
+                            color = "Inbred_or_Hybrid",
+                            shape = "Sample_Type", title = "Alpha Diversity: Combined Experiments") + geom_point(alpha = .05)
 alpha_plot
 
 stalk_alpha <- plot_richness(stalksF, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
                              color = "Inbred_or_Hybrid", 
-                             title = "Alpha Diversity: Combined Experiments - Stalks")
+                             title = "Alpha Diversity: Combined Experiments - Stalks") + geom_point(alpha = .1)
 stalk_alpha
 
 rhizos_alpha <- plot_richness(rhizosF, "Experiment", measures=c("Observed", "Shannon", "Simpson"), 
@@ -159,7 +159,7 @@ roots_alpha
 alpha_diversity <- ggarrange(stalk_alpha, roots_alpha, rhizos_alpha, ncol = 1, nrow = 3, labels = c("A","B","C"))
 alpha_diversity
 
-# Figure out how to jitter based on inbred or hybrid.
+# Figure out how to jitter based on inbred or hybrid. Alpha doesnt seem to be working?
 
 
 
