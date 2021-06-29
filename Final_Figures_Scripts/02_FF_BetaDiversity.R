@@ -209,7 +209,7 @@ phyloseq2qiime2(phyCmbFilt)
 # phyloseq2qiime2(rhizosF)
 # phyloseq2qiime2(rootsF)
 
-#library(rbiom)
+library(rbiom)
 library(ape)
 
 combo_biom <- read.biom("phyCmbFilt_features-table.biom")
@@ -218,7 +218,7 @@ combo_tree <- ape::read.tree("phyCmbFilt_tree-rooted.newick")
 combo_w_unifrac = rbiom::unifrac(combo_biom, weighted = TRUE, tree = combo_tree)
 combo_un_unifrac = rbiom::unifrac(combo_biom, weighted = FALSE, tree = combo_tree)
 
-remotes::install_github("cmmr/rbiom")
+#remotes::install_github("cmmr/rbiom")
 plot(combo_biom, Unifrac ~ 'Inbred_or_Hybrid', unifrac, weighted = TRUE)
 
 library(RAM)

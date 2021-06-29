@@ -142,19 +142,30 @@ alpha_plot
 
 stalk_alpha <- plot_richness(stalksF, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
                              color = "Inbred_or_Hybrid", 
-                             title = "Alpha Diversity: Combined Experiments - Stalks") + geom_point(alpha = .1)
+                             title = "Alpha Diversity: Combined Experiments - Stalks") + geom_point(position = position_dodge(width = .5))
+stalk_alpha$layers <- stalk_alpha$layers[-1]
 stalk_alpha
 
 rhizos_alpha <- plot_richness(rhizosF, "Experiment", measures=c("Observed", "Shannon", "Simpson"), 
                               color = "Inbred_or_Hybrid",
-                              title = "Alpha Diversity: Combined Experiments - Rhizos")
+                              title = "Alpha Diversity: Combined Experiments - Rhizos") + geom_point(position = position_dodge(width = .5))
+rhizos_alpha$layers <- rhizos_alpha$layers[-1]
 rhizos_alpha
 
 roots_alpha <- plot_richness(rootsF, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
                              color = "Inbred_or_Hybrid", 
-                             title = "Alpha Diversity: Combined Experiments - Roots")
+                            title = "Alpha Diversity: Combined Experiments - Roots") + geom_point(position = position_dodge(width = .5))
+roots_alpha$layers <- roots_alpha$layers[-1]
 roots_alpha
 
+# roots_test <- plot_richness(rootsF, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
+#                              title = "Alpha Diversity: Combined Experiments - Roots") +  geom_point(aes(colour = Inbred_or_Hybrid),
+#              position = position_dodge(width = .5))
+# 
+# roots_test
+# 
+# roots_test$layers <- roots_test$layers[-1]
+# roots_test
 
 alpha_diversity <- ggarrange(stalk_alpha, roots_alpha, rhizos_alpha, ncol = 1, nrow = 3, labels = c("A","B","C"))
 alpha_diversity
