@@ -172,6 +172,53 @@ alpha_diversity
 
 # Figure out how to jitter based on inbred or hybrid. Alpha doesnt seem to be working?
 
+# Alpha Diversity P values
+### All Data
+# Stalk
+stalks_IH <- subset_samples(stalksF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(stalks_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(stalks_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Root
+roots_IH <- subset_samples(rootsF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(roots_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(roots_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Rhizos
+rhizos_IH <- subset_samples(rhizosF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(rhizos_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(rhizos_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Within Experiments Now
+
+Experiments <- c("GH", "END", "MMH")
+
+# Stalks
+for(n in Experiments){
+  subset_df <- subset_samples(stalks_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
+
+# Roots - no MMH
+for(n in Experiments){
+  subset_df <- subset_samples(roots_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
+
+# Rhizos
+for(n in Experiments){
+  subset_df <- subset_samples(rhizos_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
 
 
 

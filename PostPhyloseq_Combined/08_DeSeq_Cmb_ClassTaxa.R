@@ -98,8 +98,8 @@ phyCmbFilt <- prune_taxa(taxa_sums(END3) > 0, phy4)
 # Phylum = 18
 # Class = 38
 # Order = 89
-  phyHigh <- tax_glom(phyCmbFilt, taxrank = "Class")
-  phyHigh
+phyHigh <- tax_glom(phyCmbFilt, taxrank = "Class")
+phyHigh
 
 #Before filtering out by experiments how many taxa do I have?
 phyClassPreFilt <- tax_glom(phy2, taxrank = "Class")

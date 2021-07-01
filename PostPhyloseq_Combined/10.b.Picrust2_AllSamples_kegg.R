@@ -374,7 +374,7 @@ plot_diff_funct_IvH <- function(phyloseq_obj, metadata_category, title){
   phydesq = phyloseq_to_deseq2(compartment_t, design = metadata_category)
   deseq_obj = DESeq(phydesq, test = "Wald", fitType = "parametric")
   
-  res = results(deseq_obj, cooksCutoff = FALSE,contrast = c("Inbred_vs_Hybrid", "Inbred", "Hybrid"))
+  res = results(deseq_obj, cooksCutoff = FALSE,contrast = c("Inbred_or_Hybrid", "Inbred", "Hybrid"))
   alpha = 0.001
   sigtab = res[which(res$padj < alpha), ]
   Functional_Group <- (c(rownames(sigtab)))
@@ -406,7 +406,7 @@ plot_diff_funct_location(EC_phy, ~Location, " All Tissues: Inbred vs Hybrid/Open
 Diff_abun_func_IvH(stalks_EC, ~Inbred_or_Hybrid, 0.001)
 Diff_abun_func_IvH(rhizos_EC, ~Inbred_or_Hybrid, 0.001)
 Diff_abun_func_IvH(roots_EC, ~Inbred_or_Hybrid, 0.001)
-
+plot_diff_funct_IvH(roots_EC, ~Inbred_or_Hybrid, "Roots: Inbred vs Hybrid Functional Predictions")
 
 # Location
 Diff_abun_func_location(stalks_EC, ~Location, 0.001)
