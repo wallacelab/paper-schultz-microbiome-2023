@@ -221,6 +221,47 @@ for(n in Experiments){
 }
 
 
+Experiments <- c("GH", "MMH")
+
+# Test Open Pollinated Lines: all tissues - drop END experiment
+
+stalksO <- subset_samples(stalksF, Experiment != "END")
+rootsO <- subset_samples(rootsF, Experiment != "END")
+rhizosO <- subset_samples(rhizosF, Experiment != "END")
+
+# Stalks
+stalks_IO <- subset_samples(stalksO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(stalks_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(stalks_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+stalks_HO <- subset_samples(stalksO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(stalks_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(stalks_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Roots
+roots_IO <- subset_samples(rootsO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(roots_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(roots_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+roots_HO <- subset_samples(rootsO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(roots_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(roots_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Rhizos
+rhizos_IO <- subset_samples(rhizosO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(rhizos_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(rhizos_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+roots_HO <- subset_samples(rhizosO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(roots_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(roots_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
 
 
 
