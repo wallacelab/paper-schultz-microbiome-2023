@@ -344,39 +344,21 @@ da_df <- diff_abund(rhizosF,~Experiment,"Experiment", "END", "GH", .001)
 da_df <- diff_abund(rootsF,~Experiment,"Experiment", "END", "GH", .001)
 
 
-### Upset Plots for paper:
-library(ggrepel)
 
-#All Root Samples
-da_roots <- diff_abund(rootsF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", 1)
-da_stalks <- diff_abund(stalksF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", 1)
-da_rhizos <- diff_abund(rhizosF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", 1)
+###Plots for paper:
 
+da_df <- diff_abund(rootsF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred","Hybrid", .001)
+dim(da_df)
+plot_diff_abund(da_df,"All Roots Diff Abundance: Inbred vs Hybrid")
 
-plot_diff_abund(da_roots,"All Roots Diff Abundance: Inbred vs Hybrid")
-
-# ggplot volcano plot
-
-mutated_roots <- mutate(da_roots, Significance=ifelse(da_roots$padj<0.001, "Roots", "Not Sig"))
-mutated_stalks <- mutate(da_stalks, Significance=ifelse(da_stalks$padj<0.001, "Stalks", "Not Sig"))
-mutated_rhizos <- mutate(da_rhizos, Significance=ifelse(da_rhizos$padj<0.001, "Rhizos", "Not Sig"))
-
-All_diff = rbind.data.frame(mutated_roots,mutated_stalks,mutated_rhizos)
-
-volc = ggplot(All_diff, aes(log2FoldChange, -log10(pvalue))) + #volcanoplot with log2Foldchange versus pvalue
-  geom_point(aes(col=Significance, size = 5)) + #add points colored by significance
-  scale_color_manual(values=c("black", "red", "green", "purple")) + 
-  ggtitle("All Samples: Differentially Abundant ASVs") + coord_flip() +
-  geom_hline(yintercept=0, color = "blue") + geom_vline(xintercept = 0, color = "blue")
-
-label_df = All_diff[All_diff$Significance!="Not Sig",]
-
-volc + geom_text_repel(data=head(label_df, 20), aes(label= Genus))  
+# Lets make a volcano plot
+#BiocManager::install('EnhancedVolcano')
 
 
-#geom_text_repel(data=head(label_df, 20), aes(label= paste(Family, Genus, sep = "_")))
 
-  
+
+
+
 
 
 

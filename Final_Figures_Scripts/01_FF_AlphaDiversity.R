@@ -263,12 +263,377 @@ ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(roots_HO)$Inbre
 ttest
 
 
+################################################################################
+# change these all to kruskal wallis instead of t-test and then compare the results
+
+phyCmbFilt
+stalksF
+rhizosF
+rootsF
+
+# Alpha Diversity P values
+### All Data
+# Stalk
+stalks_IH <- subset_samples(stalksF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(stalks_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(stalks_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
 
 
+# Root
+roots_IH <- subset_samples(rootsF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(roots_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(roots_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Rhizos
+rhizos_IH <- subset_samples(rhizosF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(rhizos_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(rhizos_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Within Experiments Now
+
+Experiments <- c("GH", "END", "MMH")
+Experiments2 <- c("GH", "END")
+
+# Stalks
+for(n in Experiments){
+  subset_df <- subset_samples(stalks_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
+
+# Roots - no MMH
+for(n in Experiments2){
+  subset_df <- subset_samples(roots_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
+
+# Rhizos
+for(n in Experiments){
+  subset_df <- subset_samples(rhizos_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
+
+# Test Open Pollinated Lines: all tissues - drop END experiment
+
+stalksO <- subset_samples(stalksF, Experiment != "END")
+rootsO <- subset_samples(rootsF, Experiment != "END")
+rhizosO <- subset_samples(rhizosF, Experiment != "END")
+
+# Stalks
+stalks_IO <- subset_samples(stalksO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(stalks_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(stalks_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+stalks_HO <- subset_samples(stalksO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(stalks_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(stalks_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Roots
+roots_IO <- subset_samples(rootsO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(roots_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(roots_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+roots_HO <- subset_samples(rootsO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(roots_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(roots_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Rhizos
+rhizos_IO <- subset_samples(rhizosO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(rhizos_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(rhizos_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+roots_HO <- subset_samples(rhizosO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(roots_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(roots_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
 
 
+#########################################################################
+#    Redo this without super filtering to see how that changes things. 
+###########################################################################
+
+phy2
+
+#Split by samples then remove blank OTUs and do phyloseq to qiime
+
+stalks <- subset_samples(phy2, Sample_Type_Blanks_differentiated=="Stalk")
+rhizos <- subset_samples(phy2, Sample_Type_Blanks_differentiated=="Rhizosphere")
+roots <- subset_samples(phy2, Sample_Type_Blanks_differentiated=="Root")
+
+#Filter out all blank OTU's           #When should I do this??
+blank_stalks = subset_samples(phy2,Sample_Type_Blanks_differentiated=="Blank-Stalk")
+blank_rhizos = subset_samples(phy2,Sample_Type_Blanks_differentiated=="Blank-Rhizosphere")
+blank_roots = subset_samples(phy2,Sample_Type_Blanks_differentiated=="Blank-Root")
 
 
+#This is all taxa that have a non zero value in the blanks
+otu_table(prune_taxa(taxa_sums(blank_stalks) > 1, blank_stalks))
+
+sbgood <-  prune_taxa(taxa_sums(blank_stalks) < 1, blank_stalks)
+sbad <- prune_taxa(taxa_sums(blank_stalks) > 1, blank_stalks)
+goodlist <- taxa_names(sbgood)
+badlist <- taxa_names(sbad)
+
+#This works 
+stalksF <- prune_taxa(goodlist, stalks)
+
+Rhizegood <-  prune_taxa(taxa_sums(blank_rhizos) < 1, blank_rhizos)
+Rgoodlist <- taxa_names(Rhizegood)
+rhizosF <- prune_taxa(Rgoodlist, rhizos)
+
+Rootgood <-  prune_taxa(taxa_sums(blank_roots) < 1, blank_roots)
+Rootgoodlist <- taxa_names(Rootgood)
+rootsF <- prune_taxa(Rootgoodlist, roots)
+
+#data sets
+phyCmbFilt
+stalksF
+rhizosF
+rootsF
+##############################################
+
+# Alpha Diversity 
+
+##############################################
+
+# Not rarefied - can just rarefy and plug that phyloseq object in for CmbFlt
+
+alpha_plot <- plot_richness(phy2, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
+                            color = "Inbred_or_Hybrid",
+                            shape = "Sample_Type", title = "Alpha Diversity: Combined Experiments") + geom_point(alpha = .05)
+alpha_plot
+
+stalk_alpha <- plot_richness(stalksF, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
+                             color = "Inbred_or_Hybrid", 
+                             title = "Alpha Diversity: Combined Experiments - Stalks") + geom_point(position = position_dodge(width = .5))
+stalk_alpha$layers <- stalk_alpha$layers[-1]
+stalk_alpha
+
+rhizos_alpha <- plot_richness(rhizosF, "Experiment", measures=c("Observed", "Shannon", "Simpson"), 
+                              color = "Inbred_or_Hybrid",
+                              title = "Alpha Diversity: Combined Experiments - Rhizos") + geom_point(position = position_dodge(width = .5))
+rhizos_alpha$layers <- rhizos_alpha$layers[-1]
+rhizos_alpha
+
+roots_alpha <- plot_richness(rootsF, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
+                             color = "Inbred_or_Hybrid", 
+                             title = "Alpha Diversity: Combined Experiments - Roots") + geom_point(position = position_dodge(width = .5))
+roots_alpha$layers <- roots_alpha$layers[-1]
+roots_alpha
+
+# roots_test <- plot_richness(rootsF, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
+#                              title = "Alpha Diversity: Combined Experiments - Roots") +  geom_point(aes(colour = Inbred_or_Hybrid),
+#              position = position_dodge(width = .5))
+# 
+# roots_test
+# 
+# roots_test$layers <- roots_test$layers[-1]
+# roots_test
+
+alpha_diversity <- ggarrange(stalk_alpha, roots_alpha, rhizos_alpha, ncol = 1, nrow = 3, labels = c("A","B","C"))
+alpha_diversity
+
+# Figure out how to jitter based on inbred or hybrid. Alpha doesnt seem to be working?
+
+# Alpha Diversity P values
+### All Data
+# Stalk
+stalks_IH <- subset_samples(stalksF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(stalks_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(stalks_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Root
+roots_IH <- subset_samples(rootsF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(roots_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(roots_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Rhizos
+rhizos_IH <- subset_samples(rhizosF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(rhizos_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(rhizos_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Within Experiments Now
+
+Experiments <- c("GH", "END", "MMH")
+
+# Observed is throwing NaN warnings due to a rounding error?
+
+# Stalks
+for(n in Experiments){
+  subset_df <- subset_samples(stalks_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
+
+# Roots - no MMH # error if you include mmh
+for(n in Experiments){
+  subset_df <- subset_samples(roots_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
+
+# Rhizos
+for(n in Experiments){
+  subset_df <- subset_samples(rhizos_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
 
 
+Experiments <- c("GH", "MMH")
 
+# Test Open Pollinated Lines: all tissues - drop END experiment
+
+stalksO <- subset_samples(stalksF, Experiment != "END")
+rootsO <- subset_samples(rootsF, Experiment != "END")
+rhizosO <- subset_samples(rhizosF, Experiment != "END")
+
+# Stalks
+stalks_IO <- subset_samples(stalksO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(stalks_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(stalks_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+stalks_HO <- subset_samples(stalksO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(stalks_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(stalks_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Roots
+roots_IO <- subset_samples(rootsO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(roots_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(roots_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+roots_HO <- subset_samples(rootsO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(roots_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(roots_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Rhizos
+rhizos_IO <- subset_samples(rhizosO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(rhizos_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(rhizos_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+roots_HO <- subset_samples(rhizosO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(roots_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(t.test(x~sample_data(roots_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+
+################################################################################
+# change these all to kruskal wallis instead of t-test and then compare the results
+
+phy2
+stalksF
+rhizosF
+rootsF
+
+# Alpha Diversity P values
+### All Data
+# Stalk
+stalks_IH <- subset_samples(stalksF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(stalks_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(stalks_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+
+# Root
+roots_IH <- subset_samples(rootsF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(roots_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(roots_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Rhizos
+rhizos_IH <- subset_samples(rhizosF, Inbred_or_Hybrid != "Open_Pollinated")
+erich <- estimate_richness(rhizos_IH, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(rhizos_IH)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Within Experiments Now
+
+Experiments <- c("GH", "END", "MMH")
+Experiments2 <- c("GH", "END")
+
+# Stalks
+for(n in Experiments){
+  subset_df <- subset_samples(stalks_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
+
+# Roots - no MMH
+for(n in Experiments2){
+  subset_df <- subset_samples(roots_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
+
+# Rhizos
+for(n in Experiments){
+  subset_df <- subset_samples(rhizos_IH, Experiment == n)
+  erich <- estimate_richness(subset_df, measures = c("Observed", "Shannon", "Simpson"))
+  ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(subset_df)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+  print(ttest)
+}
+
+# Test Open Pollinated Lines: all tissues - drop END experiment
+
+stalksO <- subset_samples(stalksF, Experiment != "END")
+rootsO <- subset_samples(rootsF, Experiment != "END")
+rhizosO <- subset_samples(rhizosF, Experiment != "END")
+
+# Stalks
+stalks_IO <- subset_samples(stalksO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(stalks_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(stalks_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+stalks_HO <- subset_samples(stalksO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(stalks_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(stalks_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Roots
+roots_IO <- subset_samples(rootsO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(roots_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(roots_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+roots_HO <- subset_samples(rootsO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(roots_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(roots_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+# Rhizos
+rhizos_IO <- subset_samples(rhizosO, Inbred_or_Hybrid != "Hybrid")
+erich <- estimate_richness(rhizos_IO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(rhizos_IO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest
+
+roots_HO <- subset_samples(rhizosO, Inbred_or_Hybrid != "Inbred")
+erich <- estimate_richness(roots_HO, measures = c("Observed", "Shannon", "Simpson"))
+ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(roots_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
+ttest

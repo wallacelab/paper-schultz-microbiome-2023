@@ -203,6 +203,7 @@ phyloseq2qiime2<-function(physeq){
   }
 }
 
+################### Super Filtered
 #Export to qiime qza
 phyloseq2qiime2(phyCmbFilt)
 # phyloseq2qiime2(stalksF)
@@ -277,4 +278,79 @@ ggarrange(w1,w2,w3, nrow = 1, ncol = 3, labels = c("A","B","C"))
 
 ggarrange(u1,u2,u3, nrow = 1, ncol = 3, labels = c("A","B","C"))
 
+######################## Less Filtered
+phy2
+#Export to qiime qza
+phyloseq2qiime2(phy2)
+# phyloseq2qiime2(stalksF)
+# phyloseq2qiime2(rhizosF)
+# phyloseq2qiime2(rootsF)
+
+library(rbiom)
+library(ape)
+
+combo_biom <- read.biom("phy2_features-table.biom")
+combo_tree <- ape::read.tree("phy2_tree-rooted.newick")
+
+combo_w_unifrac = rbiom::unifrac(combo_biom, weighted = TRUE, tree = combo_tree)
+combo_un_unifrac = rbiom::unifrac(combo_biom, weighted = FALSE, tree = combo_tree)
+
+#remotes::install_github("cmmr/rbiom")
+plot(combo_biom, Unifrac ~ 'Inbred_or_Hybrid', unifrac, weighted = TRUE)
+
+library(RAM)
+
+plot(combo_biom)
+
+# rarify at:      need to include this for qiime alpha diversity that we wont use
+sample_sums(phy2)
+
+#import
+if (!requireNamespace("devtools", quietly = TRUE)){install.packages("devtools")}
+devtools::install_github("jbisanz/qiime2R") # current version is 0.99.20
+library(qiime2R)
+
+setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_qza_files/FinalFigs_qza/combined-core-metrics-results")
+
+metadata = read.csv("Combined_Metadata.csv", header = TRUE, sep = "\t")
+
+wunifrac_cmb <- read_qza("weighted_unifrac_pcoa_results.qza")
+
+unwunifrac_cmb <- read_qza("unweighted_unifrac_pcoa_results.qza")
+
+
+w1 <- wunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Inbred_or_Hybrid`)) +
+  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Genetic Background") #alpha controls transparency and helps when points are overlapping
+
+w2 <- wunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Sample_Type`)) +
+  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Sample Type") #alpha controls transparency and helps when points are overlapping
+
+w3 <- wunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Experiment`)) +
+  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Experiment") #alpha controls transparency and helps when points are overlapping
+
+u1 <- unwunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Inbred_or_Hybrid`)) +
+  geom_point(alpha=0.5) + ggtitle("Unweighted Unifrac and Genetic Background") #alpha controls transparency and helps when points are overlapping
+
+u2 <- unwunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Sample_Type`)) +
+  geom_point(alpha=0.5) + ggtitle("Unweighted Unifrac and Sample Type") 
+
+u3 <- unwunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Experiment`)) +
+  geom_point(alpha=0.5) + ggtitle("Unweighted Unifrac and Experiment") 
+
+
+ggarrange(w1,w2,w3, nrow = 1, ncol = 3, labels = c("A","B","C"))
+
+ggarrange(u1,u2,u3, nrow = 1, ncol = 3, labels = c("A","B","C"))
 
