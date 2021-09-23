@@ -4,16 +4,16 @@ clusterDir=/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microb
 wkdir=/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_qza_files/FinalFigs_qza
 
 qiime tools import \
---input-path $clusterDir/phyCmbFilt_features-table.biom \
+--input-path $clusterDir/phy2_features-table.biom \
 --type 'FeatureTable[Frequency]' \
 --input-format BIOMV100Format \
---output-path $wkdir/phyCmbFilt_features-table.qza
+--output-path $wkdir/phy2_features-table.qza
 
 
 qiime tools import \
---input-path $clusterDir/phyCmbFilt_tree-rooted.newick \
+--input-path $clusterDir/phy2_tree-rooted.newick \
 --type 'Phylogeny[Rooted]' \
---output-path $wkdir/phyCmbFilt_tree-rooted.qza
+--output-path $wkdir/phy2_tree-rooted.qza
 
 
 

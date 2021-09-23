@@ -60,13 +60,13 @@ psc
 
 # Subset to the remaining phyla
 prevdf1 = subset(prevdf, Phylum %in% get_taxa_unique(psc, "Phylum"))
-ggplot(prevdf1, aes(TotalAbundance, Prevalence / nsamples(phy),color=Phylum)) +
+ggplot(prevdf1, aes(TotalAbundance, Prevalence / phyloseq::nsamples(phy),color=Phylum)) +
   # Include a guess for parameter
   geom_hline(yintercept = 0.05, alpha = 0.5, linetype = 2) +  geom_point(size = 2, alpha = 0.7) +
   scale_x_log10() +  xlab("Total Abundance") + ylab("Prevalence [Frac. Samples]") +
   facet_wrap(~Phylum) + theme(legend.position="none")
 
-prevalenceThreshold = 0.05 * nsamples(psc)
+prevalenceThreshold = 0.05 * phyloseq::nsamples(psc)
 prevalenceThreshold
 
 keepTaxa = rownames(prevdf1)[(prevdf1$Prevalence >= prevalenceThreshold)]
@@ -414,7 +414,7 @@ rootsF
 alpha_plot <- plot_richness(phy2, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
                             color = "Inbred_or_Hybrid",
                             shape = "Sample_Type", title = "Alpha Diversity: Combined Experiments") + geom_point(alpha = .05)
-alpha_plot
+alpha_plot 
 
 stalk_alpha <- plot_richness(stalksF, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
                              color = "Inbred_or_Hybrid", 
@@ -444,7 +444,7 @@ roots_alpha
 # roots_test
 
 alpha_diversity <- ggarrange(stalk_alpha, roots_alpha, rhizos_alpha, ncol = 1, nrow = 3, labels = c("A","B","C"))
-alpha_diversity
+alpha_diversity # Figure for final paper
 
 # Figure out how to jitter based on inbred or hybrid. Alpha doesnt seem to be working?
 
@@ -482,6 +482,7 @@ for(n in Experiments){
   print(ttest)
 }
 
+Experiments <- c("GH", "END")
 # Roots - no MMH # error if you include mmh
 for(n in Experiments){
   subset_df <- subset_samples(roots_IH, Experiment == n)
@@ -490,6 +491,7 @@ for(n in Experiments){
   print(ttest)
 }
 
+Experiments <- c("GH", "END", "MMH")
 # Rhizos
 for(n in Experiments){
   subset_df <- subset_samples(rhizos_IH, Experiment == n)

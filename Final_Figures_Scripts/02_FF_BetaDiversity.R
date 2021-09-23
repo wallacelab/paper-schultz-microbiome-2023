@@ -292,15 +292,17 @@ library(ape)
 combo_biom <- read.biom("phy2_features-table.biom")
 combo_tree <- ape::read.tree("phy2_tree-rooted.newick")
 
+# Now run 02_b and 02_c .sh scripts
+
 combo_w_unifrac = rbiom::unifrac(combo_biom, weighted = TRUE, tree = combo_tree)
 combo_un_unifrac = rbiom::unifrac(combo_biom, weighted = FALSE, tree = combo_tree)
 
 #remotes::install_github("cmmr/rbiom")
-plot(combo_biom, Unifrac ~ 'Inbred_or_Hybrid', unifrac, weighted = TRUE)
+# plot(combo_biom, Unifrac ~ 'Inbred_or_Hybrid', unifrac, weighted = TRUE)
 
 library(RAM)
 
-plot(combo_biom)
+# plot(combo_biom)
 
 # rarify at:      need to include this for qiime alpha diversity that we wont use
 sample_sums(phy2)
@@ -310,7 +312,7 @@ if (!requireNamespace("devtools", quietly = TRUE)){install.packages("devtools")}
 devtools::install_github("jbisanz/qiime2R") # current version is 0.99.20
 library(qiime2R)
 
-setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_qza_files/FinalFigs_qza/combined-core-metrics-results")
+setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_qza_files/FinalFigs_qza/phy2_lessfiltered-core-metrics-results")
 
 metadata = read.csv("Combined_Metadata.csv", header = TRUE, sep = "\t")
 
