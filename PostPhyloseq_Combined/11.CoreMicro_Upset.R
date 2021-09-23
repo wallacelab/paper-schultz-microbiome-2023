@@ -10,6 +10,7 @@ library(qiime2R)
 library(ggplot2)
 library(phyloseq)
 library(gridExtra)
+library(ggVennDiagram)
 
 setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS")
 
@@ -212,9 +213,9 @@ above_upset
 
 ### Explore whether inbreds and their hybrid cross have similar core microbiomes
 
-# Compare B73xMO17 in the greenhouse
+# Compare B73xMO17 in the greenhouse and field
 B73xMO17_Family = c("B73","Mo17","B73xMo17","Mo17xB73")
-GH_cross1 = subset_samples(phyCmbFilt, Genotype %in% B73xMO17_Family)
+GH_cross1 = subset_samples(GH, Genotype %in% B73xMO17_Family)
 GH_cross1_com <- microbiome::transform(GH_cross1, "compositional")
 Genos <- unique(as.character(meta(GH_cross1_com)$Genotype))
 print(Genos)
@@ -222,17 +223,145 @@ print(Genos)
 list_core <-c() #empty object
 for (n in Genos){
   print(as.name(n))
-  core.sub <- subset_samples(GH_cross1_com, Genos == n)
+  core.sub <- subset_samples(GH_cross1_com, Genotype == n)
   
   core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
                          detection = .001,            # .001 in atleast 90% of samples
-                         prevalence = 0.9)  
+                         prevalence = 0.5)          # 
+  print(paste0("No. of core taxa in ", n, " : ", length(core_m)))
   list_core[[n]] <- core_m
-  
-  for(i in core_m){
-    #print(i)
-    binary_full[i,toString(n)] <- 1
-  }
 }
 
-ggVennDiagram(list_core)
+ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "firebrick") + ggtitle("Comparing shared Inbred and Hybrid Taxa: Greenhouse")
+
+
+END_cross1 = subset_samples(END, Genotype %in% B73xMO17_Family)
+END_cross1_com <- microbiome::transform(END_cross1, "compositional")
+Genos <- unique(as.character(meta(END_cross1_com)$Genotype))
+print(Genos)
+
+list_core <-c() #empty object
+for (n in Genos){
+  print(as.name(n))
+  core.sub <- subset_samples(GH_cross1_com, Genotype == n)
+  
+  core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
+                         detection = .001,            # .001 in atleast 90% of samples
+                         prevalence = 0.5)          # 
+  print(paste0("No. of core taxa in ", n, " : ", length(core_m)))
+  list_core[[n]] <- core_m
+}
+
+ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "firebrick") + ggtitle("Comparing shared Inbred and Hybrid Taxa: END")
+
+# Compare B73 and PH207 in the greenhouse and field
+B73xPH207_Family = c("B73","Ph207","B73xPh207","Ph207xB73")
+GH_cross2 = subset_samples(GH, Genotype %in% B73xPH207_Family)
+GH_cross2_com <- microbiome::transform(GH_cross2, "compositional")
+Genos <- unique(as.character(meta(GH_cross2_com)$Genotype))
+print(Genos)
+
+list_core <-c() #empty object
+for (n in Genos){
+  print(as.name(n))
+  core.sub <- subset_samples(GH_cross2_com, Genotype == n)
+  
+  core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
+                         detection = .001,            # .001 in atleast 90% of samples
+                         prevalence = 0.5)          # 
+  print(paste0("No. of core taxa in ", n, " : ", length(core_m)))
+  list_core[[n]] <- core_m
+}
+
+ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "firebrick") + ggtitle("Comparing shared Inbred and Hybrid Taxa: Greenhouse")
+
+# MMH
+B73xPH207_Family = c("B73","Ph207","B73xPh207","Ph207xB73")
+MMH_cross2 = subset_samples(MMH, Genotype %in% B73xPH207_Family)
+MMH_cross2_com <- microbiome::transform(MMH_cross2, "compositional")
+Genos <- unique(as.character(meta(MMH_cross2_com)$Genotype))
+print(Genos)
+
+list_core <-c() #empty object
+for (n in Genos){
+  print(as.name(n))
+  core.sub <- subset_samples(MMH_cross2_com, Genotype == n)
+  
+  core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
+                         detection = .001,            # .001 in atleast 90% of samples
+                         prevalence = 0.5)          # 
+  print(paste0("No. of core taxa in ", n, " : ", length(core_m)))
+  list_core[[n]] <- core_m
+}
+
+ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "firebrick") + ggtitle("Comparing shared Inbred and Hybrid Taxa: MMH")
+
+# Other GH Crosses
+# Mo17xPh207
+B73xPH207_Family = c("Mo17","Ph207","Mo17xPh207","Ph207xMo17")
+GH_cross2 = subset_samples(GH, Genotype %in% B73xPH207_Family)
+GH_cross2_com <- microbiome::transform(GH_cross2, "compositional")
+Genos <- unique(as.character(meta(GH_cross2_com)$Genotype))
+print(Genos)
+
+list_core <-c() #empty object
+for (n in Genos){
+  print(as.name(n))
+  core.sub <- subset_samples(GH_cross2_com, Genotype == n)
+  
+  core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
+                         detection = .001,            # .001 in atleast 90% of samples
+                         prevalence = 0.5)          # 
+  print(paste0("No. of core taxa in ", n, " : ", length(core_m)))
+  list_core[[n]] <- core_m
+}
+
+ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "firebrick") + ggtitle("Comparing shared Inbred and Hybrid Taxa: Greenhouse")
+
+# B73 x CML247
+B73xPH207_Family = c("B73","CML247","B73xCML247","CML247xB73")
+GH_cross2 = subset_samples(GH, Genotype %in% B73xPH207_Family)
+GH_cross2_com <- microbiome::transform(GH_cross2, "compositional")
+Genos <- unique(as.character(meta(GH_cross2_com)$Genotype))
+print(Genos)
+
+list_core <-c() #empty object
+for (n in Genos){
+  print(as.name(n))
+  core.sub <- subset_samples(GH_cross2_com, Genotype == n)
+  
+  core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
+                         detection = .001,            # .001 in atleast 90% of samples
+                         prevalence = 0.5)          # 
+  print(paste0("No. of core taxa in ", n, " : ", length(core_m)))
+  list_core[[n]] <- core_m
+}
+
+ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "firebrick") + ggtitle("Comparing shared Inbred and Hybrid Taxa: Greenhouse")
+
+# B73 x Oh43
+B73xPH207_Family = c("B73","Oh43","B73xOh43","Oh43xB73")
+GH_cross2 = subset_samples(GH, Genotype %in% B73xPH207_Family)
+GH_cross2_com <- microbiome::transform(GH_cross2, "compositional")
+Genos <- unique(as.character(meta(GH_cross2_com)$Genotype))
+print(Genos)
+
+list_core <-c() #empty object
+for (n in Genos){
+  print(as.name(n))
+  core.sub <- subset_samples(GH_cross2_com, Genotype == n)
+  
+  core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
+                         detection = .001,            # .001 in atleast 90% of samples
+                         prevalence = 0.5)          # 
+  print(paste0("No. of core taxa in ", n, " : ", length(core_m)))
+  list_core[[n]] <- core_m
+}
+
+ggVennDiagram(list_core) + scale_fill_gradient(low = "white", high = "firebrick") + ggtitle("Comparing shared Inbred and Hybrid Taxa: Greenhouse")
+
+
+
+
+
+
