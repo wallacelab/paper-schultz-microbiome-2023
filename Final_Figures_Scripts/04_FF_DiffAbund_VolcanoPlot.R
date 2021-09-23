@@ -98,7 +98,7 @@ phyGenus <- tax_glom(phyCmbFilt, taxrank = "Genus")
 phyHigh <- phyCmbFilt
 
 # Use ASV level for Volcano Plot
-hyHigh
+phyHigh
 
 #Before filtering out by experiments how many taxa do I have?
 phyClassPreFilt <- tax_glom(phy2, taxrank = "Class")
@@ -206,7 +206,6 @@ write.csv(as.data.frame(Root_df), file="Roots_IvsH_ASV.csv")
 compartment_t = transform_sample_counts(rootsF, function(OTU) OTU +1)
 phydesq = phyloseq_to_deseq2(compartment_t, design = ~Inbred_or_Hybrid)
 deseq_obj = DESeq(phydesq, test = "Wald", fitType = "parametric")
-
 res = results(deseq_obj, cooksCutoff = FALSE, contrast = c("Inbred_or_Hybrid", "Inbred", "Hybrid"))
 
 # alpha = alpha_value
@@ -220,6 +219,17 @@ sigtab = cbind(as(res, "data.frame"), as(tax_table(rootsF)[rownames(res), ], "ma
 sigtab = sigtab %>% mutate(Significance = 'Root')
 ggplot(data=sigtab, aes(x=res$log2FoldChange, y=log10(res$pvalue))) + geom_point()
 
+# Roots with alpha cutoff
+compartment_t = transform_sample_counts(rootsF, function(OTU) OTU +1)
+phydesq = phyloseq_to_deseq2(compartment_t, design = ~Inbred_or_Hybrid)
+deseq_obj = DESeq(phydesq, test = "Wald", fitType = "parametric")
+res = results(deseq_obj, cooksCutoff = FALSE, contrast = c("Inbred_or_Hybrid", "Inbred", "Hybrid"))
+alpha = .001
+root_tab = res[which(res$padj < alpha), ]
+root_tab = cbind(as(root_tab, "data.frame"), as(tax_table(rootsF)[rownames(root_tab), ], "matrix"))
+root_tab = root_tab %>% mutate(Significance = 'Stalk')
+dim(root_tab)
+
 # Stalks then add to sigtab
 compartment_t = transform_sample_counts(stalksF, function(OTU) OTU +1)
 phydesq = phyloseq_to_deseq2(compartment_t, design = ~Inbred_or_Hybrid)
@@ -229,6 +239,7 @@ alpha = .001
 stalk_sigtab = res[which(res$padj < alpha), ]
 stalk_sigtab = cbind(as(stalk_sigtab, "data.frame"), as(tax_table(stalksF)[rownames(stalk_sigtab), ], "matrix"))
 stalk_sigtab = stalk_sigtab %>% mutate(Significance = 'Stalk')
+dim(stalk_sigtab)
 
 # Rhizos
 compartment_t = transform_sample_counts(rhizosF, function(OTU) OTU +1)
@@ -239,7 +250,8 @@ alpha = .001
 rhiz_sigtab = res[which(res$padj < alpha), ]
 rhiz_sigtab = cbind(as(rhiz_sigtab, "data.frame"), as(tax_table(rhizosF)[rownames(rhiz_sigtab), ], "matrix"))
 rhiz_sigtab = rhiz_sigtab %>% mutate(Significance = 'Rhizo')
-# Combine them
+dim(rhiz_sigtab)
+# Combine them - next time run this: drop signif on big root so its just the 11
 sigtab2 <- rbind(sigtab,stalk_sigtab)
 cmb_tab <- rbind(sigtab2,rhiz_sigtab)
 dim(cmb_tab)

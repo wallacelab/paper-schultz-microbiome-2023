@@ -179,7 +179,7 @@ for (n in ExperimentGroups){
  
   core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
                          detection = .001,            # .001 in atleast 90% of samples
-                         prevalence = 0.5)  
+                         prevalence = 0.9)  
   list_core[[n]] <- core_m
   
   for(i in core_m){
@@ -210,8 +210,29 @@ above_upset
 
 
 
+### Explore whether inbreds and their hybrid cross have similar core microbiomes
 
+# Compare B73xMO17 in the greenhouse
+B73xMO17_Family = c("B73","Mo17","B73xMo17","Mo17xB73")
+GH_cross1 = subset_samples(phyCmbFilt, Genotype %in% B73xMO17_Family)
+GH_cross1_com <- microbiome::transform(GH_cross1, "compositional")
+Genos <- unique(as.character(meta(GH_cross1_com)$Genotype))
+print(Genos)
 
+list_core <-c() #empty object
+for (n in Genos){
+  print(as.name(n))
+  core.sub <- subset_samples(GH_cross1_com, Genos == n)
+  
+  core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
+                         detection = .001,            # .001 in atleast 90% of samples
+                         prevalence = 0.9)  
+  list_core[[n]] <- core_m
+  
+  for(i in core_m){
+    #print(i)
+    binary_full[i,toString(n)] <- 1
+  }
+}
 
-
-
+ggVennDiagram(list_core)

@@ -393,7 +393,7 @@ plot_diff_funct_IvH <- function(phyloseq_obj, metadata_category, title){
 #### All Tissues
 # Inbred vs hybrid
 Diff_abun_func_IvH(EC_phy, ~Inbred_or_Hybrid, 0.001)
-plot_diff_funct_IvH(EC_phy, ~Inbred_or_Hybrid, " All Tissues: Inbred vs Hybrid/Open Pollinated")
+plot_diff_funct_IvH(EC_phy, ~Inbred_or_Hybrid, " All Tissues: Inbred vs Hybrid")
 
 # Location
 Diff_abun_func_location(EC_phy, ~Location, 0.001)
@@ -402,7 +402,7 @@ plot_diff_funct_location(EC_phy, ~Location, " All Tissues: Inbred vs Hybrid/Open
 
 ### All Experiments
 
-# Inbred vs Hybrid/OP
+# Inbred vs Hybrid
 Diff_abun_func_IvH(stalks_EC, ~Inbred_or_Hybrid, 0.001)
 Diff_abun_func_IvH(rhizos_EC, ~Inbred_or_Hybrid, 0.001)
 Diff_abun_func_IvH(roots_EC, ~Inbred_or_Hybrid, 0.001)
@@ -412,7 +412,7 @@ plot_diff_funct_IvH(roots_EC, ~Inbred_or_Hybrid, "Roots: Inbred vs Hybrid Functi
 Diff_abun_func_location(stalks_EC, ~Location, 0.001)
 Diff_abun_func_location(rhizos_EC, ~Location, 0.001)
 Diff_abun_func_location(roots_EC, ~Location, 0.001)
-
+Diff_abun_func_location(EC_phy, ~Location, 0.001)
 
 ### By Experiment - Inbred vs Hybrid
 # GH

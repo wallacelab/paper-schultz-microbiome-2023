@@ -187,7 +187,7 @@ write.csv(as.data.frame(da_df), file="TheTest.csv")
 
 # All Tissues
 da_df <- diff_abund(phyHigh,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
-write.csv(as.data.frame(da_df), file="AllTisues_InbredvsHybrid.csv")
+write.csv(as.data.frame(da_df), file="AllTisues_InbredvsHybrid_ASV.csv")
 
 da_df <- diff_abund(phyHigh,~Location,"Location", "IH", "GH", .001)
 write.csv(as.data.frame(da_df), file="AllTissues_IHvsGH.csv")
