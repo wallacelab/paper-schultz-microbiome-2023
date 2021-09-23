@@ -61,13 +61,13 @@ psc
 
 # Subset to the remaining phyla
 prevdf1 = subset(prevdf, Phylum %in% get_taxa_unique(psc, "Phylum"))
-ggplot(prevdf1, aes(TotalAbundance, Prevalence / nsamples(phy),color=Phylum)) +
+ggplot(prevdf1, aes(TotalAbundance, Prevalence / phyloseq::nsamples(phy),color=Phylum)) +
   # Include a guess for parameter
   geom_hline(yintercept = 0.05, alpha = 0.5, linetype = 2) +  geom_point(size = 2, alpha = 0.7) +
   scale_x_log10() +  xlab("Total Abundance") + ylab("Prevalence [Frac. Samples]") +
   facet_wrap(~Phylum) + theme(legend.position="none")
 
-prevalenceThreshold = 0.05 * nsamples(psc)
+prevalenceThreshold = 0.05 * phyloseq::nsamples(psc)
 prevalenceThreshold
 
 keepTaxa = rownames(prevdf1)[(prevdf1$Prevalence >= prevalenceThreshold)]
