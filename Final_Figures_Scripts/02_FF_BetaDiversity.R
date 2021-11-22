@@ -242,6 +242,14 @@ wunifrac_cmb <- read_qza("weighted_unifrac_pcoa_results.qza")
 
 unwunifrac_cmb <- read_qza("unweighted_unifrac_pcoa_results.qza")
 
+# Change Experiment Names
+levels(metadata$Experiment) <- c(levels(metadata$Experiment), "Field_1")
+levels(metadata$Experiment) <- c(levels(metadata$Experiment), "Field_2")
+levels(metadata$Experiment) <- c(levels(metadata$Experiment), "Greenhouse")
+
+metadata$Experiment[metadata$Experiment == 'MMH'] <- ('Field_1')
+metadata$Experiment[metadata$Experiment == 'END'] <- 'Field_2'
+metadata$Experiment[metadata$Experiment == 'GH'] <- 'Greenhouse'
 
 w1 <- wunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
@@ -274,11 +282,12 @@ u3 <- unwunifrac_cmb$data$Vectors %>%
   geom_point(alpha=0.5) + ggtitle("Unweighted Unifrac and Experiment") 
 
 
-ggarrange(w1,w2,w3, nrow = 1, ncol = 3, labels = c("A","B","C"))
+ggcmb <- ggarrange(w1,w2,w3, nrow = 1, ncol = 3, labels = c("A","B","C"))
+ggsave("PAG_beta_cmb.png", ggcmb, device = "png", width = 10, height = 5, dpi = 1000)
 
 ggarrange(u1,u2,u3, nrow = 1, ncol = 3, labels = c("A","B","C"))
 
-######################## Less Filtered
+######################## Less Filtered - Use more filtered Weighted for paper
 phy2
 #Export to qiime qza
 phyloseq2qiime2(phy2)
@@ -356,3 +365,25 @@ ggarrange(w1,w2,w3, nrow = 1, ncol = 3, labels = c("A","B","C"))
 
 ggarrange(u1,u2,u3, nrow = 1, ncol = 3, labels = c("A","B","C"))
 
+# Figures for PAG
+
+w1_c <- wunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Inbred_or_Hybrid`)) +
+  geom_point(alpha=0.5) + theme(legend.position = "none")  #alpha controls transparency and helps when points are overlapping
+
+w2_c <- wunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Sample_Type`)) +
+  geom_point(alpha=0.5) + theme(legend.position = "none")  #alpha controls transparency and helps when points are overlapping
+
+w3_c <- wunifrac_cmb$data$Vectors %>%
+  dplyr::select(SampleID, PC1, PC2) %>%
+  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Experiment`)) +
+  geom_point(alpha=0.5) + theme(legend.position = "none") #alpha controls transparency and helps when points are overlapping
+
+ggsave("PAG_beta_background", w1_c, device = "png", width = 5, height = 5, dpi = 300)
+
+ggsave("PAG_beta_tissue", w2_c, device = "png", width = 5, height = 5, dpi = 300)
+
+ggsave("PAG_beta_location", w3_c, device = "png", width = 5, height = 5, dpi = 300)

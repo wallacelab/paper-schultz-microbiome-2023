@@ -256,11 +256,12 @@ sigtab2 <- rbind(sigtab,stalk_sigtab)
 cmb_tab <- rbind(sigtab2,rhiz_sigtab)
 dim(cmb_tab)
 #Not Signif
-cmb_tab$Significance = ifelse(cmb_tab$pvalue > 0.001, 'NotSig', cmb_tab$Significance)
-
+cmb_tab$Significance = ifelse(cmb_tab$padj > 0.001, 'NotSig', cmb_tab$Significance)
+cmb_tab$Significance = ifelse(is.na(cmb_tab$padj), 'NotSig', cmb_tab$Significance)
 # Now make the volcano
+library(ggrepel)
 #base
-vp <- ggplot(data=cmb_tab, aes(x=log2FoldChange, y=log10(pvalue))) + geom_point(aes(colour = factor(Significance)))
+vp <- ggplot(data=cmb_tab, aes(x=log2FoldChange, y=log10(pvalue))) + geom_point(aes(colour = factor(Significance), size = 12))
 vp <- vp + geom_vline(xintercept = 0, colour = "blue") + 
   geom_hline(yintercept = 0, colour = "blue") + coord_flip() + scale_y_reverse() +
   scale_color_manual(values = c("Stalk" = "purple",
@@ -269,9 +270,29 @@ vp <- vp + geom_vline(xintercept = 0, colour = "blue") +
                                 "NotSig" = "black")) + 
   ggtitle("All Samples: Differentially Abundant ASVs")
 vp <- vp + geom_text(label = ifelse(cmb_tab$Significance != 'NotSig', as.character(cmb_tab$Family), ''), 
-                     nudge_y =  0.5, nudge_x = 0.5)
+                     position=position_jitter()) 
 vp
 
+# PAG Figure
 
+vp <- ggplot(data=cmb_tab, aes(x=log2FoldChange, y=log10(pvalue))) + geom_point(aes(colour = Significance), size = 6) + 
+  theme(axis.text=element_text(size=18),
+        axis.title=element_text(size=18)) 
+vp <- vp + geom_vline(xintercept = 0, colour = "blue") + 
+  geom_hline(yintercept = 0, colour = "blue") + coord_flip() + scale_y_reverse() +
+  scale_color_manual(values = c("Stalk" = "purple",
+                                "Rhizo" = "red",
+                                "Root" = "green",
+                                "NotSig" = "black")) #+ 
+  #ggtitle("All Samples: Differentially Abundant ASVs")
 
+vp <- vp +   geom_text_repel(
+  data = subset(cmb_tab, padj < 0.001),
+  aes(label = Family),
+  size = 5,
+  # box.padding = unit(0.35, "lines"),
+  # point.padding = unit(0.3, "lines")
+)
+vp
 
+ggsave("PAG_volcano", vp, width = 10, height = 5, dpi = 300, device = "png")
