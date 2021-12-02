@@ -1,3 +1,5 @@
+# Please use 10.bPicrust2 which utilizes KEGG instead. 
+
 library(tidyverse)
 library(devtools)
 #devtools::install_github("jbisanz/qiime2R")
@@ -260,7 +262,7 @@ deStalk = phyloseq_to_deseq2(stalks_ECt, ~ Inbred_or_Hybrid)
 deStalk = DESeq(deStalk, test="Wald", fitType = "parametric")
 
 res = results(deStalk, cooksCutoff = FALSE)
-alpha = 0.001
+alpha = 0.05
 sigtab = res[which(res$padj < alpha), ]
 Functional_Group <- as(descriptions[c(rownames(sigtab)),2], "matrix")
 sigtab = cbind(as(sigtab, "data.frame"), Functional_Group)
@@ -280,7 +282,7 @@ deStalk = phyloseq_to_deseq2(stalks_ECt, ~ Inbred_or_Hybrid)
 deStalk = DESeq(deStalk, test="Wald", fitType = "parametric")
 
 res = results(deStalk, cooksCutoff = FALSE)
-alpha = 0.001
+alpha = 0.05
 sigtab = res[which(res$padj < alpha), ]
 Functional_Group <- as(descriptions[c(rownames(sigtab)),2], "matrix")
 sigtab = cbind(as(sigtab, "data.frame"), Functional_Group)
@@ -438,7 +440,12 @@ sigtab = cbind(as(sigtab, "data.frame"), Functional_Group)
 head(sigtab)
 
 dim(sigtab)
-
+# The only fig I generate because everything is basically 0 or 500
+ggplot(sigtab, aes(x = Functional_Group, y = log2FoldChange, fill = log2FoldChange < 0)) + 
+  geom_bar(stat = 'identity') + ggtitle("END Stalks: Inbred vs Hybrid/Open Pollinated") +
+  theme(axis.text.x = element_text(angle = 90, size = 12)) + 
+  scale_fill_manual("Down Regulated", values = c("turquoise", "indianred1")) +
+  coord_flip()
 
 # Rhizos - inbred vs hybrid
 stalks_ECt = transform_sample_counts(rhizos_EC, function(OTU) OTU + 1)
@@ -467,6 +474,11 @@ sigtab = cbind(as(sigtab, "data.frame"), Functional_Group)
 head(sigtab)
 
 dim(sigtab)
+
+ggplot(sigtab, aes(x = Functional_Group, y = log2FoldChange, fill = log2FoldChange < 0)) + 
+  geom_bar(stat = 'identity') + ggtitle("END Roots: Inbred vs Hybrid/Open Pollinated") +
+  theme(axis.text.x = element_text(angle = 90, size = 12)) + 
+  scale_fill_manual("Down Regulated", values = c("turquoise", "indianred1"))
 
 
 ##################################################################################

@@ -272,6 +272,7 @@ vp <- vp + geom_vline(xintercept = 0, colour = "blue") +
 vp <- vp + geom_text(label = ifelse(cmb_tab$Significance != 'NotSig', as.character(cmb_tab$Family), ''), 
                      position=position_jitter()) 
 vp
+ggsave("Fig4_volcano.png", vp, width = 10, height = 5, dpi = 600, device = "png")
 
 # PAG Figure
 
