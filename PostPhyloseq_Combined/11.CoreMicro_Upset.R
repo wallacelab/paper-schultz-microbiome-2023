@@ -209,7 +209,24 @@ under_upset
 above_upset <- upset(above_matrix, nsets = 3, nintersects = NA, order.by = c("degree", "freq"), empty.intersections = TRUE)
 above_upset
 
+## Get taxa from all 5 underground groups!
+undergroundmatrix
 
+# tidyverse
+library(dplyr)
+core_otus <- undergroundmatrix %>% filter_all(all_vars(.>0))
+nrow(core_otus)
+
+core_tax <- rownames(core_otus)
+
+core_under_phy <- subset(otu_table(phy2com), rownames(otu_table(phy2com)) %in% 
+                           c(core_taxa))
+core_under_res <- merge_phyloseq(core_under_phy, tax_table(phy2com), sample_data(phy2com))
+
+core2write <- tax_table(core_under_res)
+
+write.csv(core2write,file = "core_underground_taxa.csv", row.names = TRUE)
+getwd()
 
 ### Explore whether inbreds and their hybrid cross have similar core microbiomes
 

@@ -639,3 +639,56 @@ roots_HO <- subset_samples(rhizosO, Inbred_or_Hybrid != "Inbred")
 erich <- estimate_richness(roots_HO, measures = c("Observed", "Shannon", "Simpson"))
 ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(roots_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
 ttest
+
+# Verify with Tukey
+phy2
+stalksF
+rhizosF
+rootsF
+
+# build sample alpha values plus metadata
+all_rich <- estimate_richness(phy2, measures = c("Observed", "Shannon", "Simpson"))
+
+#covert rownames to columns
+all_rich <- cbind(rownames(all_rich), data.frame(all_rich, row.names = NULL))
+colnames(all_rich)[1] <- "SampleID"
+all_rich
+
+# replace . with -
+all_rich$SampleID <- gsub('.', '-', all_rich$SampleID, fixed = TRUE)
+all_rich
+
+all_rich_sort <- all_rich[order(match(all_rich$SampleID,metadata$SampleID)), ]
+all_rich_sort
+
+# Now that it's sorted cbind meta data labels for ANOVA. 
+big_alpha <- data.frame(setDT(all_rich_sort)[setDT(metadata), on = c("SampleID")])
+
+# drop blanks
+big_alpha <- big_alpha[!grepl("Blank", big_alpha$Inbred_or_Hybrid),]
+# drop soil
+big_alpha <- big_alpha[!grepl("Soil", big_alpha$Inbred_or_Hybrid),]
+
+#Observed
+obs.alpha.av <- aov(lm(Observed ~ Sample_Type + Inbred_or_Hybrid + Experiment, data = big_alpha))
+summary(obs.alpha.av)
+tukey.all.obs <- TukeyHSD(obs.alpha.av)
+tukey.all.obs
+
+#Shannon -> richness and equitability in distribution?
+shn.alpha.av <- aov(lm(Shannon ~ Sample_Type + Inbred_or_Hybrid + Experiment, data = big_alpha))
+summary(shn.alpha.av)
+tukey.all.shn <- TukeyHSD(shn.alpha.av)
+tukey.all.shn
+
+
+#Simpson -> accounts proportion of species
+simp.alpha.av <- aov(lm(Simpson ~ Sample_Type + Inbred_or_Hybrid + Experiment, data = big_alpha))
+summary(simp.alpha.av)
+tukey.all.simp <- TukeyHSD(simp.alpha.av)
+tukey.all.simp
+
+
+
+
+
