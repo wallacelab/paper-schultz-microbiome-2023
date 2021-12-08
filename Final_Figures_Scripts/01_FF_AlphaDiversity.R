@@ -1,3 +1,7 @@
+# Script for comparing alpha diversity (Observed, Simpson, and Shannon)
+# 1. For highly filtered (wont use but keep the script) 2. Less filtered taxa
+# Analysis A. t.test  B. Kruskal-Wallis  C. Tukey post-hoc all segregated by tissue
+
 library(tidyverse)
 library(devtools)
 #devtools::install_github("jbisanz/qiime2R")
@@ -133,7 +137,7 @@ rootsF
 
 ##############################################
 
-# Not rarefied - can just rarefy and plug that phyloseq object in for CmbFlt
+# Not rarefied!
 
 alpha_plot <- plot_richness(phyCmbFilt, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
                             color = "Inbred_or_Hybrid",
@@ -172,7 +176,7 @@ alpha_diversity
 
 # Figure out how to jitter based on inbred or hybrid. Alpha doesnt seem to be working?
 
-# Alpha Diversity P values
+# Alpha Diversity P values via t.test
 ### All Data
 # Stalk
 stalks_IH <- subset_samples(stalksF, Inbred_or_Hybrid != "Open_Pollinated")
@@ -265,6 +269,7 @@ ttest
 
 ################################################################################
 # change these all to kruskal wallis instead of t-test and then compare the results
+# kruskal wallis for non normal data -> similar results as t.test
 
 phyCmbFilt
 stalksF
@@ -409,7 +414,7 @@ rootsF
 
 ##############################################
 
-# Not rarefied - can just rarefy and plug that phyloseq object in for CmbFlt
+# Not rarefied
 
 alpha_plot <- plot_richness(phy2, x="Experiment", measures=c("Observed", "Shannon", "Simpson"), 
                             color = "Inbred_or_Hybrid",
@@ -640,34 +645,38 @@ erich <- estimate_richness(roots_HO, measures = c("Observed", "Shannon", "Simpso
 ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(roots_HO)$Inbred_or_Hybrid)[c("estimate","p.value","statistic","conf.int")])))
 ttest
 
-# Verify with Tukey
+############################################################################
+# Compare with Tukey
+############################################################################
 phy2
 stalksF
 rhizosF
 rootsF
 
+### ALL SAMPLES
 # build sample alpha values plus metadata
-all_rich <- estimate_richness(phy2, measures = c("Observed", "Shannon", "Simpson"))
 
-#covert rownames to columns
-all_rich <- cbind(rownames(all_rich), data.frame(all_rich, row.names = NULL))
-colnames(all_rich)[1] <- "SampleID"
-all_rich
+# Write a function for alpha_table with metadata
+alpha_tabulate <- function(phyloseq_object, metadata_file){
+  all_rich <- estimate_richness(phyloseq_object, measures = c("Observed", "Shannon", "Simpson"))
+  #covert rownames to columns
+  all_rich <- cbind(rownames(all_rich), data.frame(all_rich, row.names = NULL))
+  colnames(all_rich)[1] <- "SampleID"
+  all_rich
+  # replace . with -
+  all_rich$SampleID <- gsub('.', '-', all_rich$SampleID, fixed = TRUE)
+  all_rich
+  all_rich_sort <- all_rich[order(match(all_rich$SampleID,metadata_file$SampleID)), ]
+  all_rich_sort
+  # Now that it's sorted cbind meta data labels for ANOVA. 
+  big_alpha <- data.frame(setDT(all_rich_sort)[setDT(metadata_file), on = c("SampleID")])
+  # drop blanks
+  big_alpha <- big_alpha[!grepl("Blank", big_alpha$Inbred_or_Hybrid),]
+  # drop soil
+  big_alpha <- big_alpha[!grepl("Soil", big_alpha$Inbred_or_Hybrid),]
+}
 
-# replace . with -
-all_rich$SampleID <- gsub('.', '-', all_rich$SampleID, fixed = TRUE)
-all_rich
-
-all_rich_sort <- all_rich[order(match(all_rich$SampleID,metadata$SampleID)), ]
-all_rich_sort
-
-# Now that it's sorted cbind meta data labels for ANOVA. 
-big_alpha <- data.frame(setDT(all_rich_sort)[setDT(metadata), on = c("SampleID")])
-
-# drop blanks
-big_alpha <- big_alpha[!grepl("Blank", big_alpha$Inbred_or_Hybrid),]
-# drop soil
-big_alpha <- big_alpha[!grepl("Soil", big_alpha$Inbred_or_Hybrid),]
+big_alpha <- alpha_tabulate(phy2,metadata)
 
 #Observed
 obs.alpha.av <- aov(lm(Observed ~ Sample_Type + Inbred_or_Hybrid + Experiment, data = big_alpha))
@@ -681,14 +690,72 @@ summary(shn.alpha.av)
 tukey.all.shn <- TukeyHSD(shn.alpha.av)
 tukey.all.shn
 
-
 #Simpson -> accounts proportion of species
 simp.alpha.av <- aov(lm(Simpson ~ Sample_Type + Inbred_or_Hybrid + Experiment, data = big_alpha))
 summary(simp.alpha.av)
 tukey.all.simp <- TukeyHSD(simp.alpha.av)
 tukey.all.simp
 
+# ## Running the function joins the whole metadata table so instead just subset big alpha by tissue
+# stalks_alpha <- alpha_tabulate(stalksF,metadata)
+# roots_alpha <- alpha_tabulate(rootsF,metadata)
+# rhizos_alpha <- alpha_tabulate(rhizosF,metadata)
+
+stalks_alpha <- big_alpha %>% filter(Sample_Type == "Stalk")
+roots_alpha <- big_alpha %>% filter(Sample_Type == "Root")
+rhizos_alpha <- big_alpha %>% filter(Sample_Type == "Rhizosphere")
+
+##### Stalk Tukeys
+#Observed
+obs.alpha.av <- aov(lm(Observed ~ Inbred_or_Hybrid + Experiment, data = stalks_alpha))
+summary(obs.alpha.av)
+tukey.all.obs <- TukeyHSD(obs.alpha.av)
+#Shannon -> richness and equitability in distribution?
+shn.alpha.av <- aov(lm(Shannon ~ Inbred_or_Hybrid + Experiment, data = stalks_alpha))
+summary(shn.alpha.av)
+tukey.all.shn <- TukeyHSD(shn.alpha.av)
+#Simpson -> accounts proportion of species
+simp.alpha.av <- aov(lm(Simpson ~ Inbred_or_Hybrid + Experiment, data = stalks_alpha))
+summary(simp.alpha.av)
+tukey.all.simp <- TukeyHSD(simp.alpha.av)
+
+tukey.all.obs
+tukey.all.shn
+tukey.all.simp
 
 
+##### Root Tukeys
+#Observed
+obs.alpha.av <- aov(lm(Observed ~ Inbred_or_Hybrid + Experiment, data = roots_alpha))
+summary(obs.alpha.av)
+tukey.all.obs <- TukeyHSD(obs.alpha.av)
+#Shannon -> richness and equitability in distribution?
+shn.alpha.av <- aov(lm(Shannon ~ Inbred_or_Hybrid + Experiment, data = roots_alpha))
+summary(shn.alpha.av)
+tukey.all.shn <- TukeyHSD(shn.alpha.av)
+#Simpson -> accounts proportion of species
+simp.alpha.av <- aov(lm(Simpson ~ Inbred_or_Hybrid + Experiment, data = roots_alpha))
+summary(simp.alpha.av)
+tukey.all.simp <- TukeyHSD(simp.alpha.av)
 
+tukey.all.obs
+tukey.all.shn
+tukey.all.simp
 
+##### Rhizos Tukeys
+#Observed
+obs.alpha.av <- aov(lm(Observed ~ Inbred_or_Hybrid + Experiment, data = rhizos_alpha))
+summary(obs.alpha.av)
+tukey.all.obs <- TukeyHSD(obs.alpha.av)
+#Shannon -> richness and equitability in distribution?
+shn.alpha.av <- aov(lm(Shannon ~ Inbred_or_Hybrid + Experiment, data = rhizos_alpha))
+summary(shn.alpha.av)
+tukey.all.shn <- TukeyHSD(shn.alpha.av)
+#Simpson -> accounts proportion of species
+simp.alpha.av <- aov(lm(Simpson ~ Inbred_or_Hybrid + Experiment, data = rhizos_alpha))
+summary(simp.alpha.av)
+tukey.all.simp <- TukeyHSD(simp.alpha.av)
+
+tukey.all.obs
+tukey.all.shn
+tukey.all.simp
