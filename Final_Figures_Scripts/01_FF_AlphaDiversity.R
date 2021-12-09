@@ -748,7 +748,7 @@ obs.alpha.av <- aov(lm(Observed ~ Inbred_or_Hybrid + Experiment, data = rhizos_a
 summary(obs.alpha.av)
 tukey.all.obs <- TukeyHSD(obs.alpha.av)
 #Shannon -> richness and equitability in distribution?
-shn.alpha.av <- aov(lm(Shannon ~ Inbred_or_Hybrid + Experiment, data = rhizos_alpha))
+shn.alpha.av <- aov(lm(Shannon ~ Inbred_or_Hybrid*Experiment, data = rhizos_alpha))
 summary(shn.alpha.av)
 tukey.all.shn <- TukeyHSD(shn.alpha.av)
 #Simpson -> accounts proportion of species
@@ -759,3 +759,21 @@ tukey.all.simp <- TukeyHSD(simp.alpha.av)
 tukey.all.obs
 tukey.all.shn
 tukey.all.simp
+
+# Why is shannon different?
+#Shannon - higher species richness as well as more uniformity of distribution?
+#Simpson - rare species play less of a role? So 
+
+# Look at mean and summary stats
+rhizos_alpha %>% na.omit() %>% filter(Inbred_or_Hybrid == "Inbred") %>% 
+  summarize(Shannon = mean(Shannon))
+
+rhizos_alpha %>% na.omit() %>% filter(Inbred_or_Hybrid == "Hybrid") %>% 
+  summarize(Shannon = mean(Shannon))
+
+rhizos_alpha %>% na.omit() %>% filter(Inbred_or_Hybrid == "Open_Pollinated") %>% 
+  summarize(Shannon = mean(Shannon))
+
+
+
+
