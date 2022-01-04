@@ -646,7 +646,7 @@ ttest <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(roots_HO)
 ttest
 
 ############################################################################
-# Compare with Tukey
+# Compare with Parametric and Nonparametric tools
 ############################################################################
 phy2
 stalksF
@@ -655,7 +655,7 @@ rootsF
 
 ### ALL SAMPLES
 # build sample alpha values plus metadata
-
+library(data.table)
 # Write a function for alpha_table with metadata
 alpha_tabulate <- function(phyloseq_object, metadata_file){
   all_rich <- estimate_richness(phyloseq_object, measures = c("Observed", "Shannon", "Simpson"))
@@ -669,7 +669,7 @@ alpha_tabulate <- function(phyloseq_object, metadata_file){
   all_rich_sort <- all_rich[order(match(all_rich$SampleID,metadata_file$SampleID)), ]
   all_rich_sort
   # Now that it's sorted cbind meta data labels for ANOVA. 
-  big_alpha <- data.frame(setDT(all_rich_sort)[setDT(metadata_file), on = c("SampleID")])
+  big_alpha <- data.frame(data.table::setDT(all_rich_sort)[setDT(metadata_file), on = c("SampleID")])
   # drop blanks
   big_alpha <- big_alpha[!grepl("Blank", big_alpha$Inbred_or_Hybrid),]
   # drop soil
@@ -705,60 +705,6 @@ stalks_alpha <- big_alpha %>% filter(Sample_Type == "Stalk")
 roots_alpha <- big_alpha %>% filter(Sample_Type == "Root")
 rhizos_alpha <- big_alpha %>% filter(Sample_Type == "Rhizosphere")
 
-##### Stalk Tukeys
-#Observed
-obs.alpha.av <- aov(lm(Observed ~ Inbred_or_Hybrid + Experiment, data = stalks_alpha))
-summary(obs.alpha.av)
-tukey.all.obs <- TukeyHSD(obs.alpha.av)
-#Shannon -> richness and equitability in distribution?
-shn.alpha.av <- aov(lm(Shannon ~ Inbred_or_Hybrid + Experiment, data = stalks_alpha))
-summary(shn.alpha.av)
-tukey.all.shn <- TukeyHSD(shn.alpha.av)
-#Simpson -> accounts proportion of species
-simp.alpha.av <- aov(lm(Simpson ~ Inbred_or_Hybrid + Experiment, data = stalks_alpha))
-summary(simp.alpha.av)
-tukey.all.simp <- TukeyHSD(simp.alpha.av)
-
-tukey.all.obs
-tukey.all.shn
-tukey.all.simp
-
-
-##### Root Tukeys
-#Observed
-obs.alpha.av <- aov(lm(Observed ~ Inbred_or_Hybrid + Experiment, data = roots_alpha))
-summary(obs.alpha.av)
-tukey.all.obs <- TukeyHSD(obs.alpha.av)
-#Shannon -> richness and equitability in distribution?
-shn.alpha.av <- aov(lm(Shannon ~ Inbred_or_Hybrid + Experiment, data = roots_alpha))
-summary(shn.alpha.av)
-tukey.all.shn <- TukeyHSD(shn.alpha.av)
-#Simpson -> accounts proportion of species
-simp.alpha.av <- aov(lm(Simpson ~ Inbred_or_Hybrid + Experiment, data = roots_alpha))
-summary(simp.alpha.av)
-tukey.all.simp <- TukeyHSD(simp.alpha.av)
-
-tukey.all.obs
-tukey.all.shn
-tukey.all.simp
-
-##### Rhizos Tukeys
-#Observed
-obs.alpha.av <- aov(lm(Observed ~ Inbred_or_Hybrid + Experiment, data = rhizos_alpha))
-summary(obs.alpha.av)
-tukey.all.obs <- TukeyHSD(obs.alpha.av)
-#Shannon -> richness and equitability in distribution?
-shn.alpha.av <- aov(lm(Shannon ~ Inbred_or_Hybrid*Experiment, data = rhizos_alpha))
-summary(shn.alpha.av)
-tukey.all.shn <- TukeyHSD(shn.alpha.av)
-#Simpson -> accounts proportion of species
-simp.alpha.av <- aov(lm(Simpson ~ Inbred_or_Hybrid + Experiment, data = rhizos_alpha))
-summary(simp.alpha.av)
-tukey.all.simp <- TukeyHSD(simp.alpha.av)
-
-tukey.all.obs
-tukey.all.shn
-tukey.all.simp
 
 # Why is shannon different?
 #Shannon - higher species richness as well as more uniformity of distribution?
@@ -774,6 +720,169 @@ rhizos_alpha %>% na.omit() %>% filter(Inbred_or_Hybrid == "Hybrid") %>%
 rhizos_alpha %>% na.omit() %>% filter(Inbred_or_Hybrid == "Open_Pollinated") %>% 
   summarize(Shannon = mean(Shannon))
 
+### Normality test - Failed so continue with Nonparametric analysis
+shapiro.test(rhizos_alpha$Observed)
+shapiro.test(rhizos_alpha$Shannon)
+shapiro.test(rhizos_alpha$Simpson)
 
+shapiro.test(roots_alpha$Observed)
+shapiro.test(roots_alpha$Shannon)
+shapiro.test(roots_alpha$Simpson)
+
+shapiro.test(stalks_alpha$Observed)
+shapiro.test(stalks_alpha$Shannon)
+shapiro.test(stalks_alpha$Simpson)
+
+#### Use the pairwise wilcox test and dunnTest - Non Parametric multiple comparison
+#install.packages("FSA")
+library("FSA")
+
+###   rhizos
+#Observed
+pairwise.wilcox.test(rhizos_alpha$Observed, rhizos_alpha$Inbred_or_Hybrid,
+                     p.adjust.method = "BH")
+pairwise.wilcox.test(rhizos_alpha$Observed, rhizos_alpha$Experiment,
+                     p.adjust.method = "BH")
+dunnTest(Observed ~ Inbred_or_Hybrid, data = rhizos_alpha, 
+         method = "bh")
+dunnTest(Observed ~ Experiment, data = rhizos_alpha, 
+         method = "bh")
+#shannon
+pairwise.wilcox.test(rhizos_alpha$Shannon, rhizos_alpha$Inbred_or_Hybrid,
+                     p.adjust.method = "BH")
+pairwise.wilcox.test(rhizos_alpha$Shannon, rhizos_alpha$Experiment,
+                     p.adjust.method = "BH")
+dunnTest(Shannon ~ Inbred_or_Hybrid, data = rhizos_alpha, 
+         method = "bh")
+dunnTest(Shannon ~ Experiment, data = rhizos_alpha, 
+         method = "bh")
+#Simpson
+pairwise.wilcox.test(rhizos_alpha$Simpson, rhizos_alpha$Inbred_or_Hybrid,
+                     p.adjust.method = "BH")
+pairwise.wilcox.test(rhizos_alpha$Simpson, rhizos_alpha$Experiment,
+                     p.adjust.method = "BH")
+dunnTest(Simpson ~ Inbred_or_Hybrid, data = rhizos_alpha, 
+         method = "bh")
+dunnTest(Simpson ~ Experiment, data = rhizos_alpha, 
+         method = "bh")
+
+
+###roots
+#Observed
+pairwise.wilcox.test(roots_alpha$Observed, roots_alpha$Inbred_or_Hybrid,
+                     p.adjust.method = "BH")
+pairwise.wilcox.test(roots_alpha$Observed, roots_alpha$Experiment,
+                     p.adjust.method = "BH")
+dunnTest(Observed ~ Inbred_or_Hybrid, data = roots_alpha, 
+         method = "bh")
+# dunnTest(Observed ~ Experiment, data = roots_alpha, 
+#          method = "bh")
+#shannon
+pairwise.wilcox.test(roots_alpha$Shannon, roots_alpha$Inbred_or_Hybrid,
+                     p.adjust.method = "BH")
+pairwise.wilcox.test(roots_alpha$Shannon, roots_alpha$Experiment,
+                     p.adjust.method = "BH")
+dunnTest(Shannon ~ Inbred_or_Hybrid, data = roots_alpha, 
+         method = "bh")
+# dunnTest(Shannon ~ Experiment, data = roots_alpha, 
+#          method = "bh")
+#Simpson
+pairwise.wilcox.test(roots_alpha$Simpson, roots_alpha$Inbred_or_Hybrid,
+                     p.adjust.method = "BH")
+pairwise.wilcox.test(roots_alpha$Simpson, roots_alpha$Experiment,
+                     p.adjust.method = "BH")
+dunnTest(Simpson ~ Inbred_or_Hybrid, data = roots_alpha, 
+         method = "bh")
+# only two experiments so cant do dunnTest
+kruskal.test(Observed ~ Experiment, data = roots_alpha)
+kruskal.test(Shannon ~ Experiment, data = roots_alpha)
+kruskal.test(Simpson ~ Experiment, data = roots_alpha)
+
+###stalks
+#Observed
+pairwise.wilcox.test(stalks_alpha$Observed, stalks_alpha$Inbred_or_Hybrid,
+                     p.adjust.method = "BH")
+pairwise.wilcox.test(stalks_alpha$Observed, stalks_alpha$Experiment,
+                     p.adjust.method = "BH")
+dunnTest(Observed ~ Inbred_or_Hybrid, data = stalks_alpha, 
+         method = "bh")
+dunnTest(Observed ~ Experiment, data = stalks_alpha, 
+         method = "bh")
+#shannon
+pairwise.wilcox.test(stalks_alpha$Shannon, stalks_alpha$Inbred_or_Hybrid,
+                     p.adjust.method = "BH")
+pairwise.wilcox.test(stalks_alpha$Shannon, stalks_alpha$Experiment,
+                     p.adjust.method = "BH")
+dunnTest(Shannon ~ Inbred_or_Hybrid, data = stalks_alpha, 
+         method = "bh")
+dunnTest(Shannon ~ Experiment, data = stalks_alpha, 
+         method = "bh")
+#Simpson
+pairwise.wilcox.test(stalks_alpha$Simpson, stalks_alpha$Inbred_or_Hybrid,
+                     p.adjust.method = "BH")
+pairwise.wilcox.test(stalks_alpha$Simpson, stalks_alpha$Experiment,
+                     p.adjust.method = "BH")
+dunnTest(Simpson ~ Inbred_or_Hybrid, data = stalks_alpha, 
+         method = "bh")
+dunnTest(Simpson ~ Experiment, data = stalks_alpha, 
+         method = "bh")
+
+## Nonparametric conclusions: there are significant differences between experiments but not between genetic background
+# Benjamini-Hochberg adjustment for dunnTest
+
+# ##### Stalk Tukeys
+# #Observed
+# obs.alpha.av <- aov(lm(Observed ~ Inbred_or_Hybrid + Experiment, data = stalks_alpha))
+# summary(obs.alpha.av)
+# tukey.all.obs <- TukeyHSD(obs.alpha.av)
+# #Shannon -> richness and equitability in distribution?
+# shn.alpha.av <- aov(lm(Shannon ~ Inbred_or_Hybrid + Experiment, data = stalks_alpha))
+# summary(shn.alpha.av)
+# tukey.all.shn <- TukeyHSD(shn.alpha.av)
+# #Simpson -> accounts proportion of species
+# simp.alpha.av <- aov(lm(Simpson ~ Inbred_or_Hybrid + Experiment, data = stalks_alpha))
+# summary(simp.alpha.av)
+# tukey.all.simp <- TukeyHSD(simp.alpha.av)
+# 
+# tukey.all.obs
+# tukey.all.shn
+# tukey.all.simp
+# 
+# 
+# ##### Root Tukeys
+# #Observed
+# obs.alpha.av <- aov(lm(Observed ~ Inbred_or_Hybrid + Experiment, data = roots_alpha))
+# summary(obs.alpha.av)
+# tukey.all.obs <- TukeyHSD(obs.alpha.av)
+# #Shannon -> richness and equitability in distribution?
+# shn.alpha.av <- aov(lm(Shannon ~ Inbred_or_Hybrid + Experiment, data = roots_alpha))
+# summary(shn.alpha.av)
+# tukey.all.shn <- TukeyHSD(shn.alpha.av)
+# #Simpson -> accounts proportion of species
+# simp.alpha.av <- aov(lm(Simpson ~ Inbred_or_Hybrid + Experiment, data = roots_alpha))
+# summary(simp.alpha.av)
+# tukey.all.simp <- TukeyHSD(simp.alpha.av)
+# 
+# tukey.all.obs
+# tukey.all.shn
+# tukey.all.simp
+# 
+# ##### Rhizos Tukeys
+# #Observed
+# obs.alpha.av <- aov(lm(Observed ~ Inbred_or_Hybrid + Experiment, data = rhizos_alpha))
+# summary(obs.alpha.av)
+# tukey.all.obs <- TukeyHSD(obs.alpha.av)
+# #Shannon -> richness and equitability in distribution?
+# shn.alpha.av <- aov(lm(Shannon ~ Inbred_or_Hybrid + Experiment, data = rhizos_alpha))
+# summary(shn.alpha.av)
+# tukey.all.shn <- TukeyHSD(shn.alpha.av)
+# #Simpson -> accounts proportion of species
+# simp.alpha.av <- aov(lm(Simpson ~ Inbred_or_Hybrid + Experiment, data = rhizos_alpha))
+# summary(simp.alpha.av)
+# tukey.all.simp <- TukeyHSD(simp.alpha.av)
+# 
+# tukey.all.obs
+# tukey.all.shn
+# tukey.all.simp
 
 
