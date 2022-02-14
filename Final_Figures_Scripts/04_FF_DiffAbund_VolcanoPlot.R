@@ -284,7 +284,7 @@ vp <- vp + geom_vline(xintercept = 0, colour = "blue") +
   scale_color_manual(values = c("Stalk" = "purple",
                                 "Rhizo" = "red",
                                 "Root" = "green",
-                                "NotSig" = "black")) #+ 
+                                "NotSig" = "dark grey")) #+ 
   #ggtitle("All Samples: Differentially Abundant ASVs")
 
 vp <- vp +   geom_text_repel(
@@ -296,4 +296,4 @@ vp <- vp +   geom_text_repel(
 )
 vp
 
-ggsave("PAG_volcano", vp, width = 10, height = 5, dpi = 300, device = "png")
+ggsave("PAG_volcano", vp, width = 14, height = 6, dpi = 300, device = "png")
