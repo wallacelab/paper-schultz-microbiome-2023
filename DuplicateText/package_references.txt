@@ -1,0 +1,231 @@
+[[1]]
+Paradis E, Schliep K (2019). “ape 5.0: an environment for modern phylogenetics
+and evolutionary analyses in R.” _Bioinformatics_, *35*, 526-528.
+
+[[2]]
+McMurdie PJ, Paulson JN (2019). _biomformat: An interface package for the BIOM
+file format_. https://github.com/joey711/biomformat/, http://biom-format.org/.
+
+[[3]]
+Pagès H, Aboyoun P, Gentleman R, DebRoy S (2019). _Biostrings: Efficient
+manipulation of biological strings_. R package version 2.54.0.
+
+[[4]]
+Gu Z, Eils R, Schlesner M (2016). “Complex heatmaps reveal patterns and
+correlations in multidimensional genomic data.” _Bioinformatics_.
+
+[[5]]
+Callahan BJ, McMurdie PJ, Rosen MJ, Han AW, Johnson AJA, Holmes SP (2016).
+“DADA2: High-resolution sample inference from Illumina amplicon data.” _Nature
+Methods_, *13*, 581-583. doi: 10.1038/nmeth.3869 (URL:
+https://doi.org/10.1038/nmeth.3869).
+
+[[6]]
+Dowle M, Srinivasan A (2021). _data.table: Extension of `data.frame`_. R package
+version 1.14.0, <URL: https://CRAN.R-project.org/package=data.table>.
+
+[[7]]
+Love MI, Huber W, Anders S (2014). “Moderated estimation of fold change and
+dispersion for RNA-seq data with DESeq2.” _Genome Biology_, *15*, 550. doi:
+10.1186/s13059-014-0550-8 (URL: https://doi.org/10.1186/s13059-014-0550-8).
+
+[[8]]
+Wickham H, Hester J, Chang W (2021). _devtools: Tools to Make Developing R
+Packages Easier_. R package version 2.4.2, <URL:
+https://CRAN.R-project.org/package=devtools>.
+
+[[9]]
+Wickham H, François R, Henry L, Müller K (2021). _dplyr: A Grammar of Data
+Manipulation_. R package version 1.0.7, <URL:
+https://CRAN.R-project.org/package=dplyr>.
+
+[[10]]
+Blighe K, Rana S, Lewis M (2019). _EnhancedVolcano: Publication-ready volcano
+plots with enhanced colouring and labeling_. R package version 1.4.0, <URL:
+https://github.com/kevinblighe/EnhancedVolcano>.
+
+[[11]]
+Larsson J (2021). _eulerr: Area-Proportional Euler and Venn Diagrams with
+Ellipses_. R package version 6.1.1, <URL:
+https://CRAN.R-project.org/package=eulerr>.
+
+Larsson J, Gustafsson P (2018). “A Case Study in Fitting Area-Proportional Euler
+Diagrams with Ellipses Using eulerr.” In _Proceedings of International Workshop
+on Set Visualization and Reasoning_, volume 2116, 84-91. <URL:
+https://cran.r-project.org/package=eulerr>.
+
+[[12]]
+Wickham H (2021). _forcats: Tools for Working with Categorical Variables
+(Factors)_. R package version 0.5.1, <URL:
+https://CRAN.R-project.org/package=forcats>.
+
+[[13]]
+Ogle DH, Doll JC, Wheeler P, Dinno A (2021). _FSA: Fisheries Stock Analysis_. R
+package version 0.9.1, <URL: https://github.com/droglenc/FSA>.
+
+[[14]]
+Wickham H (2016). _ggplot2: Elegant Graphics for Data Analysis_. Springer-Verlag
+New York. ISBN 978-3-319-24277-4, <URL: https://ggplot2.tidyverse.org>.
+
+[[15]]
+Wickham H (2016). _ggplot2: Elegant Graphics for Data Analysis_. Springer-Verlag
+New York. ISBN 978-3-319-24277-4, <URL: https://ggplot2.tidyverse.org>.
+
+[[16]]
+Kassambara A (2020). _ggpubr: 'ggplot2' Based Publication Ready Plots_. R
+package version 0.4.0, <URL: https://CRAN.R-project.org/package=ggpubr>.
+
+[[17]]
+Slowikowski K (2021). _ggrepel: Automatically Position Non-Overlapping Text
+Labels with 'ggplot2'_. R package version 0.9.1, <URL:
+https://CRAN.R-project.org/package=ggrepel>.
+
+[[18]]
+Gao C (2021). _ggVennDiagram: A 'ggplot2' Implement of Venn Diagram_. R package
+version 1.1.4, <URL: https://CRAN.R-project.org/package=ggVennDiagram>.
+
+[[19]]
+Gao C (2021). _ggVennDiagram: A 'ggplot2' Implement of Venn Diagram_. R package
+version 1.1.4, <URL: https://CRAN.R-project.org/package=ggVennDiagram>.
+
+[[20]]
+R Core Team (2020). _R: A Language and Environment for Statistical Computing_. R
+Foundation for Statistical Computing, Vienna, Austria. <URL:
+https://www.R-project.org/>.
+
+[[21]]
+Auguie B (2017). _gridExtra: Miscellaneous Functions for "Grid" Graphics_. R
+package version 2.3, <URL: https://CRAN.R-project.org/package=gridExtra>.
+
+[[22]]
+Harrell Jr FE, Dupont wcfC, others. m (2021). _Hmisc: Harrell Miscellaneous_. R
+package version 4.5-0, <URL: https://CRAN.R-project.org/package=Hmisc>.
+
+[[23]]
+Stansfield J, Dozmorov M (2019). _HMP2Data: 16s rRNA sequencing data from the
+Human Microbiome Project 2_. R package version 1.0.0, <URL:
+https://github.com/jstansfield0/HMP2Data>.
+
+[[24]]
+Csardi G, Nepusz T (2006). “The igraph software package for complex network
+research.” _InterJournal_, *Complex Systems*, 1695. <URL: https://igraph.org>.
+
+[[25]]
+Bates D, Maechler M, Jagan M (2022). _Matrix: Sparse and Dense Matrix Classes
+and Methods_. R package version 1.4-1, <URL:
+https://CRAN.R-project.org/package=Matrix>.
+
+[[26]]
+Lahti L, Shetty S (2012-2019). “microbiome R package.”
+
+[[27]]
+Shetty S, Lahti L (2021). _microbiomeutilities: microbiomeutilities: Utilities
+for Microbiome Analytics_. R package version 1.00.16.
+
+[[28]]
+Ramos M, Schiffer L, Re A, Azhar R, Basunia A, Cabrera CR, Chan T, Chapman P,
+Davis S, Gomez-Cabrero D, Culhane AC, Haibe-Kains B, Hansen K, Kodali H, Louis
+MS, Mer AS, Reister M, Morgan M, Carey V, Waldron L (2017). “Software For The
+Integration Of Multi-Omics Experiments In Bioconductor.” _Cancer Research_,
+*77(21); e39-42*.
+
+[[29]]
+McMurdie PJ, Holmes S (2013). “phyloseq: An R package for reproducible
+interactive analysis and graphics of microbiome census data.” _PLoS ONE_,
+*8*(4), e61217. <URL: http://dx.plos.org/10.1371/journal.pone.0061217>.
+
+[[30]]
+J L (2006). “Plotrix: a package in the red light district of R.” _R-News_,
+*6*(4), 8-12.
+
+[[31]]
+PAUVERT C (2021). _psadd: Additions to phyloseq package for microbiome
+analysis_. R package version 0.1.3.
+
+[[32]]
+Henry L, Wickham H (2020). _purrr: Functional Programming Tools_. R package
+version 0.3.4, <URL: https://CRAN.R-project.org/package=purrr>.
+
+[[33]]
+Bisanz JE (2018). “qiime2R: Importing QIIME2 artifacts and associated data into
+R sessions.” v0.99, <URL: https://github.com/jbisanz/qiime2R>.
+
+[[34]]
+Chen W, Simpson J, Levesque CA (2018). _RAM: R for Amplicon-Sequencing-Based
+Microbial-Ecology_. R package version 1.2.1.7, <URL:
+https://CRAN.R-project.org/package=RAM>.
+
+Chen W, Simpson J, Levesque CA (2018). “RAM: R for Amplicon-Sequencing-Based
+Microbial-Ecology.” R package version 1.2.1.7, <URL:
+https://cran.r-project.org/package=RAM>.
+
+[[35]]
+Smith D (2021). _rbiom: Read/Write, Transform, and Summarize 'BIOM' Data_. R
+package version 1.0.2.9025, <URL: https://cmmr.github.io/rbiom/index.html>.
+
+[[36]]
+Neuwirth E (2014). _RColorBrewer: ColorBrewer Palettes_. R package version
+1.1-2, <URL: https://CRAN.R-project.org/package=RColorBrewer>.
+
+[[37]]
+Wickham H (2007). “Reshaping data with the reshape package.” _Journal of
+Statistical Software_, *21*(12). <URL: http://www.jstatsoft.org/v21/i12/paper>.
+
+[[38]]
+Wickham H (2007). “Reshaping Data with the reshape Package.” _Journal of
+Statistical Software_, *21*(12), 1-20. <URL: http://www.jstatsoft.org/v21/i12/>.
+
+[[39]]
+Wickham H, Seidel D (2020). _scales: Scale Functions for Visualization_. R
+package version 1.1.1, <URL: https://CRAN.R-project.org/package=scales>.
+
+[[40]]
+Morgan M, Obenchain V, Hester J, Pagès H (2019). _SummarizedExperiment:
+SummarizedExperiment container_. R package version 1.16.1.
+
+[[41]]
+Wickham H (2021). _tidyr: Tidy Messy Data_. R package version 1.1.3, <URL:
+https://CRAN.R-project.org/package=tidyr>.
+
+[[42]]
+Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G,
+Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K,
+Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K,
+Yutani H (2019). “Welcome to the tidyverse.” _Journal of Open Source Software_,
+*4*(43), 1686. doi: 10.21105/joss.01686 (URL:
+https://doi.org/10.21105/joss.01686).
+
+[[43]]
+Gehlenborg N (2019). _UpSetR: A More Scalable Alternative to Venn and Euler
+Diagrams for Visualizing Intersecting Sets_. R package version 1.4.0, <URL:
+https://CRAN.R-project.org/package=UpSetR>.
+
+[[44]]
+Oksanen J, Blanchet FG, Friendly M, Kindt R, Legendre P, McGlinn D, Minchin PR,
+O'Hara RB, Simpson GL, Solymos P, Stevens MHH, Szoecs E, Wagner H (2020).
+_vegan: Community Ecology Package_. R package version 2.5-7, <URL:
+https://CRAN.R-project.org/package=vegan>.
+
+
+To cite R in publications use:
+
+  R Core Team (2020). R: A language and environment for statistical computing. R
+  Foundation for Statistical Computing, Vienna, Austria. URL
+  https://www.R-project.org/.
+
+A BibTeX entry for LaTeX users is
+
+  @Manual{,
+    title = {R: A Language and Environment for Statistical Computing},
+    author = {{R Core Team}},
+    organization = {R Foundation for Statistical Computing},
+    address = {Vienna, Austria},
+    year = {2020},
+    url = {https://www.R-project.org/},
+  }
+
+We have invested a lot of time and effort in creating R, please cite it when
+using it for data analysis. See also ‘citation("pkgname")’ for citing R
+packages.
+
+R version 3.6.3 (2020-02-29)
