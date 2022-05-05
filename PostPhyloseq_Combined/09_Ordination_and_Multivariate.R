@@ -206,11 +206,13 @@ plot_ordination(physeq = stalksF, ordination = stalk_nmds,
 jacc_dist = phyloseq::distance(phyCmbFilt, method = "jaccard")
 BC.dist = phyloseq::distance(phyCmbFilt, method = "bray")
 
-adonist_results <- adonis(BC.dist ~ sample_data(phyCmbFilt)$Experiment 
-                          + sample_data(phyCmbFilt)$Sample_Type
-                          + sample_data(phyCmbFilt)$Inbred_or_Hybrid
-                          + sample_data(phyCmbFilt)$Genotype
-                          + sample_data(phyCmbFilt)$Location)
+BC.dist.ph2 = phyloseq::distance(phy2, method = "bray")
+
+adonist_results <- adonis(BC.dist.ph2 ~ sample_data(phy2)$Experiment 
+                          + sample_data(phy2)$Sample_Type
+                          + sample_data(phy2)$Inbred_or_Hybrid
+                          + sample_data(phy2)$Genotype
+                          + sample_data(phy2)$Location)
 adonist_results
  
 # Why do we use sample_data call from phyloseq?   https://micca.readthedocs.io/en/latest/phyloseq.html same as http://deneflab.github.io/MicrobeMiseq/demos/mothur_2_phyloseq.html#unconstrained_ordinations

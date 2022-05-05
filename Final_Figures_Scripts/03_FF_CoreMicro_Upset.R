@@ -179,7 +179,7 @@ for (n in ExperimentGroups){
  
   core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
                          detection = .001,            # .001 in atleast 90% of samples
-                         prevalence = 0.5)  
+                         prevalence = 0.9)  
   list_core[[n]] <- core_m
   
   for(i in core_m){
