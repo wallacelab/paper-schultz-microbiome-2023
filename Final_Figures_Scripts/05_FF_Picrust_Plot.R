@@ -181,7 +181,7 @@ plot_diff_funct_IvH <- function(phyloseq_obj, metadata_category, title){
   plot <- ggplot(st, aes(x = Functional_Group, y = log2FoldChange, fill = log2FoldChange < 0)) + 
     geom_bar(stat = 'identity') + ggtitle(title) +
     theme(axis.text.x = element_text(angle = 90, size = 12)) + 
-    scale_fill_manual("More abundant in Inbreds or Hybrids", labels = c("Inbred Plants","Hybrid Plants"),values = c("turquoise", "indianred1")) + coord_flip()
+    scale_fill_manual("More abundant in:", labels = c("Inbred Plants","Hybrid Plants"),values = c("turquoise", "indianred1")) + coord_flip()
   
   return(plot)
 }  
@@ -194,7 +194,9 @@ Fig_5 <- plot_diff_funct_IvH(roots_EC, ~Inbred_or_Hybrid, "Roots: Inbred vs Hybr
 
 Fig_5 
 
-
+ggsave("Fig4_DiffAbund.png", 
+       path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Results/PaperFigures",
+       Fig_5, device = "png", width = 9, height = 6, dpi = 600)
 
 
 ###################################

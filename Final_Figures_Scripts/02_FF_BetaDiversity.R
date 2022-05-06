@@ -254,17 +254,21 @@ metadata$Experiment[metadata$Experiment == 'GH'] <- 'Greenhouse'
 w1 <- wunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
   left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Inbred_or_Hybrid`)) +
-  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Genetic Background") #alpha controls transparency and helps when points are overlapping
+  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Genetic Background") + 
+  theme(legend.position="bottom", legend.text = element_text(size = 10)) + 
+  guides(color=guide_legend(nrow=2, byrow = TRUE)) #alpha controls transparency and helps when points are overlapping
 
 w2 <- wunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
   left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Sample_Type`)) +
-  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Sample Type") #alpha controls transparency and helps when points are overlapping
+  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Sample Type") + 
+  theme(legend.position="bottom", legend.text = element_text(size = 10)) #alpha controls transparency and helps when points are overlapping
 
 w3 <- wunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
   left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Experiment`)) +
-  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Experiment") #alpha controls transparency and helps when points are overlapping
+  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Experiment") + 
+  theme(legend.position="bottom", legend.text = element_text(size = 10)) #alpha controls transparency and helps when points are overlapping
 
 u1 <- unwunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
@@ -283,7 +287,11 @@ u3 <- unwunifrac_cmb$data$Vectors %>%
 
 
 ggcmb <- ggarrange(w1,w2,w3, nrow = 1, ncol = 3, labels = c("A","B","C"))
-ggsave("PAG_beta_cmb.png", ggcmb, device = "png", width = 10, height = 5, dpi = 1000)
+
+
+ggsave("Fig2_Beta.png", 
+       path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Results/PaperFigures",
+       ggcmb, device = "png", width = 15, height = 5, dpi = 600)
 
 ggarrange(u1,u2,u3, nrow = 1, ncol = 3, labels = c("A","B","C"))
 

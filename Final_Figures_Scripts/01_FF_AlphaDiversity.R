@@ -21,6 +21,11 @@ setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome
 # Read in the data
 
 metadata <- read.csv("Combined_Key.csv", header = TRUE, sep = "\t")
+#new_expnames <- metadata
+#new_expnames$Experiment <- gsub("END","Field2", new_expnames$Experiment) 
+#new_expnames$Experiment <- gsub("MMH","Field1", new_expnames$Experiment)
+write.table(new_expnames,file = "NewName_Metadata.csv", quote=FALSE, sep = '\t',row.names = FALSE)
+new_metadata <- read.csv("NewName_Metadata.csv", header = TRUE, sep = "\t")
 
 SVs <- read_qza("Combined_qza_files/Combined_deblur_table.qza")
 
@@ -30,7 +35,7 @@ taxtable <- taxtable %>% separate(Taxon, into = c("Kingdom","Phylum","Class","Or
 
 tree <- read_qza("Combined_qza_files/Combined_rooted_tree.qza")
 
-phy <- qza_to_phyloseq("Combined_qza_files/Combined_deblur_table.qza", "Combined_qza_files/Combined_rooted_tree.qza", "Combined_Results/TaxonomyStuff/Combined.taxonomy.qza", "Combined_Key.csv")
+phy <- qza_to_phyloseq("Combined_qza_files/Combined_deblur_table.qza", "Combined_qza_files/Combined_rooted_tree.qza", "Combined_Results/TaxonomyStuff/Combined.taxonomy.qza", "NewName_Metadata.csv")
 phy
 
 ##### FILTERING
@@ -451,6 +456,7 @@ roots_alpha
 alpha_diversity <- ggarrange(stalk_alpha, roots_alpha, rhizos_alpha, ncol = 1, nrow = 3, labels = c("A","B","C"))
 alpha_diversity # Figure for final paper
 
+ggsave("Fig1_Alpha.png", alpha_diversity, device = "png", width = 8, height = 8, dpi = 300)
 # Figure out how to jitter based on inbred or hybrid. Alpha doesnt seem to be working?
 
 # Alpha Diversity P values
