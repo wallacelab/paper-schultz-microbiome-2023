@@ -19,7 +19,10 @@ metadata <- read.csv("Combined_Key.csv", header = TRUE, sep = "\t")
 setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Picrust2")
 
 KO_table <- read.csv("KO_pred_metagenome_unstrat_descript.tsv", header=TRUE, sep="\t", row.names=1)
-head(KO_table)[1:10]
+phy2_KO_table <- read.csv("ph2_KOtable_descript.tsv", header=TRUE, sep="\t", row.names=1)
+phy2NB_KO_table <- read.csv("ph2noblank_KOtable_descript.tsv", header=TRUE, sep="\t", row.names=1)
+
+head(phy2_KO_table)[1:10]
 
 kegg_brite_map <- read.table("picrust1_KO_BRITE_map.tsv",
                              header=TRUE, sep="\t", quote = "", stringsAsFactors = FALSE, comment.char="", row.names=1)
@@ -83,7 +86,7 @@ categorize_by_function_l3 <- function(in_ko, kegg_brite_mapping) {
 ### categorize by function similar to picrust1
 
 ### Run function to categorize all KOs by level 3 in BRITE hierarchy.
-table_ko_L3 <- categorize_by_function_l3(KO_table, brite_map_trim)
+table_ko_L3 <- categorize_by_function_l3(phy2NB_KO_table, brite_map_trim)
 # test_ko_L3_sorted <- test_ko_L3[rownames(orig_ko_L3), ]
 head(table_ko_L3)[1:10]
 ko_l3 <- table_ko_L3
@@ -201,79 +204,79 @@ ggsave("Fig4_DiffAbund.png",
 
 ###################################
 # #### All Tissues
-# # Inbred vs hybrid
-# Diff_abun_func_IvH(EC_phy, ~Inbred_or_Hybrid, 0.001)
-# plot_diff_funct_IvH(EC_phy, ~Inbred_or_Hybrid, " All Tissues: Inbred vs Hybrid")
-# 
-# # Location
-# Diff_abun_func_location(EC_phy, ~Location, 0.001)
-# plot_diff_funct_location(EC_phy, ~Location, " All Tissues: Inbred vs Hybrid/Open Pollinated")
-# 
-# 
-# ### All Experiments
-# 
-# # Inbred vs Hybrid
-# Diff_abun_func_IvH(stalks_EC, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(rhizos_EC, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(roots_EC, ~Inbred_or_Hybrid, 0.001)
-# plot_diff_funct_IvH(roots_EC, ~Inbred_or_Hybrid, "Roots: Inbred vs Hybrid Functional Predictions")
-# 
-# # Location
-# Diff_abun_func_location(stalks_EC, ~Location, 0.001)
-# Diff_abun_func_location(rhizos_EC, ~Location, 0.001)
-# Diff_abun_func_location(roots_EC, ~Location, 0.001)
-# Diff_abun_func_location(EC_phy, ~Location, 0.001)
-# 
-# ### By Experiment - Inbred vs Hybrid
-# # GH
-# All_T_GH <- subset_samples(EC_phy, Experiment=="GH")
-# stalks_GH <- subset_samples(stalks_EC, Experiment=="GH")
-# rhizos_GH <- subset_samples(rhizos_EC, Experiment=="GH")
-# roots_GH <- subset_samples(roots_EC, Experiment=="GH")
-# 
-# Diff_abun_func_IvH(All_T_GH, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(stalks_GH, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(rhizos_GH, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(roots_GH, ~Inbred_or_Hybrid, 0.001)
-# 
-# plot_diff_funct(All_T_GH, ~Inbred_or_Hybrid, " All Tissues in GH: Inbred vs Hybrid/Open Pollinated")
-# 
-# # END
-# All_T_END <- subset_samples(EC_phy, Experiment=="END")
-# stalks_END <- subset_samples(stalks_EC, Experiment=="END")
-# rhizos_END <- subset_samples(rhizos_EC, Experiment=="END")
-# roots_END <- subset_samples(roots_EC, Experiment=="END")
-# 
-# Diff_abun_func_IvH(All_T_END, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(stalks_END, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(rhizos_END, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(roots_END, ~Inbred_or_Hybrid, 0.001)
-# 
-# plot_diff_funct(roots_END, ~Inbred_or_Hybrid, " Roots in END: Inbred vs Hybrid/Open Pollinated")
-# 
-# 
-# # MMH
-# All_T_MMH <- subset_samples(EC_phy, Experiment=="MMH")
-# stalks_MMH <- subset_samples(stalks_EC, Experiment=="MMH")
-# rhizos_MMH <- subset_samples(rhizos_EC, Experiment=="MMH")
-# 
-# Diff_abun_func_IvH(All_T_MMH, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(stalks_MMH, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(rhizos_MMH, ~Inbred_or_Hybrid, 0.001)
-# 
-# 
-# plot_diff_funct(All_T_MMH, ~Inbred_or_Hybrid, " All tissues in MMH: Inbred vs Hybrid/Open Pollinated")
-# 
-# 
-# 
-# #### Figure for the paper
-# library(ggpubr)
-# p1 <- plot_diff_funct(stalks_EC, ~Location, "All Stalk Samples: Greenhouse vs Field")
-# p2 <- plot_diff_funct(rhizos_EC, ~Location, "All Rhizo Samples: Greenhouse vs Field")
-# p3 <- plot_diff_funct(roots_EC, ~Location, "All Root Samples: Greenhouse vs Field")
-# 
-# pf <- ggarrange(p1,p2,p3, labels = c("A","B","C"), ncol = 3, nrow =1)
-# 
+# Inbred vs hybrid
+Diff_abun_func_IvH(EC_phy, ~Inbred_or_Hybrid, 0.001)
+plot_diff_funct_IvH(EC_phy, ~Inbred_or_Hybrid, " All Tissues: Inbred vs Hybrid")
+
+# Location
+Diff_abun_func_location(EC_phy, ~Location, 0.001)
+plot_diff_funct_location(EC_phy, ~Location, " All Tissues: Greenhouse vs Field")
+
+
+### All Experiments
+
+# Inbred vs Hybrid
+Diff_abun_func_IvH(stalks_EC, ~Inbred_or_Hybrid, 0.001)
+Diff_abun_func_IvH(rhizos_EC, ~Inbred_or_Hybrid, 0.001)
+Diff_abun_func_IvH(roots_EC, ~Inbred_or_Hybrid, 0.001)
+plot_diff_funct_IvH(roots_EC, ~Inbred_or_Hybrid, "Roots: Inbred vs Hybrid Functional Predictions")
+
+# Location
+Diff_abun_func_location(stalks_EC, ~Location, 0.001)
+Diff_abun_func_location(rhizos_EC, ~Location, 0.001)
+Diff_abun_func_location(roots_EC, ~Location, 0.001)
+Diff_abun_func_location(EC_phy, ~Location, 0.001)
+
+### By Experiment - Inbred vs Hybrid
+# GH
+All_T_GH <- subset_samples(EC_phy, Experiment=="GH")
+stalks_GH <- subset_samples(stalks_EC, Experiment=="GH")
+rhizos_GH <- subset_samples(rhizos_EC, Experiment=="GH")
+roots_GH <- subset_samples(roots_EC, Experiment=="GH")
+
+Diff_abun_func_IvH(All_T_GH, ~Inbred_or_Hybrid, 0.001)
+Diff_abun_func_IvH(stalks_GH, ~Inbred_or_Hybrid, 0.001)
+Diff_abun_func_IvH(rhizos_GH, ~Inbred_or_Hybrid, 0.001)
+Diff_abun_func_IvH(roots_GH, ~Inbred_or_Hybrid, 0.001)
+
+plot_diff_funct(All_T_GH, ~Inbred_or_Hybrid, " All Tissues in GH: Inbred vs Hybrid/Open Pollinated")
+
+# END
+All_T_END <- subset_samples(EC_phy, Experiment=="END")
+stalks_END <- subset_samples(stalks_EC, Experiment=="END")
+rhizos_END <- subset_samples(rhizos_EC, Experiment=="END")
+roots_END <- subset_samples(roots_EC, Experiment=="END")
+
+Diff_abun_func_IvH(All_T_END, ~Inbred_or_Hybrid, 0.001)
+Diff_abun_func_IvH(stalks_END, ~Inbred_or_Hybrid, 0.001)
+Diff_abun_func_IvH(rhizos_END, ~Inbred_or_Hybrid, 0.001)
+Diff_abun_func_IvH(roots_END, ~Inbred_or_Hybrid, 0.001)
+
+plot_diff_funct(roots_END, ~Inbred_or_Hybrid, " Roots in END: Inbred vs Hybrid/Open Pollinated")
+
+
+# MMH
+All_T_MMH <- subset_samples(EC_phy, Experiment=="MMH")
+stalks_MMH <- subset_samples(stalks_EC, Experiment=="MMH")
+rhizos_MMH <- subset_samples(rhizos_EC, Experiment=="MMH")
+
+Diff_abun_func_IvH(All_T_MMH, ~Inbred_or_Hybrid, 0.001)
+Diff_abun_func_IvH(stalks_MMH, ~Inbred_or_Hybrid, 0.001)
+Diff_abun_func_IvH(rhizos_MMH, ~Inbred_or_Hybrid, 0.001)
+
+
+plot_diff_funct(All_T_MMH, ~Inbred_or_Hybrid, " All tissues in MMH: Inbred vs Hybrid/Open Pollinated")
+
+
+
+#### Figure for the paper
+library(ggpubr)
+p1 <- plot_diff_funct(stalks_EC, ~Location, "All Stalk Samples: Greenhouse vs Field")
+p2 <- plot_diff_funct(rhizos_EC, ~Location, "All Rhizo Samples: Greenhouse vs Field")
+p3 <- plot_diff_funct(roots_EC, ~Location, "All Root Samples: Greenhouse vs Field")
+
+pf <- ggarrange(p1,p2,p3, labels = c("A","B","C"), ncol = 3, nrow =1)
+
 # 
 # 
 # # Cleaned up all this code with functions - should i delete this all?
