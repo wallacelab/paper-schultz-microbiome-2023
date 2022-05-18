@@ -251,24 +251,55 @@ metadata$Experiment[metadata$Experiment == 'MMH'] <- ('Field_1')
 metadata$Experiment[metadata$Experiment == 'END'] <- 'Field_2'
 metadata$Experiment[metadata$Experiment == 'GH'] <- 'Greenhouse'
 
+#  + ggtitle("Weighted Unifrac and Genetic Background") 
 w1 <- wunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
-  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Inbred_or_Hybrid`)) +
-  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Genetic Background") + 
-  theme(legend.position="bottom", legend.text = element_text(size = 10)) + 
-  guides(color=guide_legend(nrow=2, byrow = TRUE)) #alpha controls transparency and helps when points are overlapping
+  left_join(metadata) %>% filter(Inbred_or_Hybrid == "Inbred"|
+                                   Inbred_or_Hybrid == "Hybrid"|
+                                   Inbred_or_Hybrid == "Open_Pollinated") %>%
+  ggplot( aes(x=PC1, y=PC2, color=`Inbred_or_Hybrid`)) +
+  geom_point(alpha=0.5, size = 3) + scale_color_manual(values = c("Hybrid" = "firebrick",
+                                                          "Inbred" = "royalblue3",
+                                                          "Open_Pollinated" = "orange")) + 
+  theme(legend.position="bottom", legend.text = element_text(size = 10)) #alpha controls transparency and helps when points are overlapping
 
+#+ ggtitle("Weighted Unifrac and Sample Type")
 w2 <- wunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
-  left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Sample_Type`)) +
-  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Sample Type") + 
+  left_join(metadata) %>% filter(Sample_Type == "Rhizosphere"|
+                                   Sample_Type == "Root"|
+                                   Sample_Type == "Stalk") %>% ggplot( aes(x=PC1, y=PC2, color=`Sample_Type`)) +
+  geom_point(alpha=0.5, size = 3) + scale_color_manual(values = c("Rhizosphere" = "purple",
+                                                          "Root" = "tan4",
+                                                          "Stalk" = "olivedrab")) + 
   theme(legend.position="bottom", legend.text = element_text(size = 10)) #alpha controls transparency and helps when points are overlapping
+
+#+ ggtitle("Weighted Unifrac and Experiment")
 
 w3 <- wunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
   left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Experiment`)) +
-  geom_point(alpha=0.5) + ggtitle("Weighted Unifrac and Experiment") + 
+  geom_point(alpha=0.5, size = 3) +   scale_color_manual(values = c("Field_1" = "cyan3",
+                                                          "Field_2" = "gold3",
+                                                          "Greenhouse" = "green4"
+                                                          )) + 
   theme(legend.position="bottom", legend.text = element_text(size = 10)) #alpha controls transparency and helps when points are overlapping
+
+
+ggcmb <- ggarrange(w3,w2,w1, nrow = 1, ncol = 3, labels = c("A","B","C"))
+ggcmb
+
+ggsave("Fig2_Beta.png", 
+       path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Results/PaperFigures",
+       ggcmb, device = "png", width = 15, height = 5, dpi = 600)
+
+
+
+
+
+
+
+
 
 u1 <- unwunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
@@ -286,12 +317,11 @@ u3 <- unwunifrac_cmb$data$Vectors %>%
   geom_point(alpha=0.5) + ggtitle("Unweighted Unifrac and Experiment") 
 
 
-ggcmb <- ggarrange(w1,w2,w3, nrow = 1, ncol = 3, labels = c("A","B","C"))
+
+#######################################################################################################################################################
 
 
-ggsave("Fig2_Beta.png", 
-       path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Results/PaperFigures",
-       ggcmb, device = "png", width = 15, height = 5, dpi = 600)
+
 
 ggarrange(u1,u2,u3, nrow = 1, ncol = 3, labels = c("A","B","C"))
 
