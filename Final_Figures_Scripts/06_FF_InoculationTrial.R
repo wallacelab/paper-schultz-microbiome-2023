@@ -76,17 +76,19 @@ mycompares = list(c("F1", "Control"),c("MO17", "Control"),c("B73", "Control"))
 New_MM_data$Inoculation <- factor(New_MM_data$Inoculation, levels = c("B73","MO17","F1","Control"))
 
 abv_f <- ggplot(data = New_MM_data, aes(x =Inoculation, y = Above, fill = Inoculation )) + geom_point(aes(colour = Inoculation), size = 4) + ylab("Dried Mass (g)") +
-  xlab("Inoculation Microbes") + ggtitle("Dried Above Ground Mass") +
+  xlab("Inoculation Source") + ylab("Dried Above Ground Mass (g)") +
   theme(axis.text=element_text(size=18),
         axis.title=element_text(size=18)) + 
-  stat_compare_means(comparisons = mycompares, method = "t.test")
+  stat_compare_means(comparisons = mycompares, method = "t.test",size = 8) + theme(legend.position="none")
 
 blw_f <- ggplot(data = New_MM_data, aes(x =Inoculation, y = Below, fill = Inoculation )) + geom_point(aes(colour = Inoculation), size = 4) + ylab("Dried Mass (g)") +
-  xlab("Inoculation Microbes") + ggtitle("Dried Below Ground Mass")+
+  xlab("Inoculation Source") + ylab("Dried Below Ground Mass (g)")+
   theme(axis.text=element_text(size=18),
         axis.title=element_text(size=18)) + 
-  stat_compare_means(comparisons = mycompares, method = "t.test")
+  stat_compare_means(comparisons = mycompares, method = "t.test",size = 8) + theme(legend.position="none")
 
 MM_inoc <- ggarrange(abv_f,blw_f, ncol = 2, nrow = 1)
+MM_inoc
 
-ggsave("MM_inoc_PAG", MM_inoc, width = 10, height = 5, dpi = 300, device = "png")
+ggsave("Figure6_MM_D2.png", MM_inoc, path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures",
+       width = 10, height = 8, dpi = 600, device = "png")

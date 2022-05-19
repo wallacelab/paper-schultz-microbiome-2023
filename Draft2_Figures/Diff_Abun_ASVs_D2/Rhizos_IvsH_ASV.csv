@@ -1,0 +1,3 @@
+"","baseMean","log2FoldChange","lfcSE","stat","pvalue","padj","Kingdom","Phylum","Class","Order","Family","Genus","Species"
+"8d9881797d48d4e5e02c2cdd5fcb155c",8.33926945030208,2.35964301437116,0.448815424078448,5.25749091448051,1.46034106751195e-07,2.11749454789233e-05,"Bacteria","Proteobacteria","Gammaproteobacteria","Betaproteobacteriales","Burkholderiaceae",NA,NA
+"420e120c27c3b515362aed81eb9d90ea",4.55802026002362,-2.62407043515087,0.449716297911642,-5.83494627020709,5.38079036400783e-09,1.56042920556227e-06,"Bacteria","Proteobacteria","Alphaproteobacteria","Sphingomonadales","Sphingomonadaceae","Sphingomonas",NA
