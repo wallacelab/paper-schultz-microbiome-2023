@@ -131,9 +131,26 @@ shared_df <- merge(binary_full,taxa_matrix, by = 'row.names', all = FALSE)
 
 # Test without colors and queiries
 #complex <- ComplexUpset::upset(binary_full, Tissue_and_Background, name = "Tissue and Background Genus")
+the_intersections = list(c("Inbred Rhizosphere","Hybrid Rhizosphere", "Inbred Root", "Hybrid Root"),
+                         c('Hybrid Rhizosphere','Inbred Rhizosphere'),
+                         c('Hybrid Root','Inbred Root'),
+                         c('Hybrid Stalk','Inbred Stalk'),
+                         c('Hybrid Root','Hybrid Rhizosphere'),
+                         c('Inbred Root','Inbred Rhizosphere'))
 
 complex <- ComplexUpset::upset(shared_df, Tissue_and_Background, name = "Tissue and Background Common Genus",
-                               max_size = 100, min_degree=2,
+                               max_size = 100, min_degree=2,width_ratio=0.1, intersections = the_intersections,base_annotations=list(
+                                 'Intersection size'=intersection_size(
+                                   text_colors=c(
+                                     on_background='black', on_bar='white'
+                                   )
+                                 )
+                                 + annotate(geom='text', x=1, y=25,label='All Underground', color = 'white', angle = 90, size = 6)
+                                 + annotate(geom='text', x=2, y=25,label='Inbred Underground', color = 'royalblue3', angle = 90, size = 6)
+                                 + annotate(geom='text', x=3, y=25,label='Hybrid Underground', color = 'firebrick', angle = 90, size = 6)
+                                 + annotate(geom='text', x=4, y=25,label='Rhizosphere', color = 'purple', angle = 90, size = 6)
+                                 + annotate(geom='text', x=5, y=25,label='Root', color = 'tan3', angle = 90, size = 6)
+                                 + annotate(geom='text', x=6, y=25,label='Stalk', color = 'olivedrab', angle = 90, size = 6)),
                                queries = list(
                                  upset_query(
                                    intersect = c('Hybrid Rhizosphere',
@@ -153,21 +170,21 @@ complex <- ComplexUpset::upset(shared_df, Tissue_and_Background, name = "Tissue 
                                  upset_query(set='Inbred Rhizosphere', fill='purple'), upset_query(set='Hybrid Rhizosphere', fill='purple'),
                                  upset_query(set='Inbred Root', fill='tan4'), upset_query(set='Hybrid Root', fill='tan4'),
                                  upset_query(set='Inbred Stalk', fill='olivedrab'), upset_query(set='Hybrid Stalk', fill='olivedrab')
-                               ),   annotations = list(
-                                 'Phylum Breakdown'=(
-                                   ggplot(mapping=aes(fill=Phylum))
-                                   + geom_bar(stat='count', position='fill')
-                                   + scale_y_continuous(labels=scales::percent_format())
-                                   )
-                                   + ylab('Phylum Percentage') 
-                                 ), guides = 'over'
                                )
+                               # , annotations = list(
+                               #   'Phylum Breakdown'=(
+                               #     ggplot(mapping=aes(fill=Phylum))
+                               #     + geom_bar(stat='count', position='fill')
+                               #     + scale_y_continuous(labels=scales::percent_format())
+                               #   )
+                               #   + ylab('Phylum Percentage') 
+                               # # This is for the phylum breakdown
+                               ) 
 complex
 
 ggsave("Fig3_Common_D2.png",
        path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures",
-       complex, device = "png", width = 8, height = 8, dpi = 600)
-
+       complex, device = "png", width = 10, height = 10, dpi = 600)
 
 
 # ###########################################

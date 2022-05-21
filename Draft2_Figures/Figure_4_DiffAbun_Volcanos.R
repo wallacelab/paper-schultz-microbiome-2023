@@ -33,7 +33,7 @@ library(UpSetR)
 library(data.table)
 library(ggVennDiagram)
 library(DESeq2)
-
+library(ggrepel)
 
 
 setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS")
@@ -232,15 +232,16 @@ write.csv(as.data.frame(root_vs_rhizo), file="RootvsRhizos.csv")
 stalk_df_all<- plot_diff_abund(stalksF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
 plot_df <- stalk_df_all
 
-plot_df$Significance <- ifelse(plot_df$padj > 0.001, 'NotSig','Sig')
-plot_df$Significance <- plot_df$Significance%>% replace_na("NotSig")
 
+plot_df$Significance <- ifelse(plot_df$padj > 0.001 | is.na(plot_df$padj), 'NotSig', ifelse(plot_df$log2FoldChange > 0,'Hybrid','Inbred') )
 sih <- ggplot(data=plot_df, aes(x=log2FoldChange, y=log10(pvalue))) + 
-  geom_point(aes(colour = Significance), size = 6) + coord_flip() + scale_y_reverse() +
-  scale_color_manual(values = c("Sig" = "olivedrab",
+  geom_point(aes(colour = Significance), size = 6) + scale_y_reverse(limits = c(0, -20)) + scale_x_continuous(limits = c(-4, 4)) + 
+  scale_color_manual(values = c("Inbred" = "royalblue3",
+                                "Hybrid" = "firebrick",
                                 "NotSig" = "grey"))+ theme(axis.text=element_text(size=18),
         axis.title=element_text(size=18)) + geom_vline(xintercept = 0, colour = "blue") + 
-  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Stalks: Inbred vs Hybrid") + theme(legend.position="none") +
+  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Stalks") +
+  theme(legend.position="none", axis.title.x = element_blank()) + theme(plot.title = element_text(colour = "olivedrab")) +
   geom_text_repel(
   data = subset(plot_df, padj < 0.001),
   aes(label = Family),
@@ -250,15 +251,15 @@ sih <- ggplot(data=plot_df, aes(x=log2FoldChange, y=log10(pvalue))) +
 root_df_all<- plot_diff_abund(rootsF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
 plot_df <- root_df_all
 
-plot_df$Significance <- ifelse(plot_df$padj > 0.001, 'NotSig','Sig')
-plot_df$Significance <- plot_df$Significance%>% replace_na("NotSig")
-
+plot_df$Significance <- ifelse(plot_df$padj > 0.001 | is.na(plot_df$padj), 'NotSig', ifelse(plot_df$log2FoldChange > 0,'Hybrid','Inbred') )
 rootih <- ggplot(data=plot_df, aes(x=log2FoldChange, y=log10(pvalue))) + 
-  geom_point(aes(colour = Significance), size = 6) + coord_flip() + scale_y_reverse() +
-  scale_color_manual(values = c("Sig" = "tan3",
+  geom_point(aes(colour = Significance), size = 6) + scale_y_reverse(limits = c(0, -20)) + scale_x_continuous(limits = c(-4, 4)) +
+  scale_color_manual(values = c("Inbred" = "royalblue3",
+                                "Hybrid" = "firebrick",
                                 "NotSig" = "grey"))+ theme(axis.text=element_text(size=18),
-                                                           axis.title=element_text(size=18)) + geom_vline(xintercept = 0, colour = "blue") + 
-  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Roots: Inbred vs Hybrid") + theme(legend.position="none") +
+                                                           axis.title=element_text(size=18),legend.position="none") + geom_vline(xintercept = 0, colour = "blue") + 
+  theme(axis.title.x = element_blank()) +
+  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Roots") + theme(plot.title = element_text(colour = "tan3")) +
   geom_text_repel(
     data = subset(plot_df, padj < 0.001),
     aes(label = Family),
@@ -268,25 +269,30 @@ rootih <- ggplot(data=plot_df, aes(x=log2FoldChange, y=log10(pvalue))) +
 rhizos_df_all<- plot_diff_abund(rhizosF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
 plot_df <- rhizos_df_all
 
-plot_df$Significance <- ifelse(plot_df$padj > 0.001, 'NotSig','Sig')
-plot_df$Significance <- plot_df$Significance%>% replace_na("NotSig")
-
+plot_df$Significance <- ifelse(plot_df$padj > 0.001 | is.na(plot_df$padj), 'NotSig', ifelse(plot_df$log2FoldChange > 0,'Hybrid','Inbred') )
 rhizih <- ggplot(data=plot_df, aes(x=log2FoldChange, y=log10(pvalue))) + 
-  geom_point(aes(colour = Significance), size = 6) + coord_flip() + scale_y_reverse() +
-  scale_color_manual(values = c("Sig" = "purple",
-                                "NotSig" = "grey"))+ theme(axis.text=element_text(size=18),
+  geom_point(aes(colour = Significance), size = 6) + scale_y_reverse(limits = c(0, -20)) + scale_x_continuous(limits = c(-4, 4)) +
+  scale_color_manual(values = c("Inbred" = "royalblue3",
+                                "Hybrid" = "firebrick",
+                                "NotSig" = "grey"),
+                     labels = c("Inbred","Hybrid", "Not Significant"))+ theme(axis.text=element_text(size=18),
                                                            axis.title=element_text(size=18)) + geom_vline(xintercept = 0, colour = "blue") + 
-  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Rhizos: Inbred vs Hybrid") + theme(legend.position="none") +
+  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Rhizos") + theme(plot.title = element_text(colour = "purple")) + theme(legend.position="bottom",
+                                                                          legend.title = element_text(size = 16),
+                                                                          legend.text = element_text(size = 16)) +
   geom_text_repel(
     data = subset(plot_df, padj < 0.001),
     aes(label = Family),
     size = 5)
+rhizih$labels$colour <- 'More Abundant In:'
 
 IvH_Fig <- ggarrange(sih,rootih,rhizih, nrow = 3, ncol = 1)
+IvH_Fig
 
 ggsave("Fig4_IvsH_D2.png",
        path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures",
-       IvH_Fig, device = "png", width = 10, height = 8, dpi = 600)
+       IvH_Fig, device = "png", width = 10, height = 12, dpi = 600)
+################################################
 ################################################
 ### Tissue Comparison
 

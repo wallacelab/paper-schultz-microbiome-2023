@@ -68,46 +68,47 @@ head(otu_table(phy_data_rel))
 ##############################################
 #All in one and hill numbers - q2 Functional diversity
 
-fig1 <- plot_richness(phy_data_rare, x="Experiment",
-                           measures=c("Observed", "Shannon", "Simpson"), 
+phy_data_rare <- subset_samples(phy_data_rare, Sample_Type!="Soil")
+
+fig1 <- plot_richness(phy_data_rare, x="Sample_Type",
+                           measures=c("Observed", "Shannon"), 
               color = "Inbred_or_Hybrid",
-              shape = "Sample_Type", 
-              title = "Alpha Diversity: Combined Experiments") + 
-  geom_point(size=5, position = position_dodge(width = .8)) +
+              shape = "Experiment", 
+               nrow = 3) + 
+  geom_point(size=5, position = position_dodge(width = 1)) +
   scale_color_manual(values = c("Hybrid" = "firebrick",
                                 "Inbred" = "royalblue3",
-                                "Open_Pollinated" = "orange",
-                                "Soil" = "black")) + 
-  theme(strip.text = element_text(size = 20))
+                                "Open_Pollinated" = "orange")) + 
+  theme(strip.text = element_text(size = 20)) + scale_shape_manual(values=c(1,2,3))
 
 alpha_df <- fig1$data
-# Subset and append to df for 
-
+# # Subset and append to df for 
+# 
 q1_df <- alpha_df[grep("Shannon", alpha_df$variable), ]
-q2_df <- alpha_df[grep("Simpson", alpha_df$variable), ]
-
+# q2_df <- alpha_df[grep("Simpson", alpha_df$variable), ]
+# 
 q1_df$value <- ifelse(q1_df$variable == "Shannon",
                          (exp(q1_df$value)), q1_df$value)
-q2_df$value <- ifelse(q2_df$variable == "Simpson",
-                         (1/(q2_df$value)), q2_df$value)
-
+# q2_df$value <- ifelse(q2_df$variable == "Simpson",
+#                          (1/(q2_df$value)), q2_df$value)
+# 
 q1_df$variable <- gsub("Shannon", "Hills q1", q1_df$variable)
-q2_df$variable <- gsub("Simpson", "Hills q2", q2_df$variable)
-
+# q2_df$variable <- gsub("Simpson", "Hills q2", q2_df$variable)
+# 
 q1_df
-q2_df
-
+# q2_df
+# 
 alpha_df <- rbind(alpha_df,q1_df)
-alpha_df <- rbind(alpha_df,q2_df)
+# alpha_df <- rbind(alpha_df,q2_df)
 alpha_df
-
+# 
 fig1$data <- alpha_df
 
 fig1$layers <- fig1$layers[-1]
 fig1
 
-ggsave("Fig1_Alpha_D2.png", plot = fig1, device = "png", width = 12, height = 8, 
-       units = c("in"), dpi = 750)
+ggsave("Fig1_Alpha_D2_rare.png", plot = fig1, device = "png", width = 12, height = 8, 
+       units = c("in"), dpi = 750, path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures")
 
 ################### 9 Panel Figure
 DATA = phy_data_rel

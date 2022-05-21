@@ -156,13 +156,16 @@ unwunifrac_cmb <- read_qza("unweighted_unifrac_pcoa_results.qza")
 
 
 # Change Experiment Names
-levels(metadata$Experiment) <- c(levels(metadata$Experiment), "Field_1")
-levels(metadata$Experiment) <- c(levels(metadata$Experiment), "Field_2")
+levels(metadata$Experiment) <- c(levels(metadata$Experiment), "Field 1")
+levels(metadata$Experiment) <- c(levels(metadata$Experiment), "Field 2")
 levels(metadata$Experiment) <- c(levels(metadata$Experiment), "Greenhouse")
 
-metadata$Experiment[metadata$Experiment == 'MMH'] <- ('Field_1')
-metadata$Experiment[metadata$Experiment == 'END'] <- 'Field_2'
+metadata$Experiment[metadata$Experiment == 'MMH'] <- ('Field 1')
+metadata$Experiment[metadata$Experiment == 'END'] <- 'Field 2'
 metadata$Experiment[metadata$Experiment == 'GH'] <- 'Greenhouse'
+
+# Replace all _ with space
+
 
 #  + ggtitle("Weighted Unifrac and Genetic Background") 
 w1 <- wunifrac_cmb$data$Vectors %>%
@@ -171,41 +174,43 @@ w1 <- wunifrac_cmb$data$Vectors %>%
                                    Inbred_or_Hybrid == "Hybrid"|
                                    Inbred_or_Hybrid == "Open_Pollinated") %>%
   ggplot( aes(x=PC1, y=PC2, color=`Inbred_or_Hybrid`)) +
-  geom_point(alpha=0.5, size = 3) + scale_color_manual(values = c("Hybrid" = "firebrick",
+  geom_point(alpha=0.5, size = 5) + scale_color_manual(values = c("Hybrid" = "firebrick",
                                                                   "Inbred" = "royalblue3",
-                                                                  "Open_Pollinated" = "orange")) + 
-  theme(legend.position="bottom", legend.text = element_text(size = 10)) #alpha controls transparency and helps when points are overlapping
+                                                                  "Open_Pollinated" = "orange"),
+                                                       labels = c("Hybrid","Inbred","Open Pollinated")) + 
+  theme(legend.position="bottom", legend.text = element_text(size = 10)) + theme(axis.text = element_text(size = 20))#alpha controls transparency and helps when points are overlapping
 
+w1$labels$colour <- "Inbred or Hybrid"
 #+ ggtitle("Weighted Unifrac and Sample Type")
 w2 <- wunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
   left_join(metadata) %>% filter(Sample_Type == "Rhizosphere"|
                                    Sample_Type == "Root"|
                                    Sample_Type == "Stalk") %>% ggplot( aes(x=PC1, y=PC2, color=`Sample_Type`)) +
-  geom_point(alpha=0.5, size = 3) + scale_color_manual(values = c("Rhizosphere" = "purple",
+  geom_point(alpha=0.5, size = 5) + scale_color_manual(values = c("Rhizosphere" = "purple",
                                                                   "Root" = "tan4",
                                                                   "Stalk" = "olivedrab")) + 
-  theme(legend.position="bottom", legend.text = element_text(size = 10)) #alpha controls transparency and helps when points are overlapping
-
+  theme(legend.position="bottom", legend.text = element_text(size = 10)) + theme(axis.text = element_text(size = 20)) #alpha controls transparency and helps when points are overlapping
+w2$labels$colour <- "Sample Type"
 #+ ggtitle("Weighted Unifrac and Experiment")
 
 w3 <- wunifrac_cmb$data$Vectors %>%
   dplyr::select(SampleID, PC1, PC2) %>%
   left_join(metadata) %>% ggplot( aes(x=PC1, y=PC2, color=`Experiment`)) +
-  geom_point(alpha=0.5, size = 3) +   scale_color_manual(values = c("Field_1" = "cyan3",
-                                                                    "Field_2" = "gold3",
+  geom_point(alpha=0.5, size = 5) +   scale_color_manual(values = c("Field 1" = "cyan3",
+                                                                    "Field 2" = "gold3",
                                                                     "Greenhouse" = "green4"
   )) + 
-  theme(legend.position="bottom", legend.text = element_text(size = 10)) #alpha controls transparency and helps when points are overlapping
+  theme(legend.position="bottom", legend.text = element_text(size = 10)) + theme(axis.text = element_text(size = 20)) #alpha controls transparency and helps when points are overlapping
 
 
 ggcmb <- ggarrange(w3,w2,w1, nrow = 1, ncol = 3, labels = c("A","B","C"))
 ggcmb
 
 setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures")
-# ggsave("Fig2_Beta_D2.png", 
-#        path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures",
-#        ggcmb, device = "png", width = 15, height = 5, dpi = 600)
+ggsave("Fig2_Beta_D2.png",
+       path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures",
+       ggcmb, device = "png", width = 15, height = 5, dpi = 600)
 
 ################### PERMANOVA
 ######## Load Data
