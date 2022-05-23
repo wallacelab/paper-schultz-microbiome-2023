@@ -55,7 +55,7 @@ categorize_by_function_l3 <- function(in_ko, kegg_brite_mapping) {
       next
     }
     
-    pathway_list <- strsplit(kegg_brite_mapping[ko, "metadata_KEGG_Pathways"], "\\|")[[1]]
+    pathway_list <- strsplit(kegg_brite_mapping[ko, "metadata_KEGG_Pathways"], "\\|")[[1]] # Was 1
     
     for(pathway in pathway_list) {
       
@@ -200,6 +200,47 @@ Fig_5
 ggsave("Fig4_DiffAbund.png", 
        path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Results/PaperFigures",
        Fig_5, device = "png", width = 9, height = 6, dpi = 600)
+######################################################################################
+
+
+
+
+# Less Aglomerated for paper
+# Raw Descriptors
+phy2_KO_table
+phy2_ko_nobrak <- phy2_KO_table
+
+# phy2_ko_nobrak$description <- gsub("\\[.*\\]","",as.character(phy2_KO_table$description))
+# phy2_ko_no_brak <- phy2_ko_nobrak[!duplicated(phy2_ko_nobrak$description), ]
+# dtable <- phy2_ko_no_brak[,-1]
+# rownames(dtable) <- phy2_ko_no_brak[,1]
+
+dfa <- phy2_ko_nobrak[,-1]
+
+raw_ko_phy <- phyloseq(otu_table(dfa, taxa_are_rows = TRUE), sample_data(Meta_EC))
+raw_ko_root <- subset_samples(raw_ko_phy, Sample_Type_Blanks_differentiated=="Stalk")
+
+Diff_abun_func_IvH(raw_ko_root, ~Inbred_or_Hybrid, 0.001)
+plot_diff_funct_IvH(raw_ko_root, ~Inbred_or_Hybrid, " Root: Inbred vs Hybrid")
+
+Diff_table_func_IvH <- function(phyloseq_obj, metadata_category, alpha_value){
+  compartment_t = transform_sample_counts(phyloseq_obj, function(OTU) OTU +1)
+  phydesq = phyloseq_to_deseq2(compartment_t, design = metadata_category)
+  deseq_obj = DESeq(phydesq, test = "Wald", fitType = "parametric")
+  
+  res = results(deseq_obj, cooksCutoff = FALSE, contrast = c("Inbred_or_Hybrid", "Inbred", "Hybrid"))
+  alpha = alpha_value
+  sigtab = res[which(res$padj < alpha), ]
+  Functional_Group <- (c(rownames(sigtab)))
+  sigtab = cbind(as(sigtab, "data.frame"), Functional_Group)
+  
+  return((sigtab))
+}
+
+raw_dif_IvH <- Diff_table_func_IvH(raw_ko_root, ~Inbred_or_Hybrid, 0.001)
+raw_cat <- categorize_by_function_l3(raw_dif_IvH, brite_map_trim)
+
+
 
 
 ###################################
