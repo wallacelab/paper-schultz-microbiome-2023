@@ -75,17 +75,24 @@ mycompares = list(c("F1", "Control"),c("MO17", "Control"),c("B73", "Control"))
 
 New_MM_data$Inoculation <- factor(New_MM_data$Inoculation, levels = c("B73","MO17","F1","Control"))
 
-abv_f <- ggplot(data = New_MM_data, aes(x =Inoculation, y = Above, fill = Inoculation )) + geom_point(aes(colour = Inoculation), size = 4) + ylab("Dried Mass (g)") +
+abv_f <- ggplot(data = New_MM_data, aes(x =Inoculation, y = Above, fill = Inoculation )) + geom_point(aes(colour = Inoculation), size = 5) + ylab("Dried Mass (g)") +
   xlab("Inoculation Source") + ylab("Dried Above Ground Mass (g)") +
   theme(axis.text=element_text(size=18),
         axis.title=element_text(size=18)) + 
-  stat_compare_means(comparisons = mycompares, method = "t.test",size = 8) + theme(legend.position="none")
+  stat_compare_means(comparisons = mycompares, method = "t.test",size = 8) + 
+  stat_compare_means(comparisons = mycompares, method = "t.test",size = 8, 
+                     label = "p.signif", hide.ns=T, bracket.size = 0, vjust = -1) +
+  theme(legend.position="none") + scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+#+ annotate(geom = "text",x=3, y=75,label = "*")
 
-blw_f <- ggplot(data = New_MM_data, aes(x =Inoculation, y = Below, fill = Inoculation )) + geom_point(aes(colour = Inoculation), size = 4) + ylab("Dried Mass (g)") +
+blw_f <- ggplot(data = New_MM_data, aes(x =Inoculation, y = Below, fill = Inoculation )) + geom_point(aes(colour = Inoculation), size = 5) + ylab("Dried Mass (g)") +
   xlab("Inoculation Source") + ylab("Dried Below Ground Mass (g)")+
   theme(axis.text=element_text(size=18),
         axis.title=element_text(size=18)) + 
-  stat_compare_means(comparisons = mycompares, method = "t.test",size = 8) + theme(legend.position="none")
+  stat_compare_means(comparisons = mycompares, method = "t.test",size = 8) + 
+  stat_compare_means(comparisons = mycompares, method = "t.test",size = 8, 
+                     label = "p.signif", hide.ns=T, bracket.size = 0, vjust = -1) +
+  theme(legend.position="none") + scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
 
 MM_inoc <- ggarrange(abv_f,blw_f, ncol = 2, nrow = 1)
 MM_inoc

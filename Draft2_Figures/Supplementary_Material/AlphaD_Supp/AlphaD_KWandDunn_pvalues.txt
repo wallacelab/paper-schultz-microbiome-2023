@@ -1,0 +1,300 @@
+Text file of alpha diversity pvalues
+###################################
+> ## All Samples
+#################################
+> # Observed
+> dunnTest(Observed ~ Inbred_or_Hybrid, data = big_a, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison          Z   P.unadj     P.adj
+1          Hybrid - Inbred -0.3113199 0.7555574 0.7555574
+2 Hybrid - Open_Pollinated  0.7538018 0.4509682 0.6764523
+3 Inbred - Open_Pollinated  0.9419069 0.3462403 1.0000000
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> dunnTest(Observed ~ Experiment, data = big_a, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+  Comparison         Z      P.unadj        P.adj
+1   END - GH  5.526943 3.258579e-08 9.775737e-08
+2  END - MMH  1.238781 2.154266e-01 2.154266e-01
+3   GH - MMH -2.133327 3.289793e-02 4.934689e-02
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> dunnTest(Observed ~ Sample_Type, data = big_a, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+           Comparison         Z      P.unadj        P.adj
+1  Rhizosphere - Root  2.306093 2.110545e-02 2.110545e-02
+2 Rhizosphere - Stalk 11.928538 8.403675e-33 2.521103e-32
+3        Root - Stalk  9.142430 6.106453e-20 9.159679e-20
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> # Shannon
+> dunnTest(Shannon ~ Inbred_or_Hybrid, data = big_a, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison         Z   P.unadj     P.adj
+1          Hybrid - Inbred 0.2245314 0.8223439 0.8223439
+2 Hybrid - Open_Pollinated 0.9140353 0.3606983 1.0000000
+3 Inbred - Open_Pollinated 0.7783694 0.4363513 0.6545269
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> dunnTest(Shannon ~ Experiment, data = big_a, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+  Comparison          Z      P.unadj        P.adj
+1   END - GH  4.3550534 1.330345e-05 3.991035e-05
+2  END - MMH  2.3642997 1.806419e-02 2.709629e-02
+3   GH - MMH -0.2600211 7.948475e-01 7.948475e-01
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> dunnTest(Shannon ~ Sample_Type, data = big_a, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+           Comparison         Z      P.unadj        P.adj
+1  Rhizosphere - Root  4.267036 1.980875e-05 1.980875e-05
+2 Rhizosphere - Stalk 12.807693 1.484831e-37 4.454492e-37
+3        Root - Stalk  8.082514 6.344525e-16 9.516788e-16
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> # Hills q1
+> dunnTest(Hillq1 ~ Inbred_or_Hybrid, data = big_a, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison         Z   P.unadj     P.adj
+1          Hybrid - Inbred 0.2245314 0.8223439 0.8223439
+2 Hybrid - Open_Pollinated 0.9140353 0.3606983 1.0000000
+3 Inbred - Open_Pollinated 0.7783694 0.4363513 0.6545269
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> dunnTest(Hillq1 ~ Experiment, data = big_a, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+  Comparison          Z      P.unadj        P.adj
+1   END - GH  4.3550534 1.330345e-05 3.991035e-05
+2  END - MMH  2.3642997 1.806419e-02 2.709629e-02
+3   GH - MMH -0.2600211 7.948475e-01 7.948475e-01
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> dunnTest(Hillq1 ~ Sample_Type, data = big_a, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+           Comparison         Z      P.unadj        P.adj
+1  Rhizosphere - Root  4.267036 1.980875e-05 1.980875e-05
+2 Rhizosphere - Stalk 12.807693 1.484831e-37 4.454492e-37
+3        Root - Stalk  8.082514 6.344525e-16 9.516788e-16
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> 
+
+#############################################################
+Stalks
+#############################################################
+> # Observed
+> dunnTest(Observed ~ Inbred_or_Hybrid, data = stalks_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison          Z   P.unadj     P.adj
+1          Hybrid - Inbred -0.5193176 0.6035393 0.6035393
+2 Hybrid - Open_Pollinated  1.1724202 0.2410284 0.3615426
+3 Inbred - Open_Pollinated  1.4968353 0.1344361 0.4033084
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> dunnTest(Observed ~ Experiment, data = stalks_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+  Comparison          Z      P.unadj        P.adj
+1   END - GH  4.7213794 2.342505e-06 7.027516e-06
+2  END - MMH  0.8660885 3.864416e-01 3.864416e-01
+3   GH - MMH -2.5441166 1.095545e-02 1.643318e-02
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> # Shannon
+> dunnTest(Shannon ~ Inbred_or_Hybrid, data = stalks_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison         Z   P.unadj     P.adj
+1          Hybrid - Inbred 0.5181235 0.6043721 0.6043721
+2 Hybrid - Open_Pollinated 1.6422636 0.1005354 0.3016062
+3 Inbred - Open_Pollinated 1.3185944 0.1873048 0.2809571
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> dunnTest(Shannon ~ Experiment, data = stalks_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+  Comparison          Z      P.unadj       P.adj
+1   END - GH  3.6632129 0.0002490713 0.000747214
+2  END - MMH  0.4644372 0.6423345190 0.642334519
+3   GH - MMH -2.1840431 0.0289590838 0.043438626
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> # Hills q1
+> dunnTest(Hillq1 ~ Inbred_or_Hybrid, data = stalks_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison         Z   P.unadj     P.adj
+1          Hybrid - Inbred 0.5181235 0.6043721 0.6043721
+2 Hybrid - Open_Pollinated 1.6422636 0.1005354 0.3016062
+3 Inbred - Open_Pollinated 1.3185944 0.1873048 0.2809571
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> dunnTest(Hillq1 ~ Experiment, data = stalks_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+  Comparison          Z      P.unadj       P.adj
+1   END - GH  3.6632129 0.0002490713 0.000747214
+2  END - MMH  0.4644372 0.6423345190 0.642334519
+3   GH - MMH -2.1840431 0.0289590838 0.043438626
+Warning message:
+Some rows deleted from 'x' and 'g' because missing data. 
+> 
+#######################################################
+Roots
+#######################################################
+> # Observed
+> dunnTest(Observed ~ Inbred_or_Hybrid, data = roots_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison         Z   P.unadj     P.adj
+1          Hybrid - Inbred 0.2442024 0.8070740 0.8070740
+2 Hybrid - Open_Pollinated 0.6906993 0.4897545 1.0000000
+3 Inbred - Open_Pollinated 0.5632943 0.5732345 0.8598517
+> dunnTest(Observed ~ Experiment, data = roots_alpha, 
++          method = "bh")
+
+> # Shannon
+> dunnTest(Shannon ~ Inbred_or_Hybrid, data = roots_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison          Z   P.unadj     P.adj
+1          Hybrid - Inbred  1.5632534 0.1179930 0.3539790
+2 Hybrid - Open_Pollinated  0.4530035 0.6505463 0.9758194
+3 Inbred - Open_Pollinated -0.3544415 0.7230080 0.7230080
+> dunnTest(Shannon ~ Experiment, data = roots_alpha, 
++          method = "bh")
+
+> # Hills q1
+> dunnTest(Hillq1 ~ Inbred_or_Hybrid, data = roots_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison          Z   P.unadj     P.adj
+1          Hybrid - Inbred  1.5632534 0.1179930 0.3539790
+2 Hybrid - Open_Pollinated  0.4530035 0.6505463 0.9758194
+3 Inbred - Open_Pollinated -0.3544415 0.7230080 0.7230080
+> dunnTest(Hillq1 ~ Experiment, data = roots_alpha, 
++          method = "bh")
+
+> # Hills q1
+> dunnTest(Hillq1 ~ Inbred_or_Hybrid, data = roots_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison          Z   P.unadj     P.adj
+1          Hybrid - Inbred  1.5632534 0.1179930 0.3539790
+2 Hybrid - Open_Pollinated  0.4530035 0.6505463 0.9758194
+3 Inbred - Open_Pollinated -0.3544415 0.7230080 0.7230080
+> dunnTest(Hillq1 ~ Experiment, data = roots_alpha, 
++          method = "bh")
+#########################################################
+Rhizosphere
+#########################################################
+
+> # Observed
+> dunnTest(Observed ~ Inbred_or_Hybrid, data = rhizos_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison          Z   P.unadj     P.adj
+1          Hybrid - Inbred -0.7204617 0.4712408 0.7068612
+2 Hybrid - Open_Pollinated  0.2723870 0.7853245 0.7853245
+3 Inbred - Open_Pollinated  0.7413405 0.4584870 1.0000000
+> dunnTest(Observed ~ Experiment, data = rhizos_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+  Comparison           Z      P.unadj        P.adj
+1   END - GH  7.09899261 1.256695e-12 3.770086e-12
+2  END - MMH -0.02866822 9.771292e-01 9.771292e-01
+3   GH - MMH -5.20256795 1.965535e-07 2.948302e-07
+> # Shannon
+> dunnTest(Shannon ~ Inbred_or_Hybrid, data = rhizos_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison         Z    P.unadj     P.adj
+1          Hybrid - Inbred -1.106706 0.26842106 0.4026316
+2 Hybrid - Open_Pollinated  1.053844 0.29195442 0.2919544
+3 Inbred - Open_Pollinated  1.775993 0.07573409 0.2272023
+> dunnTest(Shannon ~ Experiment, data = rhizos_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+  Comparison         Z      P.unadj        P.adj
+1   END - GH  7.319002 2.498218e-13 7.494655e-13
+2  END - MMH  4.084488 4.417414e-05 6.626121e-05
+3   GH - MMH -1.059669 2.892952e-01 2.892952e-01
+> # Hills q1
+> dunnTest(Hillq1 ~ Inbred_or_Hybrid, data = rhizos_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+                Comparison         Z    P.unadj     P.adj
+1          Hybrid - Inbred -1.106706 0.26842106 0.4026316
+2 Hybrid - Open_Pollinated  1.053844 0.29195442 0.2919544
+3 Inbred - Open_Pollinated  1.775993 0.07573409 0.2272023
+> dunnTest(Hillq1 ~ Experiment, data = rhizos_alpha, 
++          method = "bh")
+Dunn (1964) Kruskal-Wallis multiple comparison
+  p-values adjusted with the Benjamini-Hochberg method.
+
+  Comparison         Z      P.unadj        P.adj
+1   END - GH  7.319002 2.498218e-13 7.494655e-13
+2  END - MMH  4.084488 4.417414e-05 6.626121e-05
+3   GH - MMH -1.059669 2.892952e-01 2.892952e-01
+
+
+
+

@@ -178,7 +178,12 @@ w1 <- wunifrac_cmb$data$Vectors %>%
                                                                   "Inbred" = "royalblue3",
                                                                   "Open_Pollinated" = "orange"),
                                                        labels = c("Hybrid","Inbred","Open Pollinated")) + 
-  theme(legend.position="bottom", legend.text = element_text(size = 10)) + theme(axis.text = element_text(size = 20))#alpha controls transparency and helps when points are overlapping
+  theme(legend.position="bottom", legend.text = element_text(size = 14, face = "bold")) + 
+  theme(axis.text = element_text(size = 12, face = "bold")) +
+  theme(axis.title = element_text(size = 16, face = "bold")) +
+  theme(legend.title = element_blank())
+
+#alpha controls transparency and helps when points are overlapping
 
 w1$labels$colour <- "Inbred or Hybrid"
 #+ ggtitle("Weighted Unifrac and Sample Type")
@@ -190,8 +195,11 @@ w2 <- wunifrac_cmb$data$Vectors %>%
   geom_point(alpha=0.5, size = 5) + scale_color_manual(values = c("Rhizosphere" = "purple",
                                                                   "Root" = "tan4",
                                                                   "Stalk" = "olivedrab")) + 
-  theme(legend.position="bottom", legend.text = element_text(size = 10)) + theme(axis.text = element_text(size = 20)) #alpha controls transparency and helps when points are overlapping
-w2$labels$colour <- "Sample Type"
+  theme(legend.position="bottom", legend.text = element_text(size = 14, face = "bold")) + 
+  theme(axis.text = element_text(size = 12, face = "bold")) +
+  theme(axis.title = element_text(size = 16, face = "bold")) +
+  theme(legend.title = element_blank()) #alpha controls transparency and helps when points are overlapping
+
 #+ ggtitle("Weighted Unifrac and Experiment")
 
 w3 <- wunifrac_cmb$data$Vectors %>%
@@ -201,8 +209,10 @@ w3 <- wunifrac_cmb$data$Vectors %>%
                                                                     "Field 2" = "gold3",
                                                                     "Greenhouse" = "green4"
   )) + 
-  theme(legend.position="bottom", legend.text = element_text(size = 10)) + theme(axis.text = element_text(size = 20)) #alpha controls transparency and helps when points are overlapping
-
+  theme(legend.position="bottom", legend.text = element_text(size = 14, face = "bold")) + 
+  theme(axis.text = element_text(size = 12, face = "bold")) +
+  theme(axis.title = element_text(size = 16, face = "bold")) +
+  theme(legend.title = element_blank())
 
 ggcmb <- ggarrange(w3,w2,w1, nrow = 1, ncol = 3, labels = c("A","B","C"))
 ggcmb

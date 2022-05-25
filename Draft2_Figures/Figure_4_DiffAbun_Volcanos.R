@@ -235,13 +235,13 @@ plot_df <- stalk_df_all
 
 plot_df$Significance <- ifelse(plot_df$padj > 0.001 | is.na(plot_df$padj), 'NotSig', ifelse(plot_df$log2FoldChange > 0,'Hybrid','Inbred') )
 sih <- ggplot(data=plot_df, aes(x=log2FoldChange, y=log10(pvalue))) + 
-  geom_point(aes(colour = Significance), size = 6) + scale_y_reverse(limits = c(0, -20)) + scale_x_continuous(limits = c(-4, 4)) + 
+  geom_point(aes(colour = Significance), size = 6) + scale_y_reverse(limits = c(0, -15)) + scale_x_continuous(limits = c(-4, 4)) + 
   scale_color_manual(values = c("Inbred" = "royalblue3",
                                 "Hybrid" = "firebrick",
                                 "NotSig" = "grey"))+ theme(axis.text=element_text(size=18),
         axis.title=element_text(size=18)) + geom_vline(xintercept = 0, colour = "blue") + 
   geom_hline(yintercept = 0, colour = "blue") + ggtitle("Stalks") +
-  theme(legend.position="none", axis.title.x = element_blank()) + theme(plot.title = element_text(colour = "olivedrab")) +
+  theme(legend.position="none", axis.title.x = element_blank()) + theme(plot.title = element_text(colour = "olivedrab", size = 16, face = "bold")) +
   geom_text_repel(
   data = subset(plot_df, padj < 0.001),
   aes(label = Family),
@@ -253,13 +253,13 @@ plot_df <- root_df_all
 
 plot_df$Significance <- ifelse(plot_df$padj > 0.001 | is.na(plot_df$padj), 'NotSig', ifelse(plot_df$log2FoldChange > 0,'Hybrid','Inbred') )
 rootih <- ggplot(data=plot_df, aes(x=log2FoldChange, y=log10(pvalue))) + 
-  geom_point(aes(colour = Significance), size = 6) + scale_y_reverse(limits = c(0, -20)) + scale_x_continuous(limits = c(-4, 4)) +
+  geom_point(aes(colour = Significance), size = 6) + scale_y_reverse(limits = c(0, -15)) + scale_x_continuous(limits = c(-4, 4)) +
   scale_color_manual(values = c("Inbred" = "royalblue3",
                                 "Hybrid" = "firebrick",
                                 "NotSig" = "grey"))+ theme(axis.text=element_text(size=18),
                                                            axis.title=element_text(size=18),legend.position="none") + geom_vline(xintercept = 0, colour = "blue") + 
   theme(axis.title.x = element_blank()) +
-  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Roots") + theme(plot.title = element_text(colour = "tan3")) +
+  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Roots") + theme(plot.title = element_text(colour = "tan3", size = 16, face = "bold")) +
   geom_text_repel(
     data = subset(plot_df, padj < 0.001),
     aes(label = Family),
@@ -271,13 +271,13 @@ plot_df <- rhizos_df_all
 
 plot_df$Significance <- ifelse(plot_df$padj > 0.001 | is.na(plot_df$padj), 'NotSig', ifelse(plot_df$log2FoldChange > 0,'Hybrid','Inbred') )
 rhizih <- ggplot(data=plot_df, aes(x=log2FoldChange, y=log10(pvalue))) + 
-  geom_point(aes(colour = Significance), size = 6) + scale_y_reverse(limits = c(0, -20)) + scale_x_continuous(limits = c(-4, 4)) +
+  geom_point(aes(colour = Significance), size = 6) + scale_y_reverse(limits = c(0, -15)) + scale_x_continuous(limits = c(-4, 4)) +
   scale_color_manual(values = c("Inbred" = "royalblue3",
                                 "Hybrid" = "firebrick",
                                 "NotSig" = "grey"),
                      labels = c("Inbred","Hybrid", "Not Significant"))+ theme(axis.text=element_text(size=18),
                                                            axis.title=element_text(size=18)) + geom_vline(xintercept = 0, colour = "blue") + 
-  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Rhizos") + theme(plot.title = element_text(colour = "purple")) + theme(legend.position="bottom",
+  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Rhizos") + theme(plot.title = element_text(colour = "purple", size = 16, face = "bold")) + theme(legend.position="bottom",
                                                                           legend.title = element_text(size = 16),
                                                                           legend.text = element_text(size = 16)) +
   geom_text_repel(

@@ -170,6 +170,12 @@ complex <- ComplexUpset::upset(shared_df, Tissue_and_Background, name = "Tissue 
                                  upset_query(set='Inbred Rhizosphere', fill='purple'), upset_query(set='Hybrid Rhizosphere', fill='purple'),
                                  upset_query(set='Inbred Root', fill='tan4'), upset_query(set='Hybrid Root', fill='tan4'),
                                  upset_query(set='Inbred Stalk', fill='olivedrab'), upset_query(set='Hybrid Stalk', fill='olivedrab')
+                               ),
+                               themes=upset_default_themes(text=element_text(size=20, face = "bold")),
+                               set_sizes=(
+                                 upset_set_size()
+                                 + theme(axis.text.x=element_text(angle=90, size = 12),
+                                         axis.title.x = element_text(size = 14))
                                )
                                # , annotations = list(
                                #   'Phylum Breakdown'=(
@@ -185,61 +191,13 @@ complex
 ggsave("Fig3_Common_D2.png",
        path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures",
        complex, device = "png", width = 10, height = 10, dpi = 600)
+#######################################################################
+# Save the data
+shared_df # The df with present absent for groups
 
+filt_df <- filter(shared_df,rowSums(shared_df[,2:7]) != 0)
+
+write.table(filt_df, file = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/Supplementary_Material/Shared_Taxa_Table/Taxa_Intersections.tsv",
+           col.names = TRUE, sep = "\t", row.names = FALSE)
 
 # ###########################################
-# 
-# upset_order <- colnames(binary_full)
-# 
-# tissue_and_background_upset <- UpSetR::upset(binary_full, nsets = 9, nintersects = NA, order.by = "freq")
-# tissue_and_background_upset
-# 
-# phy_data <- tax_glom(phy_data, taxrank = "Genus") 
-# phy_comp <- microbiome::transform(phy_data, "compositional")
-# 
-# mergedGroups <- merge_samples(phy_comp, "Group", fun = sum)
-# 
-# upset_object <- as.data.frame(t(otu_table(mergedGroups)))
-# 
-# binary_full <- upset_object
-# 
-# # Make it all zeros
-# 
-# zero_fun <- function(x){
-#   return(x*0)
-# }
-# 
-# binary_full[] <- lapply(binary_full,zero_fun)
-# 
-# table(meta(phy_comp)$Group)
-# ExperimentGroups <- unique(as.character(meta(phy_comp)$Group))
-# 
-# list_core <-c() #empty object
-# for (n in ExperimentGroups){
-#   print(as.name(n))
-#   core.sub <- subset_samples(phy_comp, Group == n)
-#   
-#   core_m <- core_members(core.sub,                   # core.sub is only samples in experiment
-#                          detection = .001,            # .001 in atleast 90% of samples
-#                          prevalence = 0.9)  
-#   list_core[[n]] <- core_m
-#   
-#   for(i in core_m){
-#     #print(i)
-#     binary_full[i,toString(n)] <- 1
-#   }
-# }
-# 
-# binary_full 
-# 
-# upset_order <- colnames(binary_full)
-# 
-# noblanks = subset(binary_full[c(9:13,15:17)])
-# undergroundmatrix = subset(binary_full[c(9:13)])
-# above_matrix = subset(binary_full[c(15:17)])
-# 
-# # table(meta(phy2com)$Group)
-# # ExperimentGroups <- unique(as.character(meta(phy2com)$Group))
-# 
-# all_upset <- UpSetR::upset(noblanks, nsets = 8, nintersects = NA, order.by = "freq")
-# all_upset

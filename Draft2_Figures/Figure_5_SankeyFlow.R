@@ -93,13 +93,138 @@ tiss_tax2
 taxa_long <- tiss_tax2 %>% make_long(Rhizosphere,Root,Stalk)
 taxa_filt <- filter(taxa_long, node != 0)
 
+my_labels <- c("Verrucomicrobia","Proteobacteria","Planctomycetes",
+               "Chloroflexi","Actinobacteria","Acidobacteria", 
+               "Bacteroidetes", "Cyanobacteria", "Firmicutes",
+               "Gemmatimonadetes")
+
+taxa_filt$labels <- ifelse((taxa_filt$node %in% my_labels & taxa_filt$x=='Rhizosphere'), taxa_filt$node, NA)
+
 # Try with geom_sankey
 gs <- ggplot(taxa_filt, aes(x = x
                             , next_x = next_x
                             , node = node
                             , next_node = next_node
                             , fill = factor(node)
-                            , label = node)
+                            , label = labels)
+) + geom_sankey(flow.alpha = 0.5
+                , node.color = "black"
+                ,show.legend = TRUE) +
+  theme(axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 18)) + theme(axis.title.x = element_blank()
+                                                       , axis.title.y = element_text(size = 16, face = "bold")
+                                                       , axis.text.y = element_blank()
+                                                       , axis.ticks = element_blank()  
+                                                       , panel.grid = element_blank(),
+                                                       panel.background = element_blank()) + 
+  guides(fill="none") + geom_sankey_label(size = 4,
+                        color = "black",
+                        fill= "white") + ylab("Flow of ASVs")
+
+
+gs
+# ggsave("Fig5_ASV_Flow_Label_D2.png",
+#        path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures",
+#        gs, device = "png", width = 12, height = 6, dpi = 600)
+
+
+
+phy_data
+phy.c <- transform_sample_counts(phy_data, function(x) x/sum(x))
+phy.c <- subset_samples(phy.c, Sample_Type != "Soil")
+phy.melt <- psmelt(phy.c)
+
+relbar <- ggplot(data = phy.melt, mapping = aes_string(x = "Sample_Type",y = "Abundance")) +
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="fill") 
+
+relbar <- relbar + theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 16,face = "bold"),
+        axis.text.x = element_text(size = 18),
+        axis.text.y = element_text(size = 12),
+        panel.background = element_rect(fill = "white",color="white"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank() ) + ylab("Relative Abundance of Reads")
+  
+
+relbar
+
+
+flow_and_relabund <- ggarrange(gs,relbar, labels = c("A","B"))
+
+ggsave("Fig5_Flow_and_Bar_D2.png",
+       path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures",
+       flow_and_relabund, device = "png", width = 12, height = 6, dpi = 600)
+########## Compare with node size at 100%
+tiss_tax
+
+tiss_rel <- tiss_tax
+
+# Normalize counts to 1,000,000
+tiss_rel[1:3] <- lapply(tiss_rel[1:3], function(x) floor(x/sum(x) * 10000))
+sum(tiss_rel$Rhizosphere)
+sum(tiss_rel$Root)
+sum(tiss_rel$Stalk)
+library(tidyverse)
+huge_df <- data.frame(ASV=NA,Root=NA,Rhizosphere=NA,Stalk=NA)
+
+# Turn into 3 million rows
+for(c in 1:ncol(tiss_rel)){
+  for(r in 1:nrow(tiss_rel)){
+    count = tiss_rel[r,c]
+    rname = rownames(tiss_rel)[r]
+    if(c == 1){
+      newrow <- c((rownames(tiss_rel)[r]),1,0,0)
+    }
+    if(c == 2){
+      newrow <- c((rownames(tiss_rel)[r]),0,1,0)
+    }
+    if(c == 3){
+      newrow <- c((rownames(tiss_rel)[r]),0,1,0)
+    }
+    if(count > 0){
+    for(i in 1:count){
+      huge_df <- rbind(huge_df, rep(newrow))}
+    }
+    
+    #rerun(count,huge_df <- rbind(huge_df, newrow))
+    #huge_df <- rbind(huge_df, rep(newrow), count)
+    #do.call("rbind", replicate(count, newrow, simplify = FALSE))
+  }
+
+}
+huge_df <- huge_df[-1,]
+print(nrow(huge_df))
+head(huge_df)
+
+taxa_table <- tibble::rownames_to_column(taxa_table, "ASV")
+
+tiss_tax2 <- left_join(huge_df,taxa_table,by = "ASV")
+
+
+tiss_tax2$Stalk <- ifelse(tiss_tax2$Stalk > 0, as.character(tiss_tax2$Phylum),0)
+tiss_tax2$Root <- ifelse(tiss_tax2$Root > 0, as.character(tiss_tax2$Phylum),0)
+tiss_tax2$Rhizosphere <- ifelse(tiss_tax2$Rhizosphere > 0, as.character(tiss_tax2$Phylum),0)
+tiss_tax2
+
+taxa_long <- tiss_tax2 %>% make_long(Rhizosphere,Root,Stalk)
+taxa_filt <- filter(taxa_long, node != 0)
+
+my_labels <- c("Verrucomicrobia","Proteobacteria","Planctomycetes",
+               "Chloroflexi","Actinobacteria","Acidobacteria", 
+               "Bacteroidetes", "Cyanobacteria", "Firmicutes",
+               "Gemmatimonadetes")
+
+taxa_filt$labels <- ifelse((taxa_filt$node %in% my_labels & taxa_filt$x=='Rhizosphere'), taxa_filt$node, NA)
+
+# Try with geom_sankey
+gs <- ggplot(taxa_filt, aes(x = x
+                            , next_x = next_x
+                            , node = node
+                            , next_node = next_node
+                            , fill = factor(node)
+                            , label = labels)
 ) + geom_sankey(flow.alpha = 0.5
                 , node.color = "black"
                 ,show.legend = TRUE) +
@@ -109,21 +234,21 @@ gs <- ggplot(taxa_filt, aes(x = x
                                                        , axis.ticks = element_blank()  
                                                        , panel.grid = element_blank(),
                                                        panel.background = element_blank()) + 
-   guides(fill=guide_legend(title="Phylum")) + geom_sankey_label(size = 4,
-  color = "black",
-   fill= "white",
-   hjust = -0.5) 
+  guides(fill="none") + geom_sankey_label(size = 4,
+                                          color = "black",
+                                          fill= "white")
 
 
 gs
-ggsave("Fig5_ASV_Flow_Label_D2.png",
-       path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures",
-       gs, device = "png", width = 12, height = 6, dpi = 600)
 
+# Regular Relative Abundance graph
+phy_data
+phy.c <- transform_sample_counts(phy_data, function(x) x/sum(x))
+phy.c <- subset_samples(phy.c, Sample_Type != "Soil")
+phy.melt <- psmelt(phy.c)
 
-
-
-
+ggplot(data = phy.melt, mapping = aes_string(x = "Sample_Type",y = "Abundance")) +
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="fill")
 # 
 # sum(tiss_tax$Rhizosphere)
 # sum(tiss_tax$Root)

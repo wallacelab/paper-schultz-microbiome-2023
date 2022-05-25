@@ -1,0 +1,10 @@
+Comparison,Agglomerated Differences,Raw Differences
+Stalks Inbred vs Hybrid,0,0
+Rhizospheres Inbred vs Hybrid,0,57
+Roots Inbred vs Hybrid,15,478
+Stalks vs Roots,99,3678
+Stalks vs Rhizosphere,143,4282
+Rhizosphere vs Root,55,1944
+Stalks Greenhouse vs Field,37,1323
+Roots Greenhouse vs Field,66,1786
+Rhizosphere Greenhouse vs Field,55,2168

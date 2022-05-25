@@ -460,7 +460,15 @@ write.table(roots_IvH_agl, file = "roots_IvH_agl.tsv", sep = "\t", col.names = T
 
 Fig_6 <- plot_diff_funct_IvH(roots_Ag, ~Inbred_or_Hybrid, "Roots: Inbred vs Hybrid Functional Predictions")
 
-Fig_6 <- Fig_6 + xlab("Functional Group")
+Fig_6 <- Fig_6 + xlab("Functional Group") + 
+  theme(legend.position = c(.8,.1)) +
+  theme(axis.title.y = element_blank()) +
+  theme(axis.title.x = element_text(size =12, face = "bold")) +
+  theme(axis.text.y = element_text(size = 12, face = "bold")) + 
+  theme(axis.text.x = element_text(size = 12, face = "bold")) + 
+  theme(legend.title = element_text(size = 14)) + 
+  theme(legend.text = element_text(size = 12))
+  
 Fig_6 
 
 ggsave("Fig6_Roots_IvH_Picrust.png",

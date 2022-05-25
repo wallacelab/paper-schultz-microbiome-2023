@@ -85,8 +85,8 @@ phy2
 # Split by experiment, so you can drop OTUs that are not found in all three experiments
 
 GH <- subset_samples(phy2, Experiment=="GH")
-END <- subset_samples(phy2, Experiment=="END")
-MMH <- subset_samples(phy2, Experiment=="MMH")
+END <- subset_samples(phy2, Experiment=="Field2")
+MMH <- subset_samples(phy2, Experiment=="Field1")
 
 get_sample(GH, "b8a52db1ff47d14bd94a7c36dbe4f92d")
 
