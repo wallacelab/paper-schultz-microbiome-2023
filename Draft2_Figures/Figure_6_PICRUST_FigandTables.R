@@ -446,17 +446,56 @@ write.table(stalks_IvH_raw, file = "stalks_IvH_raw.tsv", sep = "\t", col.names =
 stalks_IvH_agl <- Diff_table_func(stalks_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
 write.table(stalks_IvH_agl, file = "stalks_IvH_agl.tsv", sep = "\t", col.names = TRUE)
 
+# Stalks Inbred vs OP
+stalks_IvO_raw <- Diff_table_func(stalks_Raw, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Open_Pollinated", 0.001)
+write.table(stalks_IvO_raw, file = "stalks_IvO_raw.tsv", sep = "\t", col.names = TRUE)
+stalks_IvsO_agl <- Diff_table_func(stalks_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Open_Pollinated", 0.001)
+write.table(stalks_IvsO_agl, file = "stalks_HvsO_agl.tsv", sep = "\t", col.names = TRUE)
+
+# Stalks Hybrid vs OP
+stalks_HvsO_raw <- Diff_table_func(stalks_Raw, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Hybrid","Open_Pollinated", 0.001)
+write.table(stalks_HvsO_raw, file = "stalks_HvsO_raw.tsv", sep = "\t", col.names = TRUE)
+stalks_HvO_agl <- Diff_table_func(stalks_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Hybrid","Open_Pollinated", 0.001)
+write.table(stalks_IvH_agl, file = "stalks_IvH_agl.tsv", sep = "\t", col.names = TRUE)
+
 # Rhizosphere Inbred vs Hybrid
 rhizo_IvH_raw <- Diff_table_func(rhizos_Raw, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
 write.table(rhizo_IvH_raw, file = "rhizo_IvH_raw.tsv", sep = "\t", col.names = TRUE)
 rhizo_IvH_agl <- Diff_table_func(rhizos_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
 write.table(rhizo_IvH_agl, file = "rhizo_IvH_agl.tsv", sep = "\t", col.names = TRUE)
 
+# Rhizosphere Inbred vs OP
+rhizo_IvO_raw <- Diff_table_func(rhizos_Raw, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Open_Pollinated", 0.001)
+write.table(rhizo_IvO_raw, file = "rhizo_IvO_raw.tsv", sep = "\t", col.names = TRUE)
+rhizo_IvO_agl <- Diff_table_func(rhizos_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Open_Pollinated", 0.001)
+write.table(rhizo_IvO_agl, file = "rhizo_IvO_agl.tsv", sep = "\t", col.names = TRUE)
+
+# Rhizosphere Hybrid vs OP
+rhizo_HvO_raw <- Diff_table_func(rhizos_Raw, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Hybrid","Open_Pollinated", 0.001)
+write.table(rhizo_HvO_raw, file = "rhizo_HvO_raw.tsv", sep = "\t", col.names = TRUE)
+rhizo_HvO_agl <- Diff_table_func(rhizos_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Hybrid","Open_Pollinated", 0.001)
+write.table(rhizo_HvO_agl, file = "rhizo_Hvo_agl.tsv", sep = "\t", col.names = TRUE)
+
 # Roots Inbred vs Hybrid
 roots_IvH_raw <- Diff_table_func(roots_Raw, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
 write.table(roots_IvH_raw, file = "roots_IvH_raw.tsv", sep = "\t", col.names = TRUE)
 roots_IvH_agl <- Diff_table_func(roots_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
 write.table(roots_IvH_agl, file = "roots_IvH_agl.tsv", sep = "\t", col.names = TRUE)
+
+# Roots Inbred vs Open_Pollinated
+roots_Ivo_raw <- Diff_table_func(roots_Raw, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Open_Pollinated", 0.001)
+write.table(roots_Ivo_raw, file = "roots_IvO_raw.tsv", sep = "\t", col.names = TRUE)
+roots_Ivo_agl <- Diff_table_func(roots_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Open_Pollinated", 0.001)
+write.table(roots_Ivo_agl, file = "roots_IvO_agl.tsv", sep = "\t", col.names = TRUE)
+
+# Roots Hybrid vs Open_Pollinated
+roots_HvO_raw <- Diff_table_func(roots_Raw, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Hybrid","Open_Pollinated", 0.001)
+write.table(roots_HvO_raw, file = "roots_HvO_raw.tsv", sep = "\t", col.names = TRUE)
+roots_HvO_agl <- Diff_table_func(roots_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Hybrid","Open_Pollinated", 0.001)
+write.table(roots_HvO_agl, file = "roots_HvH_agl.tsv", sep = "\t", col.names = TRUE)
+
+
+
 
 Fig_6 <- plot_diff_funct_IvH(roots_Ag, ~Inbred_or_Hybrid, "Roots: Inbred vs Hybrid Functional Predictions")
 

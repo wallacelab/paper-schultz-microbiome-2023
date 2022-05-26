@@ -204,16 +204,31 @@ setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome
 ### All tissues
 All_Tis_df <- diff_abund(phyHigh,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
 write.csv(as.data.frame(All_Tis_df), file="AllTisues_InbredvsHybrid_ASV.csv")
+All_Tis_IO <- diff_abund(phyHigh,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Open_Pollinated", .001)
+write.csv(as.data.frame(All_Tis_IO), file="AllTisues_InbredvsOP_ASV.csv")
+All_Tis_HO <- diff_abund(phyHigh,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Hybrid", "Open_Pollinated", .001)
+write.csv(as.data.frame(All_Tis_HO), file="AllTisues_HybridvsOP_ASV.csv")
 # Stalks
 Stalk_df <- diff_abund(stalksF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
 write.csv(as.data.frame(Stalk_df), file="Stalks_IvsH_ASV.csv")
+Stalk_IO <- diff_abund(stalksF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Open_Pollinated", .001)
+write.csv(as.data.frame(Stalk_IO), file="Stalks_IvsO_ASV.csv")
+Stalk_HO <- diff_abund(stalksF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Hybrid", "Open_Pollinated", .001)
+write.csv(as.data.frame(Stalk_HO), file="Stalks_HvsO_ASV.csv")
 # Rhizos
 Rhiz_df <- diff_abund(rhizosF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
 write.csv(as.data.frame(Rhiz_df), file="Rhizos_IvsH_ASV.csv")
+Rhiz_IO <- diff_abund(rhizosF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Open_Pollinated", .001)
+write.csv(as.data.frame(Rhiz_IO), file="Rhizos_IvsO_ASV.csv")
+Rhiz_HO <- diff_abund(rhizosF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Hybrid", "Open_Pollinated", .001)
+write.csv(as.data.frame(Rhiz_df), file="Rhizos_HvsO_ASV.csv")
 # Roots
 Root_df <- diff_abund(rootsF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
 write.csv(as.data.frame(Root_df), file="Roots_IvsH_ASV.csv")
-
+Root_IO <- diff_abund(rootsF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Open_Pollinated", .001)
+write.csv(as.data.frame(Root_IO), file="Roots_IvsO_ASV.csv")
+Root_HO <- diff_abund(rootsF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Hybrid", "Open_Pollinated", .001)
+write.csv(as.data.frame(Root_HO), file="Roots_HvsO_ASV.csv")
 ### Compare Tissues No I vs H
 stalk_vs_root <- diff_abund(phyHigh,~Sample_Type_Blanks_differentiated,
                             "Sample_Type_Blanks_differentiated", "Stalk", "Root", .001)

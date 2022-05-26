@@ -1,0 +1,6 @@
+"","baseMean","log2FoldChange","lfcSE","stat","pvalue","padj","Kingdom","Phylum","Class","Order","Family","Genus","Species"
+"a979b46fa9e8e010d9947e514c1ddf2f",13.8589849222797,-4.43480802353615,0.860973622408375,-5.15092205860012,2.59208902651372e-07,4.9508900406412e-05,"Bacteria","Actinobacteria","Actinobacteria","Pseudonocardiales","Pseudonocardiaceae",NA,NA
+"0cbc58cb660d1cd9dab0af3d8f6b37f5",49.590036177126,5.90597960553311,1.3188036533892,4.47828574811369,7.52448378819247e-06,0.00035929410088619,"Bacteria","Actinobacteria","Actinobacteria","Micromonosporales","Micromonosporaceae","Micromonospora",NA
+"2332807853f18e52a250645f0e2c2b45",19.4884812815095,5.10825102878265,1.2102031948126,4.22098623659118,2.4323578932703e-05,0.000929160715229253,"Bacteria","Proteobacteria","Gammaproteobacteria","Betaproteobacteriales","Burkholderiaceae",NA,NA
+"578c446e99df776e65c78dc59e8f697a",33.3066012937817,5.84501070384522,1.29732954445071,4.50541709224699,6.62426991930825e-06,0.00035929410088619,"Bacteria","Proteobacteria","Gammaproteobacteria","Betaproteobacteriales","Burkholderiaceae","Duganella",NA
+"4c907f1b18721854dbd6bf6b8a20bd26",2.52693255286015,-2.99463698807186,0.616604247987643,-4.85665967732982,1.1938251639433e-06,0.000114010303156585,"Bacteria","Proteobacteria","Alphaproteobacteria","Micropepsales","Micropepsaceae","uncultured",NA

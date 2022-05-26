@@ -1,7 +1,13 @@
 Comparison,Agglomerated Differences,Raw Differences
 Stalks Inbred vs Hybrid,0,0
+Stalks Inbred vs OP,0,149
+Stalks Hybrid vs OP,0,143
 Rhizospheres Inbred vs Hybrid,0,57
+Rhizosphere Inbred vs OP,0,0
+Rhizosphere Hybrid vs OP,0,0
 Roots Inbred vs Hybrid,15,478
+Roots Inbred vs OP,0,0
+Roots Hybrid vs OP,0,0
 Stalks vs Roots,99,3678
 Stalks vs Rhizosphere,143,4282
 Rhizosphere vs Root,55,1944
