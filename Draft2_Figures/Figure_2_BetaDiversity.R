@@ -268,18 +268,19 @@ adonis_results <- adonis2(rbiome_wunifrac ~ sample_data(phy_data)$Experiment +
                            sample_data(phy_data)$Sample_Type
                           + sample_data(phy_data)$Inbred_or_Hybrid
                           + sample_data(phy_data)$Genotype
-                          + sample_data(phy_data)$Location,
+                          + sample_data(phy_data)$Location, 
                           by = "margin")
 adonis_results
 
-
+################################################
 # Type II ANOVA adonis
 library(RVAideMemoire)
-adonisII_results <- adonis.II(jac ~ sample_data(phy_data)$Experiment +
+adonisII_results <- adonis.II(rbiome_wunifrac ~ sample_data(phy_data)$Experiment +
                                 sample_data(phy_data)$Sample_Type
                               + sample_data(phy_data)$Inbred_or_Hybrid
                               + sample_data(phy_data)$Genotype
-                              + sample_data(phy_data)$Location)
+                              + sample_data(phy_data)$Location
+                              + sample_data(phy_data)$Inbred_or_Hybrid:sample_data(phy_data)$Sample_Type)
 
 adonisII_results
 

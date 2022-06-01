@@ -572,15 +572,21 @@ write.table(roots_Loc_agl, file = "roots_Loc_agl.tsv", sep = "\t", col.names = T
 # 
 # 
 
+#Look at root i vs h with functions
+
+roots_IvH_raw
+lookup_roots <- merge(roots_IvH_raw, brite_map_trim, by.x = "Functional_Group", by.y = "metadata_KEGG_Description")
 
 
+KO_phy <- phyloseq(otu_table(KO_table[,-1], taxa_are_rows = TRUE), sample_data(Meta_EC))
 
 
+KO_roots <- subset_samples(KO_phy, Sample_Type_Blanks_differentiated=="Root")
+KO_roots_IH <- roots_Ivo_raw <- Diff_table_func(KO_roots, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
 
+lookup_roots <- merge(KO_roots_IH, brite_map_trim, by = 'row.names', all=FALSE)
 
-
-
-
+write.table(lookup_roots, file = "roots_ih_lookup.tsv", sep = "\t", col.names = TRUE)
 
 
 
