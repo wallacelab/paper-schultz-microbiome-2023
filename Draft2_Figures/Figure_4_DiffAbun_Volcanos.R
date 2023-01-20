@@ -36,7 +36,7 @@ library(DESeq2)
 library(ggrepel)
 
 
-setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS")
+setwd("D:/Manual_Backup/May_2022/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS")
 
 # Read in the data
 
@@ -204,31 +204,16 @@ setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome
 ### All tissues
 All_Tis_df <- diff_abund(phyHigh,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
 write.csv(as.data.frame(All_Tis_df), file="AllTisues_InbredvsHybrid_ASV.csv")
-All_Tis_IO <- diff_abund(phyHigh,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Open_Pollinated", .001)
-write.csv(as.data.frame(All_Tis_IO), file="AllTisues_InbredvsOP_ASV.csv")
-All_Tis_HO <- diff_abund(phyHigh,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Hybrid", "Open_Pollinated", .001)
-write.csv(as.data.frame(All_Tis_HO), file="AllTisues_HybridvsOP_ASV.csv")
 # Stalks
 Stalk_df <- diff_abund(stalksF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
 write.csv(as.data.frame(Stalk_df), file="Stalks_IvsH_ASV.csv")
-Stalk_IO <- diff_abund(stalksF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Open_Pollinated", .001)
-write.csv(as.data.frame(Stalk_IO), file="Stalks_IvsO_ASV.csv")
-Stalk_HO <- diff_abund(stalksF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Hybrid", "Open_Pollinated", .001)
-write.csv(as.data.frame(Stalk_HO), file="Stalks_HvsO_ASV.csv")
 # Rhizos
 Rhiz_df <- diff_abund(rhizosF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
 write.csv(as.data.frame(Rhiz_df), file="Rhizos_IvsH_ASV.csv")
-Rhiz_IO <- diff_abund(rhizosF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Open_Pollinated", .001)
-write.csv(as.data.frame(Rhiz_IO), file="Rhizos_IvsO_ASV.csv")
-Rhiz_HO <- diff_abund(rhizosF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Hybrid", "Open_Pollinated", .001)
-write.csv(as.data.frame(Rhiz_df), file="Rhizos_HvsO_ASV.csv")
 # Roots
 Root_df <- diff_abund(rootsF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
 write.csv(as.data.frame(Root_df), file="Roots_IvsH_ASV.csv")
-Root_IO <- diff_abund(rootsF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Open_Pollinated", .001)
-write.csv(as.data.frame(Root_IO), file="Roots_IvsO_ASV.csv")
-Root_HO <- diff_abund(rootsF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Hybrid", "Open_Pollinated", .001)
-write.csv(as.data.frame(Root_HO), file="Roots_HvsO_ASV.csv")
+
 ### Compare Tissues No I vs H
 stalk_vs_root <- diff_abund(phyHigh,~Sample_Type_Blanks_differentiated,
                             "Sample_Type_Blanks_differentiated", "Stalk", "Root", .001)
@@ -260,7 +245,7 @@ sih <- ggplot(data=plot_df, aes(x=log2FoldChange, y=log10(pvalue))) +
   geom_text_repel(
   data = subset(plot_df, padj < 0.001),
   aes(label = Family),
-  size = 5)
+  size = 5) + ylab(bquote('log'[10]~'p-value'))
 
 #Roots
 root_df_all<- plot_diff_abund(rootsF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
@@ -278,7 +263,7 @@ rootih <- ggplot(data=plot_df, aes(x=log2FoldChange, y=log10(pvalue))) +
   geom_text_repel(
     data = subset(plot_df, padj < 0.001),
     aes(label = Family),
-    size = 5)
+    size = 5) + ylab(bquote('log'[10]~'p-value'))
 
 #Rhizos
 rhizos_df_all<- plot_diff_abund(rhizosF,~Inbred_or_Hybrid,"Inbred_or_Hybrid", "Inbred", "Hybrid", .001)
@@ -292,20 +277,19 @@ rhizih <- ggplot(data=plot_df, aes(x=log2FoldChange, y=log10(pvalue))) +
                                 "NotSig" = "grey"),
                      labels = c("Inbred","Hybrid", "Not Significant"))+ theme(axis.text=element_text(size=18),
                                                            axis.title=element_text(size=18)) + geom_vline(xintercept = 0, colour = "blue") + 
-  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Rhizos") + theme(plot.title = element_text(colour = "purple", size = 16, face = "bold")) + theme(legend.position="bottom",
+  geom_hline(yintercept = 0, colour = "blue") + ggtitle("Rhizosphere") + theme(plot.title = element_text(colour = "purple", size = 16, face = "bold")) + theme(legend.position="bottom",
                                                                           legend.title = element_text(size = 16),
                                                                           legend.text = element_text(size = 16)) +
   geom_text_repel(
     data = subset(plot_df, padj < 0.001),
     aes(label = Family),
-    size = 5)
+    size = 5) + ylab(bquote('log'[10]~'p-value')) + xlab(bquote('log'[2]~'Fold'~'Change'))
 rhizih$labels$colour <- 'More Abundant In:'
 
 IvH_Fig <- ggarrange(sih,rootih,rhizih, nrow = 3, ncol = 1)
 IvH_Fig
 
 ggsave("Fig4_IvsH_D2.png",
-       path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures",
        IvH_Fig, device = "png", width = 10, height = 12, dpi = 600)
 ################################################
 ################################################

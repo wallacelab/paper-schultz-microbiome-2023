@@ -1,6 +1,0 @@
-"","baseMean","log2FoldChange","lfcSE","stat","pvalue","padj","Kingdom","Phylum","Class","Order","Family","Genus","Species"
-"98041a3dc5c07f2f745858bd1265d9e7",1.35443037974684,-1.72246587138677,0.379757739573505,-4.53569655570738,5.74136789147494e-06,0.00011291356853234,"Bacteria","Actinobacteria","Actinobacteria","Corynebacteriales","Mycobacteriaceae","Mycobacterium",NA
-"9a071c02961ef815eb36d089160ca830",30.4430379746835,5.16154778160594,1.08264198645927,4.76754813332756,1.86481451876244e-06,5.5012028303492e-05,"Bacteria","Proteobacteria","Gammaproteobacteria","Pseudomonadales","Pseudomonadaceae","Pseudomonas",NA
-"8575406920eaae6ecc6b296e53e73f2a",19.8607594936709,4.49039178659641,1.0049856894888,4.46811515184909,7.89118260212528e-06,0.000116394943381348,"Bacteria","Proteobacteria","Gammaproteobacteria","Betaproteobacteriales","Burkholderiaceae","Herbaspirillum",NA
-"175ba2f0dfd211130a56284a517bf9d9",282.088607594937,5.59221413916078,1.1273176269282,4.96063753957157,7.02621907228384e-07,4.14546925264747e-05,"Bacteria","Proteobacteria","Gammaproteobacteria","Pseudomonadales","Moraxellaceae","Acinetobacter",NA
-"2f276f6e58e6818619ed2717ab67200f",63.7721518987342,4.73545465698582,1.16800633018382,4.05430564425156,5.02834365915663e-05,0.000593344551780482,"Bacteria","Proteobacteria","Alphaproteobacteria","Rhizobiales","Rhizobiaceae",NA,NA

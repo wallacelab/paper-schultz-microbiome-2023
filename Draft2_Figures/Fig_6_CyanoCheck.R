@@ -1,3 +1,5 @@
+# Script to explore if cyano bacteria have differential picrust results
+
 library(tidyverse)
 library(devtools)
 #devtools::install_github("jbisanz/qiime2R")
@@ -10,6 +12,11 @@ library(dplyr)
 library(scales)
 library(grid)
 library(reshape2)
+
+# if (!requireNamespace("BiocManager", quietly = TRUE))
+#   install.packages("BiocManager")
+# BiocManager::install("dada2", version = "3.16")
+library(dada2)
 
 setwd("D:/Manual_Backup/May_2022/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS")
 
@@ -114,87 +121,81 @@ badlist <- taxa_names(sbad)
 
 phyCmbFilt1 <- prune_taxa(goodlist, phy2)
 
-# Rhizegood <-  prune_taxa(taxa_sums(blank_rhizos) < 1, blank_rhizos)
-# Rgoodlist <- taxa_names(Rhizegood)
-# phyCmbFilt2 <- prune_taxa(Rgoodlist, phyCmbFilt1)
-# 
-# Rootgood <-  prune_taxa(taxa_sums(blank_roots) < 1, blank_roots)
-# Rootgoodlist <- taxa_names(Rootgood)
-# phy2noblank <- prune_taxa(Rootgoodlist, phyCmbFilt2)
-# 
-# # Cleaned combined data - maybe even too cleaned ya know - export a biome file
-# phyCmbFiltClean
-# 
-# setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Picrust2")
-# 
-# phyloseq2qiime2<-function(physeq){
-#   #take a phyloseq object,check for individual parts, write to files ready for qiime2 upload
-#   library(phyloseq)
-#   library(biomformat)
-#   library(ape)
-#   library(Biostrings)
-#   library(dada2)
-#   if(packageVersion("biomformat") < "1.7") {
-#     stop("This will only work with biomformat version > 1.7")
-#   }
-#   ps_name <-deparse(substitute(physeq))
-#   taxa_are_rows_logical<-taxa_are_rows(physeq)
-#   #write OTU table to biom file
-#   if(is.null(access(physeq,"otu_table"))==FALSE){
-#     if(taxa_are_rows_logical==TRUE) {
-#       otu<-as(otu_table(physeq),"matrix")
-#       otu_biom<-make_biom(data=otu)
-#       write_biom(otu_biom,biom_file=paste0(ps_name,"_features-table.biom"))
-#       print(paste0("Writing feature table to ",ps_name,"_feature-table.biom"))
-#     } else if (taxa_are_rows_logical==FALSE) {
-#       otu<-t(as(otu_table(physeq),"matrix"))
-#       otu_biom<-make_biom(data=otu)
-#       write_biom(otu_biom,biom_file=paste0(ps_name,"_feature-table.biom"))
-#       print(paste0("Writing feature table to ",ps_name,"_feature-table.biom"))
-#     }
-#   }
-#   #write sample data (metadata) to tsv
-#   if(is.null(access(physeq,"sam_data"))==FALSE){
-#     write.table(sample_data(physeq),file=paste0(ps_name,"_sample-metadata.txt"),
-#                 sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-#     print(paste0("Writing sample metadata to ",ps_name,"_sample-metadata.txt"))
-#   }
-#   #write taxonomy table to qiime2 formatted taxonomy
-#   if(is.null(access(physeq,"tax_table"))==FALSE){
-#     tax<-as(tax_table(physeq),"matrix")
-#     tax_cols <- colnames(tax)
-#     tax<-as.data.frame(tax)
-#     tax$taxonomy<-do.call(paste, c(tax[tax_cols], sep=";"))
-#     for(co in tax_cols) tax[co]<-NULL
-#     write.table(tax, file=paste0(ps_name,"_tax.txt"), quote=FALSE, col.names=FALSE, sep="\t")
-#     print(paste0("Writing taxonomy table to ",ps_name,"_tax.txt"))
-#   }
-#   #write phylogenetic tree to newick formwat
-#   if(is.null(access(physeq,"phy_tree"))==FALSE){
-#     if(is.rooted(phy_tree(physeq))==TRUE) {
-#       ape::write.tree(phy_tree(physeq),file=paste0(ps_name,"_tree-rooted.newick"))
-#       print(paste0("Writing rooted tree to ",ps_name,"_tree-rooted.newick"))
-#     } else if (is.rooted(phy_tree(physeq))==FALSE) {
-#       ape::write.tree(phy_tree(physeq),file=paste0(ps_name,"_tree-unrooted.newick"))
-#       print(paste0("Writing unrooted tree to ",ps_name,"_tree-unrooted.newick"))
-#     }
-#   }
-#   #write representative sequences to fasta format
-#   if(is.null(access(physeq,"refseq"))==FALSE){
-#     writeXStringSet(refseq(physeq),filepath=paste0(ps_name,"_ref-seqs.fasta"))
-#     print(paste0("Writing reference sequences to FASTA file ",ps_name,"_ref-seqs.fasta"))
-#   } else if (taxa_are_rows_logical==FALSE && unique(grepl("[^ATCG]",colnames(otu_table(physeq)),ignore.case=TRUE) == FALSE)) {
-#     uniquesToFasta(t(otu), fout=paste0(ps_name,"_ref-seqs.fasta"), ids=rownames(otu))
-#     print(paste0("Writing reference sequences to FASTA file ",ps_name,"_ref-seqs.fasta"))
-#   } else if (taxa_are_rows_logical==TRUE && unique(grepl("[^ATCG]",rownames(otu_table(physeq)),ignore.case=TRUE) == FALSE)) {
-#     uniquesToFasta(otu, fout=paste0(ps_name,"_ref-seqs.fasta"), ids=rownames(otu))
-#     print(paste0("Writing reference sequences to FASTA file ",ps_name,"_ref-seqs.fasta"))
-#   }
-# }
-# 
-# # Export to qiime qza and also a biome file
-# phyloseq2qiime2(phy2)
-# phyloseq2qiime2(phy2noblank)
+justCyano = subset_taxa(phyCmbFilt1, Phylum == "Cyanobacteria")
+
+# D:\Manual_Backup\May_2022\1.Projects\2.Heterosis.Microbiome\Maize_Het_Microbiome_CS\Combined_CS\Combined_Picrust2\CyanoBact
+
+
+setwd("D:/Manual_Backup/May_2022/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Picrust2/CyanoBact")
+
+phyloseq2qiime2<-function(physeq){
+  #take a phyloseq object,check for individual parts, write to files ready for qiime2 upload
+  library(phyloseq)
+  library(biomformat)
+  library(ape)
+  library(Biostrings)
+  library(dada2)
+  if(packageVersion("biomformat") < "1.7") {
+    stop("This will only work with biomformat version > 1.7")
+  }
+  ps_name <-deparse(substitute(physeq))
+  taxa_are_rows_logical<-taxa_are_rows(physeq)
+  #write OTU table to biom file
+  if(is.null(access(physeq,"otu_table"))==FALSE){
+    if(taxa_are_rows_logical==TRUE) {
+      otu<-as(otu_table(physeq),"matrix")
+      otu_biom<-make_biom(data=otu)
+      write_biom(otu_biom,biom_file=paste0(ps_name,"_features-table.biom"))
+      print(paste0("Writing feature table to ",ps_name,"_feature-table.biom"))
+    } else if (taxa_are_rows_logical==FALSE) {
+      otu<-t(as(otu_table(physeq),"matrix"))
+      otu_biom<-make_biom(data=otu)
+      write_biom(otu_biom,biom_file=paste0(ps_name,"_feature-table.biom"))
+      print(paste0("Writing feature table to ",ps_name,"_feature-table.biom"))
+    }
+  }
+  #write sample data (metadata) to tsv
+  if(is.null(access(physeq,"sam_data"))==FALSE){
+    write.table(sample_data(physeq),file=paste0(ps_name,"_sample-metadata.txt"),
+                sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+    print(paste0("Writing sample metadata to ",ps_name,"_sample-metadata.txt"))
+  }
+  #write taxonomy table to qiime2 formatted taxonomy
+  if(is.null(access(physeq,"tax_table"))==FALSE){
+    tax<-as(tax_table(physeq),"matrix")
+    tax_cols <- colnames(tax)
+    tax<-as.data.frame(tax)
+    tax$taxonomy<-do.call(paste, c(tax[tax_cols], sep=";"))
+    for(co in tax_cols) tax[co]<-NULL
+    write.table(tax, file=paste0(ps_name,"_tax.txt"), quote=FALSE, col.names=FALSE, sep="\t")
+    print(paste0("Writing taxonomy table to ",ps_name,"_tax.txt"))
+  }
+  #write phylogenetic tree to newick formwat
+  if(is.null(access(physeq,"phy_tree"))==FALSE){
+    if(is.rooted(phy_tree(physeq))==TRUE) {
+      ape::write.tree(phy_tree(physeq),file=paste0(ps_name,"_tree-rooted.newick"))
+      print(paste0("Writing rooted tree to ",ps_name,"_tree-rooted.newick"))
+    } else if (is.rooted(phy_tree(physeq))==FALSE) {
+      ape::write.tree(phy_tree(physeq),file=paste0(ps_name,"_tree-unrooted.newick"))
+      print(paste0("Writing unrooted tree to ",ps_name,"_tree-unrooted.newick"))
+    }
+  }
+  #write representative sequences to fasta format
+  if(is.null(access(physeq,"refseq"))==FALSE){
+    writeXStringSet(refseq(physeq),filepath=paste0(ps_name,"_ref-seqs.fasta"))
+    print(paste0("Writing reference sequences to FASTA file ",ps_name,"_ref-seqs.fasta"))
+  } else if (taxa_are_rows_logical==FALSE && unique(grepl("[^ATCG]",colnames(otu_table(physeq)),ignore.case=TRUE) == FALSE)) {
+    uniquesToFasta(t(otu), fout=paste0(ps_name,"_ref-seqs.fasta"), ids=rownames(otu))
+    print(paste0("Writing reference sequences to FASTA file ",ps_name,"_ref-seqs.fasta"))
+  } else if (taxa_are_rows_logical==TRUE && unique(grepl("[^ATCG]",rownames(otu_table(physeq)),ignore.case=TRUE) == FALSE)) {
+    uniquesToFasta(otu, fout=paste0(ps_name,"_ref-seqs.fasta"), ids=rownames(otu))
+    print(paste0("Writing reference sequences to FASTA file ",ps_name,"_ref-seqs.fasta"))
+  }
+}
+
+# Export to qiime qza and also a biome file
+phyloseq2qiime2(justCyano)
+
 
 # biome file = phyCmbFiltClean_features-table.biom
 
@@ -202,15 +203,21 @@ phyCmbFilt1 <- prune_taxa(goodlist, phy2)
 
 # metadata is metadata
 
-
-
 ### Command line -> conda activate picrust2
-### picrust2_pipeline.py -s dna-sequences.fasta -i phyCmbFiltClean_features-table.biom -o picrust2_out_pipeline -p 4
+### picrust2_pipeline.py -s dna-sequences.fasta -i justCyano_features-table.biom -o picrust2_CyanoOut_pipeline -p 4
+### Have to do this on the linux subsystem on windows
+
+## Add descriptions
+# add_descriptions.py -i EC_metagenome_out/pred_metagenome_unstrat.tsv.gz -m EC \
+# -o EC_metagenome_out/pred_metagenome_unstrat_descrip.tsv.gz
+# 
+# add_descriptions.py -i KO_metagenome_out/pred_metagenome_unstrat.tsv.gz -m KO \
+# -o KO_metagenome_out/pred_metagenome_unstrat_descrip.tsv.gz
 
 # Load Raw Descriptors and Agglomerated Pathways - Shared Taxa
-setwd("D:/Manual_Backup/May_2022/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Picrust2/picrust2_phy2noblank_out/KO_metagenome_out")
+setwd("D:/Manual_Backup/May_2022/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Picrust2/CyanoBact/picrust2_CyanoOut_pipeline/KO_metagenome_out")
 
-KO_table <- read.csv("ph2noblank_KOtable_descript.tsv", header=TRUE, sep="\t", row.names=1)
+KO_table <- read.csv("pred_metagenome_Cyano_descript.tsv.tsv", header=TRUE, sep="\t", row.names=1)
 head(KO_table)[1:10]
 
 # Create a phyloseq object out of the otu table and the metadata. 
@@ -222,9 +229,8 @@ row.names(Meta_EC) <- Meta_EC$SampleID
 
 KO_table$description <- gsub("\\[.*\\]","",as.character(KO_table$description))
 KO_table <- KO_table[!duplicated(KO_table$description), ]
-dtable <- KO_table#[,-(1:2)]
+dtable <- KO_table[,-(1)]
 rownames(dtable) <- KO_table[,1]
-dtable <- dtable[,-1]
 
 # Drop the descriptors
 #descriptions = KO_table[,0:2]
@@ -309,7 +315,7 @@ colnames(ko_l3) <- gsub(x = colnames(ko_l3), pattern = "\\.", replacement = "-")
 #ko_l3 <- cbind(rownames(ko_l3), data.frame(ko_l3, row.names = NULL))
 #ko_l3 <- subset(ko_l3, select = -c(description))
 descriptions = row.names(ko_l3)
-ko_l3 = ko_l3[, -c(1)]
+#ko_l3 = ko_l3[, -c(1)]
 
 head(ko_l3)
 colnames(ko_l3)
@@ -335,6 +341,7 @@ roots_Ag <- subset_samples(Aglom_phy, Sample_Type_Blanks_differentiated=="Root")
 stalks_Raw <- subset_samples(Raw_phy, Sample_Type_Blanks_differentiated=="Stalk")
 rhizos_Raw <- subset_samples(Raw_phy, Sample_Type_Blanks_differentiated=="Rhizosphere")
 roots_Raw <- subset_samples(Raw_phy, Sample_Type_Blanks_differentiated=="Root")
+
 
 ###########################################################################
 # Differential Abundance Functions:
@@ -424,8 +431,8 @@ Diff_table_func <- function(phyloseq_obj, metadata_category, meta, comp1, comp2,
   print(nrow(sigtab))
   return((sigtab))
 }
-####################################################
-###### Plots and Tables
+####################
+library(DESeq2)
 d2_fig_path = "D:/Manual_Backup/May_2022/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/Draft3_Figures"
 d2_tab_path = "D:/Manual_Backup/May_2022/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/Draft3_Figures/PICRUSTv3_Tables"
 setwd(d2_tab_path)
@@ -440,160 +447,36 @@ stalks_Raw
 rhizos_Raw
 roots_Raw 
 
-# Stalks Inbred vs Hybrid
 stalks_IvH_raw <- Diff_table_func(stalks_Raw, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
-write.table(stalks_IvH_raw, file = "stalks_IvH_raw.tsv", sep = "\t", col.names = TRUE)
 stalks_IvH_agl <- Diff_table_func(stalks_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
-write.table(stalks_IvH_agl, file = "stalks_IvH_agl.tsv", sep = "\t", col.names = TRUE)
-
-# Rhizosphere Inbred vs Hybrid
 rhizo_IvH_raw <- Diff_table_func(rhizos_Raw, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
-write.table(rhizo_IvH_raw, file = "rhizo_IvH_raw.tsv", sep = "\t", col.names = TRUE)
 rhizo_IvH_agl <- Diff_table_func(rhizos_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
-write.table(rhizo_IvH_agl, file = "rhizo_IvH_agl.tsv", sep = "\t", col.names = TRUE)
-
-# Roots Inbred vs Hybrid
 roots_IvH_raw <- Diff_table_func(roots_Raw, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
-write.table(roots_IvH_raw, file = "roots_IvH_raw.tsv", sep = "\t", col.names = TRUE)
 roots_IvH_agl <- Diff_table_func(roots_Ag, ~Inbred_or_Hybrid,"Inbred_or_Hybrid","Inbred","Hybrid", 0.001)
-write.table(roots_IvH_agl, file = "roots_IvH_agl.tsv", sep = "\t", col.names = TRUE)
 
-Fig_6 <- plot_diff_funct_IvH(roots_Ag, ~Inbred_or_Hybrid, "Roots: Inbred vs Hybrid Functional Predictions")
+Fig_6 <- plot_diff_funct_IvH(stalks_Ag, ~Inbred_or_Hybrid, "Roots: Inbred vs Hybrid Functional Predictions")
 
-Fig_6 <- Fig_6 + xlab("Functional Group") + 
-  theme(legend.position = c(.8,.1)) +
-  theme(axis.title.y = element_blank()) +
-  theme(axis.title.x = element_text(size =12, face = "bold")) +
-  theme(axis.text.y = element_text(size = 12, face = "bold")) + 
-  theme(axis.text.x = element_text(size = 12, face = "bold")) + 
-  theme(legend.title = element_text(size = 14)) + 
-  theme(legend.text = element_text(size = 12))
-  
-Fig_6 
+################## Look at the contrib file
+library(tidyverse)
+library(dplyr)
+contrib_file <- read.csv("pred_metagenome_contrib.tsv", sep = "\t")
 
-ggsave("Fig6_Roots_IvH_Picrust.png",
-       path = d2_fig_path,
-       Fig_6, device = "png", width = 12, height = 8, dpi = 600)
+# add descriptions to it:
+new_descripts <- brite_map_trim
+new_descripts <- cbind(rownames(new_descripts), data.frame(new_descripts, row.names = NULL))
+colnames(new_descripts)[which(names(new_descripts) == "rownames(new_descripts)")] <- "function."
 
-# Stalks vs Roots
-stalks_vs_roots_raw <- Diff_table_func(Raw_phy, ~Sample_Type_Blanks_differentiated ,"Sample_Type_Blanks_differentiated","Stalk","Root", 0.001)
-write.table(stalks_vs_roots_raw, file = "stalks_vs_roots_raw.tsv", sep = "\t", col.names = TRUE)
-stalks_vs_roots_agl <- Diff_table_func(Aglom_phy, ~Sample_Type_Blanks_differentiated,"Sample_Type_Blanks_differentiated","Stalk","Root", 0.001)
-write.table(stalks_vs_roots_agl, file = "stalks_vs_roots_agl.tsv", sep = "\t", col.names = TRUE)
+join_descript <- merge(contrib_file,new_descripts, by = "function.")
 
-# Stalks vs Rhizosphere
-stalks_vs_rhizo_raw <- Diff_table_func(Raw_phy, ~Sample_Type_Blanks_differentiated ,"Sample_Type_Blanks_differentiated","Stalk","Rhizosphere", 0.001)
-write.table(stalks_vs_rhizo_raw, file = "stalks_vs_rhizo_raw.tsv", sep = "\t", col.names = TRUE)
-stalks_vs_rhizo_agl <- Diff_table_func(Aglom_phy, ~Sample_Type_Blanks_differentiated,"Sample_Type_Blanks_differentiated","Stalk","Rhizosphere", 0.001)
-write.table(stalks_vs_rhizo_agl, file = "stalks_vs_rhizo_agl.tsv", sep = "\t", col.names = TRUE)
+photo_df <- filter(join_descript, grepl("Photo",clean_KEGG_Pathways))
 
-# Rhizosphere vs Root
-Rhizo_vs_roots_raw <- Diff_table_func(Raw_phy, ~Sample_Type_Blanks_differentiated ,"Sample_Type_Blanks_differentiated","Rhizosphere","Root", 0.001)
-write.table(Rhizo_vs_roots_raw, file = "Rhizo_vs_roots_raw.tsv", sep = "\t", col.names = TRUE)
-Rhizo_vs_roots_agl <- Diff_table_func(Aglom_phy, ~Sample_Type_Blanks_differentiated,"Sample_Type_Blanks_differentiated","Rhizosphere","Root", 0.001)
-write.table(Rhizo_vs_roots_agl, file = "Rhizo_vs_roots_agl.tsv", sep = "\t", col.names = TRUE)
-
-# Stalks Greenhouse vs Field
-stalks_Loc_raw <- Diff_table_func(stalks_Raw, ~Location,"Location","GH","IH", 0.001)
-write.table(stalks_Loc_raw, file = "stalks_Loc_raw.tsv", sep = "\t", col.names = TRUE)
-stalks_Loc_agl <- Diff_table_func(stalks_Ag, ~Location,"Location","GH","IH", 0.001)
-write.table(stalks_Loc_agl, file = "stalks_Loc_agl.tsv", sep = "\t", col.names = TRUE)
-
-# Rhizosphere Greenhouse vs Field
-rhizo_Loc_raw <- Diff_table_func(rhizos_Raw, ~Location,"Location","GH","IH", 0.001)
-write.table(rhizo_Loc_raw, file = "rhizo_Loc_raw.tsv", sep = "\t", col.names = TRUE)
-rhizo_Loc_agl <- Diff_table_func(rhizos_Ag, ~Location,"Location","GH","IH", 0.001)
-write.table(rhizo_IvH_agl, file = "rhizo_Loc_agl.tsv", sep = "\t", col.names = TRUE)
-
-# Roots Greenhouse vs Field
-roots_Loc_raw <- Diff_table_func(roots_Raw, ~Location,"Location","GH","IH", 0.001)
-write.table(roots_Loc_raw, file = "roots_Loc_raw.tsv", sep = "\t", col.names = TRUE)
-roots_Loc_agl <- Diff_table_func(roots_Ag, ~Location,"Location","GH","IH", 0.001)
-write.table(roots_Loc_agl, file = "roots_Loc_agl.tsv", sep = "\t", col.names = TRUE)
+phy_taxa <- as.data.frame(tax_table(phy))
+phy_taxa <- cbind(rownames(phy_taxa), data.frame(phy_taxa, row.names = NULL))
+colnames(phy_taxa)[which(names(phy_taxa) == "rownames(phy_taxa)")] <- "taxon"
 
 
+photo_taxa <- merge(photo_df,phy_taxa, by = "taxon")
+photo_taxa_sort <- photo_taxa[order(-photo_taxa$norm_taxon_function_contrib),]
 
-# #### All Tissues
-# # Inbred vs hybrid
-Diff_abun_func_IvH(Raw_phy, ~Inbred_or_Hybrid, 0.001)
-Diff_abun_func_IvH(Aglom_phy, ~Inbred_or_Hybrid, 0.001)
-Diff_ab
-# plot_diff_funct_IvH(EC_phy, ~Inbred_or_Hybrid, " All Tissues: Inbred vs Hybrid")
-# 
-# # Location
-# Diff_abun_func_location(EC_phy, ~Location, 0.001)
-# plot_diff_funct_location(EC_phy, ~Location, " All Tissues: Inbred vs Hybrid/Open Pollinated")
-# 
-# 
-# ### All Experiments
-# 
-# # Inbred vs Hybrid
-# Diff_abun_func_IvH(stalks_EC, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(rhizos_EC, ~Inbred_or_Hybrid, 0.001)
-# Diff_abun_func_IvH(roots_EC, ~Inbred_or_Hybrid, 0.001)
-# plot_diff_funct_IvH(roots_EC, ~Inbred_or_Hybrid, "Roots: Inbred vs Hybrid Functional Predictions")
-# 
-# 
-
-
-Diff_abun_func_OvH <- function(phyloseq_obj, metadata_category, alpha_value){
-  compartment_t = transform_sample_counts(phyloseq_obj, function(OTU) OTU +1)
-  phydesq = phyloseq_to_deseq2(compartment_t, design = metadata_category)
-  deseq_obj = DESeq(phydesq, test = "Wald", fitType = "parametric")
-  
-  res = results(deseq_obj, cooksCutoff = FALSE, contrast = c("Inbred_or_Hybrid", "Open_Pollinated", "Hybrid"))
-  alpha = alpha_value
-  sigtab = res[which(res$padj < alpha), ]
-  Functional_Group <- (c(rownames(sigtab)))
-  sigtab = cbind(as(sigtab, "data.frame"), Functional_Group)
-  
-  return(dim(sigtab)) }
-
-Diff_abun_func_IvO <- function(phyloseq_obj, metadata_category, alpha_value){
-  compartment_t = transform_sample_counts(phyloseq_obj, function(OTU) OTU +1)
-  phydesq = phyloseq_to_deseq2(compartment_t, design = metadata_category)
-  deseq_obj = DESeq(phydesq, test = "Wald", fitType = "parametric")
-  
-  res = results(deseq_obj, cooksCutoff = FALSE, contrast = c("Inbred_or_Hybrid", "Inbred", "Open_Pollinated"))
-  alpha = alpha_value
-  sigtab = res[which(res$padj < alpha), ]
-  Functional_Group <- (c(rownames(sigtab)))
-  sigtab = cbind(as(sigtab, "data.frame"), Functional_Group)
-  
-  return(dim(sigtab)) }
-
-
-Diff_abun_func_OvH(roots_Raw, ~Inbred_or_Hybrid, 0.001)
-Diff_abun_func_OvH(roots_Ag, ~Inbred_or_Hybrid, 0.001)
-
-Diff_abun_func_IvO(roots_Raw, ~Inbred_or_Hybrid, 0.001)
-Diff_abun_func_IvO(roots_Ag, ~Inbred_or_Hybrid, 0.001)
-
-
-Diff_abun_func_OvH(Raw_phy, ~Inbred_or_Hybrid, 0.001)
-Diff_abun_func_OvH(Aglom_phy, ~Inbred_or_Hybrid, 0.001)
-
-Diff_abun_func_IvO(Raw_phy, ~Inbred_or_Hybrid, 0.001)
-Diff_abun_func_IvO(Aglom_phy, ~Inbred_or_Hybrid, 0.001)
-
-Diff_table_func(Raw_phy, ~Location,"Location","GH","IH", 0.001)
-Diff_table_func(Aglom_phy, ~Location,"Location","GH","IH", 0.001)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+write.table(photo_taxa_sort, file = "Photosynt_Taxa_Contrib.tsv", sep = "\t", col.names = TRUE)
 

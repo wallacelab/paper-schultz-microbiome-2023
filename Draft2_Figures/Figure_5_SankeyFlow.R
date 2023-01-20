@@ -1,4 +1,4 @@
-# Beta Diversity Figure and PERMANOVA
+# Sankey Flow Figure
 library(ggplot2)
 library(phyloseq)
 library(plotrix)
@@ -7,8 +7,6 @@ library(tidyverse)
 library(devtools)
 #devtools::install_github("jbisanz/qiime2R")
 library(qiime2R)
-library(ggplot2)
-library(phyloseq)
 library(gridExtra)
 library(tidyr)
 library(microbiome)
@@ -22,7 +20,7 @@ library(rbiom)
 
 ######## Load Data
 getwd()
-setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/Phyloseq_Objects")
+setwd("D:/Manual_Backup/May_2022/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/Phyloseq_Objects")
 
 # Use main data - phy_data
 
@@ -80,6 +78,20 @@ tiss_tax <- cbind(rhizosum,rootsum)
 tiss_tax<- cbind(tiss_tax,stalksum)
 colnames(tiss_tax) <- c("Rhizosphere","Root","Stalk")
 
+### Summarize Proteobacteria
+stalksamps <- subset_samples(phy_data, Sample_Type_Blanks_differentiated=="Stalk")
+stalksfilt <- prune_taxa(taxa_sums(stalksamps) > 0, stalksamps)
+nrow(filter(as.data.frame(tax_table(stalksfilt)), Phylum == "Proteobacteria")) / nrow(tax_table(stalksfilt))
+
+##### read depth
+sum(taxa_sums(subset_taxa(stalksfilt, Phylum == "Proteobacteria"))) / sum(taxa_sums(stalksfilt))
+
+# Percent of stalk reads shared by roots and rhizo
+underground <- subset_samples(phy_data, Sample_Type_Blanks_differentiated=="Root" | Sample_Type=="Rhizosphere")
+ugfilt <- prune_taxa(taxa_sums(underground) > 0, underground)
+
+length(rownames(tax_table(stalksfilt)) %in% rownames(tax_table(ugfilt))) / length(rownames(tax_table(stalksfilt)))
+
 # Next - color by Phylum?
 tiss_tax
 
@@ -93,10 +105,10 @@ tiss_tax2
 taxa_long <- tiss_tax2 %>% make_long(Rhizosphere,Root,Stalk)
 taxa_filt <- filter(taxa_long, node != 0)
 
-my_labels <- c("Verrucomicrobia","Proteobacteria","Planctomycetes",
-               "Chloroflexi","Actinobacteria","Acidobacteria", 
-               "Bacteroidetes", "Cyanobacteria", "Firmicutes",
-               "Gemmatimonadetes")
+my_labels <- c("Verrucomicrobia","Proteobacteria",
+               "Chloroflexi","Actinobacteriota","Acidobacteriota", 
+               "Bacteroidota", "Fusobacteriota",
+               "Nitrospirota")
 
 taxa_filt$labels <- ifelse((taxa_filt$node %in% my_labels & taxa_filt$x=='Rhizosphere'), taxa_filt$node, NA)
 
@@ -105,14 +117,14 @@ gs <- ggplot(taxa_filt, aes(x = x
                             , next_x = next_x
                             , node = node
                             , next_node = next_node
-                            , fill = factor(node)
+                            , fill = (factor(node))
                             , label = labels)
 ) + geom_sankey(flow.alpha = 0.5
                 , node.color = "black"
                 ,show.legend = TRUE) +
   theme(axis.text.y = element_blank(),
         axis.text.x = element_text(size = 18)) + theme(axis.title.x = element_blank()
-                                                       , axis.title.y = element_text(size = 16, face = "bold")
+                                                       , axis.title.y = element_blank()
                                                        , axis.text.y = element_blank()
                                                        , axis.ticks = element_blank()  
                                                        , panel.grid = element_blank(),
@@ -140,22 +152,22 @@ relbar <- ggplot(data = phy.melt, mapping = aes_string(x = "Sample_Type",y = "Ab
 relbar <- relbar + theme(legend.position = "none",
         axis.title.x = element_blank(),
         axis.title.y = element_text(size = 16,face = "bold"),
-        axis.text.x = element_text(size = 18),
+        axis.text.x = element_text(size = 18, angle = 45, vjust = .7),
         axis.text.y = element_text(size = 12),
         panel.background = element_rect(fill = "white",color="white"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        axis.ticks = element_blank() ) + ylab("Relative Abundance of Reads")
+        axis.ticks = element_blank() ) + ylab("Relative Abundance of Reads") 
   
 
 relbar
 
 
-flow_and_relabund <- ggarrange(gs,relbar, labels = c("A","B"))
+flow_and_relabund <- ggarrange(gs,relbar, labels = c("A","B"), widths = c(1,.5))
 
-ggsave("Fig5_Flow_and_Bar_D2.png",
-       path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures",
-       flow_and_relabund, device = "png", width = 12, height = 6, dpi = 600)
+ggsave("Fig5_Flow_and_Bar_D3.png",
+       path = "D:/Manual_Backup/May_2022/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/Draft3_Figures"
+,flow_and_relabund, device = "png", width = 12, height = 6, dpi = 600)
 ########## Compare with node size at 100%
 tiss_tax
 
@@ -309,3 +321,7 @@ ggplot(data = phy.melt, mapping = aes_string(x = "Sample_Type",y = "Abundance"))
 #                    Value = "node", NodeID = "name", 
 #                    sinksRight=FALSE, fontSize = 12,colourScale=my_color)
 # p
+
+
+sample_names(phy_data)
+testdf <- subset_samples(phy_data, rownames(sample_data(phy_data)) != "END5Ka")

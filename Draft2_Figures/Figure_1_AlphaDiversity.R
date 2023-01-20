@@ -21,7 +21,7 @@ library(ggpubr)
 
 
 getwd()
-setwd("/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/Phyloseq_Objects")
+setwd("D:/Manual_Backup/May_2022/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/Phyloseq_Objects")
 
 # Use main data - phy_data
 
@@ -81,15 +81,15 @@ fig1 <- plot_richness(phy_data_rare, x="Sample_Type",
                                 "Open_Pollinated" = "orange"),
                      labels = c("Hybrid","Inbred","Open Pollinated")) + 
   theme(strip.text = element_text(size = 12)) + scale_shape_manual(values=c(1,2,3),
-                                                                   breaks = c("END", "GH", "MMH"),
-                                                                   labels = c("Field 2", "Greenhouse", "Field 1"),
+                                                                   breaks = c("MMH","END","GH"),
+                                                                   labels = c("Field 1", "Field 2", "Greenhouse"),
                                                                    guide = guide_legend(reverse = TRUE)) + 
   theme(axis.title.x = element_blank()) +
   theme(axis.title.y = element_text(face = "bold")) +
   theme(axis.text.y  = element_text(size = 12, face="bold")) +
   theme(axis.text.x = element_text(angle = 0,face = "bold",size = 12, hjust = .5)) + xlab("Sample Type") + 
   labs(color = "Sample Type") + guides(color = guide_legend(order = 1),
-                                       shape = guide_legend(order = 2))
+                                       shape = guide_legend(order = 2)) 
 
 
 
@@ -117,10 +117,129 @@ alpha_df
 fig1$data <- alpha_df
 
 fig1$layers <- fig1$layers[-1]
+fig1$data %>% mutate(Experiment = fct_relevel(Experiment, 
+                                                           "MMH","END","GH"))
+fig1
+fig1 +facet_grid(rows = vars(Sample_Type))
 fig1
 
-ggsave("Fig1_Alpha_D2_rare.png", plot = fig1, device = "png", width = 9, height = 6, 
-       units = c("in"), dpi = 750, path = "/home/coreyschultz/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/D2_Figures")
+
+### Create new figs based on alpha_df
+alpha_df$Experiment <- factor(alpha_df$Experiment, levels = c("MMH","END","GH"))
+
+obsfig <- ggplot(alpha_df %>% filter(variable == "Observed"), aes(x = Experiment,y = value, shape = Experiment, color = Inbred_or_Hybrid)) +
+  geom_point(size=5, position = position_dodge(width = 1)) +
+  scale_color_manual(values = c("Hybrid" = "firebrick",
+                                "Inbred" = "royalblue3",
+                                "Open_Pollinated" = "orange"),
+                     guide = "none",
+                     labels = c("Hybrid","Inbred","Open Pollinated")) + 
+  theme(strip.text = element_text(size = 12)) + scale_shape_manual(values=c(1,2,3),
+                                                                   breaks = c("MMH","END","GH"),
+                                                                   labels = c("Field 1", "Field 2", "Greenhouse"),
+                                                                   guide = "none") + 
+  theme(axis.title.x = element_blank()) +
+  theme(axis.title.y = element_blank()) +
+  theme(axis.text.y  = element_text(size = 12, face="bold")) +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) + 
+  labs(color = "Sample Type") + guides(color = guide_legend(order = 1),
+                                       shape = guide_legend(order = 2)) + facet_grid(cols = vars(Sample_Type)) +
+  ggtitle("Observed")
+
+shannonfig <- ggplot(alpha_df %>% filter(variable == "Shannon"), aes(x = Experiment,y = value, shape = Experiment, color = Inbred_or_Hybrid)) +
+  geom_point(size=5, position = position_dodge(width = 1)) +
+  scale_color_manual(values = c("Hybrid" = "firebrick",
+                                "Inbred" = "royalblue3",
+                                "Open_Pollinated" = "orange"),
+                     labels = c("Hybrid","Inbred","Open Pollinated")) + 
+  theme(strip.text = element_text(size = 12)) + scale_shape_manual(values=c(1,2,3),
+                                                                   breaks = c("MMH","END","GH"),
+                                                                   labels = c("Field 1", "Field 2", "Greenhouse"),
+                                                                   guide = guide_legend(reverse = TRUE)) + 
+  theme(axis.title.x = element_blank()) +
+  theme(axis.title.y = element_text(face = "bold")) +
+  theme(axis.text.y  = element_text(size = 12, face="bold")) +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) + ylab("Alpha Diversity Values") + 
+  labs(color = "Sample Type") + guides(color = guide_legend(order = 1),
+                                       shape = guide_legend(order = 2)) + facet_grid(cols = vars(Sample_Type)) +
+  ggtitle("Shannon")
+
+q1fig <- ggplot(alpha_df %>% filter(variable == "Hills q1"), aes(x = Experiment,y = value, shape = Experiment, color = Inbred_or_Hybrid)) +
+  geom_point(size=5, position = position_dodge(width = 1)) +
+  scale_color_manual(values = c("Hybrid" = "firebrick",
+                                "Inbred" = "royalblue3",
+                                "Open_Pollinated" = "orange"),
+                     guide = "none",
+                     labels = c("Hybrid","Inbred","Open Pollinated")) + 
+  theme(strip.text = element_text(size = 12)) + scale_shape_manual(values=c(1,2,3),
+                                                                   breaks = c("MMH","END","GH"),
+                                                                   labels = c("Field 1", "Field 2", "Greenhouse"),
+                                                                   guide = "none") + 
+  theme(axis.title.x = element_blank(), axis.ticks = element_blank()) +
+  theme(axis.title.y = element_blank()) +
+  theme(axis.text.y  = element_text(size = 12, face="bold")) +
+  theme(axis.text.x = element_text(angle = 45,face = "bold",size = 12, hjust = .5, vjust = .5)) + 
+  xlab("Sample Type") +
+  labs(color = "Sample Type") + guides(color = guide_legend(order = 1),
+                                       shape = guide_legend(order = 2)) + facet_grid(cols = vars(Sample_Type)) +
+  ggtitle("Hills q1") + scale_x_discrete(breaks = c("MMH","END","GH"),
+                                         labels = c("Field 1", "Field 2", "Greenhouse"))
+
+library(grid)
+#stacked_fig <- ggarrange(obsfig,shannonfig,q1fig, nrow = 3)
+
+gt <- ggplot_gtable(ggplot_build(q1fig))
+gt$layout$clip[grep("panel-2-\\d+", q1fig$layout$name)] <- "off"
+grid.draw(gt)
+
+grid_arrange_shared_legend <- function(..., ncol = length(list(...)), nrow = 3, position = c("right")) {
+  
+  plots <- list(...)
+  position <- match.arg(position)
+  g <- ggplotGrob(plots[[1]] + theme(legend.position = position))$grobs
+  legend <- g[[which(sapply(g, function(x) x$name) == "guide-box")]]
+  lheight <- sum(legend$height)
+  lwidth <- sum(legend$width)
+  gl <- lapply(plots, function(x) x + theme(legend.position="none"))
+  gl <- c(gl, ncol = ncol, nrow = nrow)
+  
+  combined <- switch(position,
+                     "bottom" = arrangeGrob(do.call(arrangeGrob, gl),
+                                            legend,
+                                            ncol = 1,
+                                            heights = unit.c(unit(1, "npc") - lheight, lheight)),
+                     "right" = arrangeGrob(do.call(arrangeGrob, gl),
+                                           legend,
+                                           ncol = 2,
+                                           widths = unit.c(unit(1, "npc") - lwidth, lwidth)))
+  
+  grid.newpage()
+  grid.draw(combined)
+  
+  # return gtable invisibly
+  invisible(combined)
+  
+}
+
+stacked_fig <- grid_arrange_shared_legend(obsfig,shannonfig,q1fig, ncol = 1, nrow = 3)
+
+#annotate_figure(stacked_fig, bottom = textGrob("Field 1 Field 2 Greenhouse", rot = 45, gp = gpar(cex = 1.3)))
+# Try an easier way 
+library(cowplot)
+thelegend <- get_legend(shannonfig)
+
+rm_legend <- function(p){p + theme(legend.position = "none")}
+
+#plots <- ggarrange(rm_legend(obsfig),rm_legend(shannonfig),rm_legend(q1fig), ncol = 1, nrow = 3, align = "v")
+
+library(patchwork)
+plots2 <- rm_legend(obsfig) + rm_legend(shannonfig) + rm_legend(q1fig) + plot_layout(ncol = 1, heights = c(1,1,1))
+
+stacked_fig <- ggarrange(plots2, thelegend, widths = c(1, .15))
+
+
+ggsave("Fig1_Alpha_D3_rare.png", plot = stacked_fig, device = "png", width = 9, height = 9, 
+       units = c("in"), dpi = 750, path = "D:/Manual_Backup/May_2022/1.Projects/2.Heterosis.Microbiome/Maize_Het_Microbiome_CS/Combined_CS/Combined_Scripts/Draft2_Figures/Draft3_Figures")
 
 ################################################################ 9 Panel Figure
 # DATA = phy_data_rel
